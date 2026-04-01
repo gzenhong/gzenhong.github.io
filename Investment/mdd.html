@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>歷史回撤分析</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--sf:#161921;--sf2:#1e2230;--bd:#2a2f3e;--tx:#e8eaf0;--mu:#6b7280;--ac:#f59e0b;--re:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:"Noto Serif TC",serif;min-height:100vh}
+header{padding:36px 40px 24px;border-bottom:1px solid var(--bd);background:linear-gradient(180deg,#1a1d28,var(--bg))}
+header h1{font-size:1.8rem;font-weight:700;color:var(--ac);letter-spacing:.04em}
+header p{margin-top:6px;color:var(--mu);font-size:.8rem;font-family:"JetBrains Mono",monospace}
+#ctrlbar{padding:14px 40px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--bd);background:var(--sf);position:sticky;top:0;z-index:100}
+.tb{background:var(--sf2);border:1px solid var(--bd);color:var(--mu);padding:5px 12px;border-radius:4px;cursor:pointer;font-size:.76rem;font-family:"JetBrains Mono",monospace;transition:all .15s}
+.tb:hover{border-color:var(--ac);color:var(--tx)}
+.tb.on{background:var(--ac);color:#000;border-color:var(--ac);font-weight:700}
+.tb.lv{border-color:var(--re)}
+.tb.lv.on{background:var(--re);border-color:var(--re);color:#fff}
+main{padding:24px 40px}
+#sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:24px}
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:14px 16px}
+.sc .lb{font-size:.65rem;color:var(--mu);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;font-family:"JetBrains Mono",monospace}
+.sc .vl{font-size:1.35rem;font-weight:700;font-family:"JetBrains Mono",monospace;color:var(--ac)}
+.sc .sb{font-size:.7rem;color:var(--mu);margin-top:2px}
+.stitle{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;font-family:"JetBrains Mono",monospace;border-left:3px solid var(--ac);padding-left:9px}
+#chartbox{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:18px;margin-bottom:24px}
+#filterrow{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-family:"JetBrains Mono",monospace;font-size:.76rem;color:var(--mu)}
+#filterrow select{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:4px 8px;border-radius:4px;font-size:.76rem;font-family:"JetBrains Mono",monospace}
+#rowcount{margin-left:auto;font-size:.72rem;color:var(--mu)}
+#tablebox{background:var(--sf);border:1px solid var(--bd);border-radius:6px;overflow:hidden;margin-bottom:32px}
+table{width:100%;border-collapse:collapse}
+th{background:var(--sf2);padding:9px 12px;text-align:left;font-size:.66rem;letter-spacing:.08em;color:var(--mu);font-family:"JetBrains Mono",monospace;border-bottom:1px solid var(--bd);cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--ac)}
+td{padding:8px 12px;border-bottom:1px solid var(--bd);font-family:"JetBrains Mono",monospace;font-size:.76rem;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sf2)}
+.dp{display:inline-block;padding:2px 7px;border-radius:3px;font-weight:700;font-size:.74rem}
+.dm{background:rgba(234,179,8,.15);color:#eab308}
+.ds{background:rgba(249,115,22,.15);color:#f97316}
+.dv{background:rgba(239,68,68,.15);color:#ef4444}
+.de{background:rgba(167,139,250,.15);color:#a78bfa}
+.rf{color:#22c55e}.rm{color:#3b82f6}.rl{color:#f97316}.rn{color:var(--mu)}
+.bb{display:inline-block;width:64px;height:5px;background:var(--bd);border-radius:2px;vertical-align:middle}
+.bf{height:5px;background:var(--re);border-radius:2px}
+footer{margin:0 40px 32px;padding:14px;border:1px solid var(--bd);border-radius:6px;font-size:.72rem;color:var(--mu);background:var(--sf);line-height:1.6}
+footer strong{color:var(--ac)}
+@media(max-width:640px){header,#ctrlbar,main,footer{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📉 歷史回撤事件分析</h1>
+  <p>數據截止：2026-03-31 ｜ 回撤計算：High→Low ｜ 回本計算：Adj Close ｜ 閾值：一般 -15%，槓桿 -30%</p>
+</header>
+
+<div id="ctrlbar"><!-- ticker buttons injected by JS --></div>
+
+<main>
+  <div id="sgrid"><!-- summary cards --></div>
+  <div class="stitle">回撤深度時間軸（泡泡 = 跌幅大小）</div>
+  <div id="chartbox"><canvas id="bc" height="90"></canvas></div>
+  <div class="stitle">歷史回撤事件明細</div>
+  <div id="filterrow">
+    跌幅篩選：
+    <select id="ddsel">
+      <option value="0">全部</option>
+      <option value="15">&#8805; 15%</option>
+      <option value="20">&#8805; 20%</option>
+      <option value="25">&#8805; 25%</option>
+      <option value="30">&#8805; 30%</option>
+      <option value="35">&#8805; 35%</option>
+      <option value="40">&#8805; 40%</option>
+      <option value="50">&#8805; 50%</option>
+      <option value="60">&#8805; 60%</option>
+    </select>
+    <span id="rowcount"></span>
+  </div>
+  <div id="tablebox">
+    <table>
+      <thead>
+        <tr>
+          <th data-col="0">標的</th>
+          <th data-col="1">高點日期</th>
+          <th data-col="2">高點價</th>
+          <th data-col="3">低點日期</th>
+          <th data-col="4">低點價</th>
+          <th data-col="5">最大跌幅</th>
+          <th>深度</th>
+          <th data-col="7">回本日期</th>
+          <th data-col="8">回本天數</th>
+        </tr>
+      </thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer><strong>⚠️ 免責聲明</strong>｜以上分析僅供參考，不構成任何投資建議，投資有風險請自行評估。</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const RAW = {
+  "0050": [{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2004-03-23","trough_low":44.5,"max_dd_pct":-17.1,"recovery_date":"2005-12-21","recovery_days":638},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2004-07-27","trough_low":40.9,"max_dd_pct":-23.8,"recovery_date":"2005-12-21","recovery_days":512},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2004-10-27","trough_low":43.81,"max_dd_pct":-18.4,"recovery_date":"2005-12-21","recovery_days":420},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2004-11-30","trough_low":44.88,"max_dd_pct":-16.4,"recovery_date":"2005-12-21","recovery_days":386},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2005-01-14","trough_low":45.55,"max_dd_pct":-15.2,"recovery_date":"2005-12-21","recovery_days":341},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2005-01-25","trough_low":45.11,"max_dd_pct":-16.0,"recovery_date":"2005-12-21","recovery_days":330},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2005-04-21","trough_low":43.9,"max_dd_pct":-18.2,"recovery_date":"2005-12-21","recovery_days":244},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2005-05-23","trough_low":44.6,"max_dd_pct":-16.9,"recovery_date":"2005-12-21","recovery_days":212},{"peak_date":"2004-03-05","peak_high":53.7,"trough_date":"2005-10-20","trough_low":43.93,"max_dd_pct":-18.2,"recovery_date":"2005-12-21","recovery_days":62},{"peak_date":"2006-05-09","peak_high":59.3,"trough_date":"2006-06-09","trough_low":49.4,"max_dd_pct":-16.7,"recovery_date":"2006-11-03","recovery_days":147},{"peak_date":"2006-05-09","peak_high":59.3,"trough_date":"2006-07-17","trough_low":49.3,"max_dd_pct":-16.9,"recovery_date":"2006-11-03","recovery_days":109},{"peak_date":"2007-07-26","peak_high":69.85,"trough_date":"2007-08-16","trough_low":58.2,"max_dd_pct":-16.7,"recovery_date":"2007-09-27","recovery_days":42},{"peak_date":"2007-10-03","peak_high":72.3,"trough_date":"2007-11-27","trough_low":59.65,"max_dd_pct":-17.5,"recovery_date":"2011-01-19","recovery_days":1149},{"peak_date":"2007-10-03","peak_high":72.3,"trough_date":"2008-01-23","trough_low":53.4,"max_dd_pct":-26.1,"recovery_date":"2011-01-19","recovery_days":1092},{"peak_date":"2007-10-03","peak_high":72.3,"trough_date":"2008-11-21","trough_low":28.53,"max_dd_pct":-60.5,"recovery_date":"2011-01-19","recovery_days":789},{"peak_date":"2007-10-03","peak_high":72.3,"trough_date":"2011-05-25","trough_low":59.8,"max_dd_pct":-17.3,"recovery_date":"2011-05-31","recovery_days":6},{"peak_date":"2007-10-03","peak_high":72.3,"trough_date":"2011-12-19","trough_low":46.61,"max_dd_pct":-35.5,"recovery_date":"2013-05-08","recovery_days":506},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2015-08-24","trough_low":55.4,"max_dd_pct":-24.4,"recovery_date":"2016-08-01","recovery_days":343},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2015-09-30","trough_low":61.45,"max_dd_pct":-16.2,"recovery_date":"2016-08-01","recovery_days":306},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2016-01-20","trough_low":55.6,"max_dd_pct":-24.1,"recovery_date":"2016-08-01","recovery_days":194},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2016-04-07","trough_low":61.6,"max_dd_pct":-16.0,"recovery_date":"2016-08-01","recovery_days":116},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2016-05-13","trough_low":59.0,"max_dd_pct":-19.5,"recovery_date":"2016-08-01","recovery_days":80},{"peak_date":"2015-04-27","peak_high":73.3,"trough_date":"2016-06-24","trough_low":62.05,"max_dd_pct":-15.3,"recovery_date":"2016-08-01","recovery_days":38},{"peak_date":"2018-01-23","peak_high":88.4,"trough_date":"2018-10-26","trough_low":74.5,"max_dd_pct":-15.7,"recovery_date":"2019-04-17","recovery_days":173},{"peak_date":"2018-01-23","peak_high":88.4,"trough_date":"2018-11-21","trough_low":74.85,"max_dd_pct":-15.3,"recovery_date":"2019-04-17","recovery_days":147},{"peak_date":"2018-01-23","peak_high":88.4,"trough_date":"2019-01-04","trough_low":72.0,"max_dd_pct":-18.6,"recovery_date":"2019-04-17","recovery_days":103},{"peak_date":"2020-01-14","peak_high":98.85,"trough_date":"2020-03-19","trough_low":67.25,"max_dd_pct":-32.0,"recovery_date":"2020-07-09","recovery_days":112},{"peak_date":"2021-01-21","peak_high":143.25,"trough_date":"2021-05-12","trough_low":121.2,"max_dd_pct":-15.4,"recovery_date":"2021-07-05","recovery_days":54},{"peak_date":"2022-01-17","peak_high":152.4,"trough_date":"2022-10-25","trough_low":96.5,"max_dd_pct":-36.7,"recovery_date":"2024-02-15","recovery_days":478},{"peak_date":"2022-01-17","peak_high":152.4,"trough_date":"2023-10-31","trough_low":121.1,"max_dd_pct":-20.5,"recovery_date":"2024-02-15","recovery_days":107},{"peak_date":"2022-01-17","peak_high":152.4,"trough_date":"2024-01-17","trough_low":127.3,"max_dd_pct":-16.5,"recovery_date":"2024-02-15","recovery_days":29},{"peak_date":"2024-07-11","peak_high":202.8,"trough_date":"2024-08-05","trough_low":158.4,"max_dd_pct":-21.9,"recovery_date":"2025-01-06","recovery_days":154},{"peak_date":"2024-07-11","peak_high":202.8,"trough_date":"2024-09-04","trough_low":170.0,"max_dd_pct":-16.2,"recovery_date":"2025-01-06","recovery_days":124},{"peak_date":"2025-01-07","peak_high":206.0,"trough_date":"2025-04-09","trough_low":145.0,"max_dd_pct":-29.6,"recovery_date":"2025-07-16","recovery_days":98}],
+  "2330": [{"peak_date":"1994-09-16","peak_high":177.0,"trough_date":"1995-01-16","trough_low":136.0,"max_dd_pct":-23.2,"recovery_date":"1995-03-27","recovery_days":70},{"peak_date":"1994-09-16","peak_high":177.0,"trough_date":"1995-03-01","trough_low":148.0,"max_dd_pct":-16.4,"recovery_date":"1995-03-27","recovery_days":26},{"peak_date":"1995-04-06","peak_high":192.0,"trough_date":"1995-05-06","trough_low":161.0,"max_dd_pct":-16.1,"recovery_date":"1995-06-07","recovery_days":32},{"peak_date":"1995-06-13","peak_high":196.0,"trough_date":"1996-07-17","trough_low":49.1,"max_dd_pct":-74.9,"recovery_date":"1996-11-22","recovery_days":128},{"peak_date":"2000-02-11","peak_high":222.0,"trough_date":"2000-03-16","trough_low":172.0,"max_dd_pct":-22.5,"recovery_date":"2007-07-04","recovery_days":2666},{"peak_date":"2000-02-11","peak_high":222.0,"trough_date":"2002-10-08","trough_low":34.9,"max_dd_pct":-84.3,"recovery_date":"2007-07-04","recovery_days":1730},{"peak_date":"2000-02-11","peak_high":222.0,"trough_date":"2017-04-19","trough_low":186.5,"max_dd_pct":-16.0,"recovery_date":"2017-04-20","recovery_days":1},{"peak_date":"2018-01-23","peak_high":266.0,"trough_date":"2018-05-03","trough_low":220.0,"max_dd_pct":-17.3,"recovery_date":"2018-08-29","recovery_days":118},{"peak_date":"2018-01-23","peak_high":266.0,"trough_date":"2018-05-18","trough_low":223.5,"max_dd_pct":-16.0,"recovery_date":"2018-08-29","recovery_days":103},{"peak_date":"2018-01-23","peak_high":266.0,"trough_date":"2018-06-28","trough_low":210.0,"max_dd_pct":-21.1,"recovery_date":"2018-08-29","recovery_days":62},{"peak_date":"2018-08-30","peak_high":268.0,"trough_date":"2018-10-11","trough_low":227.0,"max_dd_pct":-15.3,"recovery_date":"2019-04-18","recovery_days":189},{"peak_date":"2018-08-30","peak_high":268.0,"trough_date":"2018-10-26","trough_low":217.0,"max_dd_pct":-19.0,"recovery_date":"2019-04-18","recovery_days":174},{"peak_date":"2018-08-30","peak_high":268.0,"trough_date":"2019-01-04","trough_low":206.5,"max_dd_pct":-22.9,"recovery_date":"2019-04-18","recovery_days":104},{"peak_date":"2018-08-30","peak_high":268.0,"trough_date":"2019-03-11","trough_low":227.5,"max_dd_pct":-15.1,"recovery_date":"2019-04-18","recovery_days":38},{"peak_date":"2019-04-24","peak_high":270.0,"trough_date":"2019-05-29","trough_low":227.0,"max_dd_pct":-15.9,"recovery_date":"2019-07-22","recovery_days":54},{"peak_date":"2020-01-14","peak_high":346.0,"trough_date":"2020-03-19","trough_low":235.5,"max_dd_pct":-31.9,"recovery_date":"2020-07-08","recovery_days":111},{"peak_date":"2021-01-21","peak_high":679.0,"trough_date":"2021-03-25","trough_low":570.0,"max_dd_pct":-16.1,"recovery_date":"2022-01-13","recovery_days":294},{"peak_date":"2021-01-21","peak_high":679.0,"trough_date":"2021-05-12","trough_low":518.0,"max_dd_pct":-23.7,"recovery_date":"2022-01-13","recovery_days":246},{"peak_date":"2021-01-21","peak_high":679.0,"trough_date":"2021-07-28","trough_low":573.0,"max_dd_pct":-15.6,"recovery_date":"2022-01-13","recovery_days":169},{"peak_date":"2021-01-21","peak_high":679.0,"trough_date":"2021-08-20","trough_low":551.0,"max_dd_pct":-18.9,"recovery_date":"2022-01-13","recovery_days":146},{"peak_date":"2021-01-21","peak_high":679.0,"trough_date":"2021-10-05","trough_low":560.0,"max_dd_pct":-17.5,"recovery_date":"2022-01-13","recovery_days":100},{"peak_date":"2022-01-17","peak_high":688.0,"trough_date":"2022-10-26","trough_low":370.0,"max_dd_pct":-46.2,"recovery_date":"2024-02-15","recovery_days":477},{"peak_date":"2024-07-11","peak_high":1080.0,"trough_date":"2024-08-05","trough_low":813.0,"max_dd_pct":-24.7,"recovery_date":"2024-10-18","recovery_days":74},{"peak_date":"2024-07-11","peak_high":1080.0,"trough_date":"2024-09-04","trough_low":888.0,"max_dd_pct":-17.8,"recovery_date":"2024-10-18","recovery_days":44},{"peak_date":"2025-01-07","peak_high":1160.0,"trough_date":"2025-04-09","trough_low":780.0,"max_dd_pct":-32.8,"recovery_date":"2025-07-16","recovery_days":98}],
+  "0056": [{"peak_date":"2008-05-20","peak_high":27.7,"trough_date":"2008-10-28","trough_low":11.73,"max_dd_pct":-57.7,"recovery_date":"2010-08-23","recovery_days":664},{"peak_date":"2008-05-20","peak_high":27.7,"trough_date":"2009-10-29","trough_low":20.6,"max_dd_pct":-25.6,"recovery_date":"2010-08-23","recovery_days":298},{"peak_date":"2008-05-20","peak_high":27.7,"trough_date":"2010-02-06","trough_low":20.91,"max_dd_pct":-24.5,"recovery_date":"2010-08-23","recovery_days":198},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2012-11-01","trough_low":20.76,"max_dd_pct":-30.7,"recovery_date":"2013-05-08","recovery_days":188},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2014-08-08","trough_low":25.06,"max_dd_pct":-16.4,"recovery_date":"2014-08-11","recovery_days":3},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2015-08-24","trough_low":18.76,"max_dd_pct":-37.4,"recovery_date":"2015-10-19","recovery_days":56},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2017-08-14","trough_low":25.42,"max_dd_pct":-15.2,"recovery_date":"2017-08-15","recovery_days":1},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2017-10-30","trough_low":25.3,"max_dd_pct":-15.6,"recovery_date":"2017-10-31","recovery_days":1},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2017-12-08","trough_low":24.43,"max_dd_pct":-18.5,"recovery_date":"2017-12-11","recovery_days":3},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2018-02-06","trough_low":24.55,"max_dd_pct":-18.1,"recovery_date":"2018-02-07","recovery_days":1},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2018-04-27","trough_low":25.06,"max_dd_pct":-16.4,"recovery_date":"2018-04-30","recovery_days":3},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2018-07-06","trough_low":25.11,"max_dd_pct":-16.2,"recovery_date":"2018-07-09","recovery_days":3},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2019-01-04","trough_low":23.11,"max_dd_pct":-22.9,"recovery_date":"2019-01-07","recovery_days":3},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2019-05-29","trough_low":25.22,"max_dd_pct":-15.8,"recovery_date":"2019-05-30","recovery_days":1},{"peak_date":"2011-07-07","peak_high":29.96,"trough_date":"2020-03-19","trough_low":21.45,"max_dd_pct":-28.4,"recovery_date":"2020-03-20","recovery_days":1},{"peak_date":"2021-04-29","peak_high":36.17,"trough_date":"2021-10-22","trough_low":30.59,"max_dd_pct":-15.4,"recovery_date":"2022-03-03","recovery_days":132},{"peak_date":"2021-04-29","peak_high":36.17,"trough_date":"2022-05-19","trough_low":30.44,"max_dd_pct":-15.8,"recovery_date":"2023-06-07","recovery_days":384},{"peak_date":"2021-04-29","peak_high":36.17,"trough_date":"2022-10-26","trough_low":23.28,"max_dd_pct":-35.6,"recovery_date":"2023-06-07","recovery_days":224},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2024-08-06","trough_low":34.45,"max_dd_pct":-19.5,"recovery_date":"2025-09-23","recovery_days":413},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2024-11-01","trough_low":36.31,"max_dd_pct":-15.1,"recovery_date":"2025-09-23","recovery_days":326},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2024-11-29","trough_low":35.98,"max_dd_pct":-15.9,"recovery_date":"2025-09-23","recovery_days":298},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2024-12-19","trough_low":36.25,"max_dd_pct":-15.2,"recovery_date":"2025-09-23","recovery_days":278},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2025-02-03","trough_low":34.92,"max_dd_pct":-18.4,"recovery_date":"2025-09-23","recovery_days":232},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2025-04-09","trough_low":28.49,"max_dd_pct":-33.4,"recovery_date":"2025-09-23","recovery_days":167},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2025-09-26","trough_low":36.27,"max_dd_pct":-15.2,"recovery_date":"2025-10-02","recovery_days":6},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2025-11-05","trough_low":36.3,"max_dd_pct":-15.1,"recovery_date":"2025-11-06","recovery_days":1},{"peak_date":"2024-07-11","peak_high":42.77,"trough_date":"2025-11-19","trough_low":34.66,"max_dd_pct":-19.0,"recovery_date":"2025-11-27","recovery_days":8}],
+  "00919": [{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2024-08-05","trough_low":22.1,"max_dd_pct":-18.4,"recovery_date":"2025-12-17","recovery_days":499},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2024-11-01","trough_low":22.7,"max_dd_pct":-16.2,"recovery_date":"2025-12-17","recovery_days":411},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2024-11-29","trough_low":22.84,"max_dd_pct":-15.7,"recovery_date":"2025-12-17","recovery_days":383},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2025-01-13","trough_low":22.66,"max_dd_pct":-16.4,"recovery_date":"2025-12-17","recovery_days":338},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2025-03-19","trough_low":23.02,"max_dd_pct":-15.0,"recovery_date":"2025-12-17","recovery_days":273},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2025-04-09","trough_low":18.32,"max_dd_pct":-32.4,"recovery_date":"2025-12-17","recovery_days":252},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2026-02-02","trough_low":22.93,"max_dd_pct":-15.4,"recovery_date":"2026-02-03","recovery_days":1},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2026-03-09","trough_low":22.56,"max_dd_pct":-16.7,"recovery_date":"2026-03-10","recovery_days":1},{"peak_date":"2024-06-20","peak_high":27.09,"trough_date":"2026-03-24","trough_low":22.26,"max_dd_pct":-17.8,"recovery_date":null,"recovery_days":null}],
+  "00878": [{"peak_date":"2022-02-21","peak_high":19.78,"trough_date":"2022-07-12","trough_low":15.9,"max_dd_pct":-19.6,"recovery_date":"2023-05-17","recovery_days":309},{"peak_date":"2022-02-21","peak_high":19.78,"trough_date":"2022-09-07","trough_low":16.66,"max_dd_pct":-15.8,"recovery_date":"2023-05-17","recovery_days":252},{"peak_date":"2022-02-21","peak_high":19.78,"trough_date":"2022-10-20","trough_low":15.33,"max_dd_pct":-22.5,"recovery_date":"2023-05-17","recovery_days":209},{"peak_date":"2022-02-21","peak_high":19.78,"trough_date":"2023-03-16","trough_low":16.75,"max_dd_pct":-15.3,"recovery_date":"2023-05-17","recovery_days":62},{"peak_date":"2024-07-11","peak_high":24.66,"trough_date":"2025-04-09","trough_low":17.73,"max_dd_pct":-28.1,"recovery_date":"2025-12-22","recovery_days":257},{"peak_date":"2024-07-11","peak_high":24.66,"trough_date":"2025-08-01","trough_low":20.72,"max_dd_pct":-16.0,"recovery_date":"2025-12-22","recovery_days":143},{"peak_date":"2024-07-11","peak_high":24.66,"trough_date":"2025-09-01","trough_low":20.15,"max_dd_pct":-18.3,"recovery_date":"2025-12-22","recovery_days":112},{"peak_date":"2024-07-11","peak_high":24.66,"trough_date":"2025-11-19","trough_low":20.23,"max_dd_pct":-18.0,"recovery_date":"2025-12-22","recovery_days":33}],
+  "00662": [{"peak_date":"2018-08-30","peak_high":32.2,"trough_date":"2018-12-26","trough_low":24.6,"max_dd_pct":-23.6,"recovery_date":"2019-04-09","recovery_days":104},{"peak_date":"2020-02-20","peak_high":38.3,"trough_date":"2020-03-23","trough_low":25.6,"max_dd_pct":-33.2,"recovery_date":"2020-06-08","recovery_days":77},{"peak_date":"2020-02-20","peak_high":38.3,"trough_date":"2020-04-22","trough_low":32.5,"max_dd_pct":-15.1,"recovery_date":"2020-06-08","recovery_days":47},{"peak_date":"2021-11-22","peak_high":59.6,"trough_date":"2022-01-26","trough_low":50.5,"max_dd_pct":-15.3,"recovery_date":"2023-06-16","recovery_days":506},{"peak_date":"2021-11-22","peak_high":59.6,"trough_date":"2022-02-24","trough_low":47.6,"max_dd_pct":-20.1,"recovery_date":"2023-06-16","recovery_days":477},{"peak_date":"2021-11-22","peak_high":59.6,"trough_date":"2022-06-17","trough_low":42.8,"max_dd_pct":-28.2,"recovery_date":"2023-06-16","recovery_days":364},{"peak_date":"2021-11-22","peak_high":59.6,"trough_date":"2022-12-29","trough_low":42.3,"max_dd_pct":-29.0,"recovery_date":"2023-06-16","recovery_days":169},{"peak_date":"2021-11-22","peak_high":59.6,"trough_date":"2023-04-26","trough_low":50.6,"max_dd_pct":-15.1,"recovery_date":"2023-06-16","recovery_days":51},{"peak_date":"2025-02-18","peak_high":93.8,"trough_date":"2025-04-07","trough_low":70.3,"max_dd_pct":-25.1,"recovery_date":"2025-09-15","recovery_days":161}],
+  "00646": [{"peak_date":"2018-09-21","peak_high":27.2,"trough_date":"2018-12-26","trough_low":22.0,"max_dd_pct":-19.1,"recovery_date":"2019-04-23","recovery_days":118},{"peak_date":"2020-02-20","peak_high":31.2,"trough_date":"2020-03-23","trough_low":20.5,"max_dd_pct":-34.3,"recovery_date":"2020-08-28","recovery_days":158},{"peak_date":"2021-12-28","peak_high":40.8,"trough_date":"2022-06-20","trough_low":33.6,"max_dd_pct":-17.6,"recovery_date":"2023-06-05","recovery_days":350},{"peak_date":"2021-12-28","peak_high":40.8,"trough_date":"2022-07-01","trough_low":34.4,"max_dd_pct":-15.7,"recovery_date":"2023-06-05","recovery_days":339},{"peak_date":"2025-02-18","peak_high":63.0,"trough_date":"2025-04-09","trough_low":50.2,"max_dd_pct":-20.3,"recovery_date":"2025-09-18","recovery_days":162},{"peak_date":"2025-02-18","peak_high":63.0,"trough_date":"2025-04-22","trough_low":52.6,"max_dd_pct":-16.5,"recovery_date":"2025-09-18","recovery_days":149},{"peak_date":"2025-02-18","peak_high":63.0,"trough_date":"2025-05-05","trough_low":52.0,"max_dd_pct":-17.5,"recovery_date":"2025-09-18","recovery_days":136}],
+  "00670L": [{"peak_date":"2018-08-30","peak_high":38.0,"trough_date":"2018-12-25","trough_low":21.59,"max_dd_pct":-43.2,"recovery_date":"2019-07-25","recovery_days":212},{"peak_date":"2020-02-20","peak_high":54.05,"trough_date":"2020-03-23","trough_low":23.52,"max_dd_pct":-56.5,"recovery_date":"2020-06-24","recovery_days":93},{"peak_date":"2020-02-20","peak_high":54.05,"trough_date":"2020-04-22","trough_low":37.18,"max_dd_pct":-31.2,"recovery_date":"2020-06-24","recovery_days":63},{"peak_date":"2021-11-22","peak_high":131.65,"trough_date":"2022-03-15","trough_low":79.0,"max_dd_pct":-40.0,"recovery_date":"2024-06-20","recovery_days":828},{"peak_date":"2021-11-22","peak_high":131.65,"trough_date":"2022-12-29","trough_low":46.56,"max_dd_pct":-64.6,"recovery_date":"2024-06-20","recovery_days":539},{"peak_date":"2024-12-17","peak_high":148.0,"trough_date":"2025-04-07","trough_low":76.2,"max_dd_pct":-48.5,"recovery_date":"2025-07-31","recovery_days":115}],
+  "00647L": [{"peak_date":"2018-09-21","peak_high":36.8,"trough_date":"2018-12-26","trough_low":22.8,"max_dd_pct":-38.0,"recovery_date":"2019-07-01","recovery_days":187},{"peak_date":"2020-02-20","peak_high":46.5,"trough_date":"2020-03-23","trough_low":18.5,"max_dd_pct":-60.2,"recovery_date":"2020-09-03","recovery_days":164},{"peak_date":"2022-01-04","peak_high":80.8,"trough_date":"2022-05-19","trough_low":53.6,"max_dd_pct":-33.7,"recovery_date":"2024-03-13","recovery_days":664},{"peak_date":"2022-01-04","peak_high":80.8,"trough_date":"2022-06-20","trough_low":46.8,"max_dd_pct":-42.1,"recovery_date":"2024-03-13","recovery_days":632},{"peak_date":"2022-01-04","peak_high":80.8,"trough_date":"2022-10-03","trough_low":44.6,"max_dd_pct":-44.8,"recovery_date":"2024-03-13","recovery_days":527},{"peak_date":"2022-01-04","peak_high":80.8,"trough_date":"2023-10-30","trough_low":54.4,"max_dd_pct":-32.7,"recovery_date":"2024-03-13","recovery_days":135},{"peak_date":"2024-12-03","peak_high":105.0,"trough_date":"2025-04-09","trough_low":63.6,"max_dd_pct":-39.4,"recovery_date":"2025-08-15","recovery_days":128},{"peak_date":"2024-12-03","peak_high":105.0,"trough_date":"2025-04-22","trough_low":70.6,"max_dd_pct":-32.8,"recovery_date":"2025-08-15","recovery_days":115}],
+  "00631L": [{"peak_date":"2015-01-23","peak_high":24.9,"trough_date":"2015-08-24","trough_low":13.5,"max_dd_pct":-45.8,"recovery_date":"2016-07-18","recovery_days":329},{"peak_date":"2015-01-23","peak_high":24.9,"trough_date":"2015-09-30","trough_low":17.1,"max_dd_pct":-31.3,"recovery_date":"2016-07-18","recovery_days":292},{"peak_date":"2015-01-23","peak_high":24.9,"trough_date":"2015-12-14","trough_low":16.8,"max_dd_pct":-32.5,"recovery_date":"2016-07-18","recovery_days":217},{"peak_date":"2015-01-23","peak_high":24.9,"trough_date":"2016-01-18","trough_low":15.1,"max_dd_pct":-39.4,"recovery_date":"2016-07-18","recovery_days":182},{"peak_date":"2015-01-23","peak_high":24.9,"trough_date":"2016-05-13","trough_low":16.8,"max_dd_pct":-32.5,"recovery_date":"2016-07-18","recovery_days":66},{"peak_date":"2018-08-30","peak_high":41.9,"trough_date":"2019-01-04","trough_low":29.0,"max_dd_pct":-30.8,"recovery_date":"2019-05-03","recovery_days":119},{"peak_date":"2020-01-03","peak_high":55.4,"trough_date":"2020-03-19","trough_low":25.8,"max_dd_pct":-53.4,"recovery_date":"2020-07-06","recovery_days":109},{"peak_date":"2022-01-05","peak_high":152.0,"trough_date":"2022-07-07","trough_low":87.9,"max_dd_pct":-42.2,"recovery_date":"2023-12-27","recovery_days":538},{"peak_date":"2022-01-05","peak_high":152.0,"trough_date":"2022-10-25","trough_low":73.6,"max_dd_pct":-51.6,"recovery_date":"2023-12-27","recovery_days":428},{"peak_date":"2024-07-11","peak_high":283.0,"trough_date":"2024-08-05","trough_low":177.0,"max_dd_pct":-37.5,"recovery_date":"2025-09-12","recovery_days":403},{"peak_date":"2024-07-11","peak_high":283.0,"trough_date":"2025-04-09","trough_low":125.0,"max_dd_pct":-55.8,"recovery_date":"2025-09-12","recovery_days":156},{"peak_date":"2024-07-11","peak_high":283.0,"trough_date":"2025-06-23","trough_low":196.0,"max_dd_pct":-30.7,"recovery_date":"2025-09-12","recovery_days":81}],
+  "2308": [{"peak_date":"1991-01-07","peak_high":35.4,"trough_date":"1991-01-17","trough_low":24.1,"max_dd_pct":-31.9,"recovery_date":"1991-01-22","recovery_days":5},{"peak_date":"1991-02-21","peak_high":47.6,"trough_date":"1991-03-04","trough_low":37.2,"max_dd_pct":-21.8,"recovery_date":"1991-03-16","recovery_days":12},{"peak_date":"1991-05-01","peak_high":61.5,"trough_date":"1991-05-15","trough_low":49.5,"max_dd_pct":-19.5,"recovery_date":"1991-06-24","recovery_days":40},{"peak_date":"1991-05-01","peak_high":61.5,"trough_date":"1991-05-31","trough_low":47.5,"max_dd_pct":-22.8,"recovery_date":"1991-06-24","recovery_days":24},{"peak_date":"1991-07-06","peak_high":79.0,"trough_date":"1992-09-18","trough_low":29.1,"max_dd_pct":-63.2,"recovery_date":"1993-10-16","recovery_days":393},{"peak_date":"1991-07-06","peak_high":79.0,"trough_date":"1993-12-11","trough_low":66.5,"max_dd_pct":-15.8,"recovery_date":"1993-12-13","recovery_days":2},{"peak_date":"1993-12-17","peak_high":79.5,"trough_date":"1993-12-24","trough_low":67.5,"max_dd_pct":-15.1,"recovery_date":"1993-12-30","recovery_days":6},{"peak_date":"1994-01-06","peak_high":90.0,"trough_date":"1996-03-12","trough_low":31.7,"max_dd_pct":-64.8,"recovery_date":"1996-06-13","recovery_days":93},{"peak_date":"1997-02-20","peak_high":116.5,"trough_date":"1997-02-27","trough_low":95.5,"max_dd_pct":-18.0,"recovery_date":"1997-03-05","recovery_days":6},{"peak_date":"1997-05-10","peak_high":150.0,"trough_date":"1997-05-16","trough_low":120.5,"max_dd_pct":-19.7,"recovery_date":"1997-05-31","recovery_days":15},{"peak_date":"1997-07-17","peak_high":235.0,"trough_date":"1997-07-23","trough_low":144.0,"max_dd_pct":-38.7,"recovery_date":"1997-08-21","recovery_days":29},{"peak_date":"1997-07-17","peak_high":235.0,"trough_date":"2001-09-24","trough_low":31.1,"max_dd_pct":-86.8,"recovery_date":"2005-07-11","recovery_days":1386},{"peak_date":"1997-07-17","peak_high":235.0,"trough_date":"2014-11-18","trough_low":165.5,"max_dd_pct":-29.6,"recovery_date":"2014-11-19","recovery_days":1},{"peak_date":"1997-07-17","peak_high":235.0,"trough_date":"2018-07-05","trough_low":98.3,"max_dd_pct":-58.2,"recovery_date":"2018-07-06","recovery_days":1},{"peak_date":"2021-01-08","peak_high":325.0,"trough_date":"2021-02-05","trough_low":276.0,"max_dd_pct":-15.1,"recovery_date":"2021-07-14","recovery_days":159},{"peak_date":"2021-01-08","peak_high":325.0,"trough_date":"2021-03-09","trough_low":259.0,"max_dd_pct":-20.3,"recovery_date":"2021-07-14","recovery_days":127},{"peak_date":"2021-01-08","peak_high":325.0,"trough_date":"2021-05-12","trough_low":245.0,"max_dd_pct":-24.6,"recovery_date":"2021-07-14","recovery_days":63},{"peak_date":"2021-07-15","peak_high":335.0,"trough_date":"2022-07-06","trough_low":210.5,"max_dd_pct":-37.2,"recovery_date":"2023-04-14","recovery_days":282},{"peak_date":"2021-07-15","peak_high":335.0,"trough_date":"2023-01-06","trough_low":271.5,"max_dd_pct":-19.0,"recovery_date":"2023-04-14","recovery_days":98},{"peak_date":"2021-07-15","peak_high":335.0,"trough_date":"2023-03-01","trough_low":282.0,"max_dd_pct":-15.8,"recovery_date":"2023-04-14","recovery_days":44},{"peak_date":"2021-07-15","peak_high":335.0,"trough_date":"2023-03-14","trough_low":284.0,"max_dd_pct":-15.2,"recovery_date":"2023-04-14","recovery_days":31},{"peak_date":"2023-07-31","peak_high":388.5,"trough_date":"2024-01-18","trough_low":276.5,"max_dd_pct":-28.8,"recovery_date":"2024-06-19","recovery_days":153},{"peak_date":"2023-07-31","peak_high":388.5,"trough_date":"2024-04-16","trough_low":292.5,"max_dd_pct":-24.7,"recovery_date":"2024-06-19","recovery_days":64},{"peak_date":"2024-07-11","peak_high":435.0,"trough_date":"2024-07-26","trough_low":369.0,"max_dd_pct":-15.2,"recovery_date":"2024-12-30","recovery_days":157},{"peak_date":"2024-07-11","peak_high":435.0,"trough_date":"2024-08-06","trough_low":347.0,"max_dd_pct":-20.2,"recovery_date":"2024-12-30","recovery_days":146},{"peak_date":"2024-07-11","peak_high":435.0,"trough_date":"2024-09-09","trough_low":358.5,"max_dd_pct":-17.6,"recovery_date":"2024-12-30","recovery_days":112},{"peak_date":"2024-07-11","peak_high":435.0,"trough_date":"2024-10-07","trough_low":363.5,"max_dd_pct":-16.4,"recovery_date":"2024-12-30","recovery_days":84},{"peak_date":"2025-01-08","peak_high":446.0,"trough_date":"2025-03-11","trough_low":365.5,"max_dd_pct":-18.0,"recovery_date":"2025-06-25","recovery_days":106},{"peak_date":"2025-01-08","peak_high":446.0,"trough_date":"2025-04-09","trough_low":275.0,"max_dd_pct":-38.3,"recovery_date":"2025-06-25","recovery_days":77},{"peak_date":"2025-10-29","peak_high":1085.0,"trough_date":"2025-11-19","trough_low":889.0,"max_dd_pct":-18.1,"recovery_date":"2026-01-14","recovery_days":56},{"peak_date":"2025-10-29","peak_high":1085.0,"trough_date":"2025-12-18","trough_low":886.0,"max_dd_pct":-18.3,"recovery_date":"2026-01-14","recovery_days":27},{"peak_date":"2026-01-29","peak_high":1315.0,"trough_date":"2026-02-06","trough_low":1115.0,"max_dd_pct":-15.2,"recovery_date":"2026-02-11","recovery_days":5},{"peak_date":"2026-02-25","peak_high":1480.0,"trough_date":"2026-03-09","trough_low":1195.0,"max_dd_pct":-19.3,"recovery_date":"2026-03-17","recovery_days":8}]
+};
+var LEVERAGED = new Set(['00670L','00647L','00631L']);
+var TICKERS   = Object.keys(RAW);
+var COLORS    = {'0050':'#f59e0b','2330':'#3b82f6','0056':'#22c55e','00919':'#a78bfa','00878':'#f97316','00662':'#06b6d4','00646':'#ec4899','00670L':'#ef4444','00647L':'#dc2626','00631L':'#b91c1c','2308':'#8b5cf6'};
+
+var active  = new Set(TICKERS);
+var ddMin   = 0;
+var sortCol = 5;
+var sortAsc = true;
+var chart   = null;
+
+// ── Ticker buttons ──
+var ctrlbar = document.getElementById('ctrlbar');
+TICKERS.forEach(function(t) {
+  var btn = document.createElement('button');
+  btn.className = 'tb on' + (LEVERAGED.has(t) ? ' lv' : '');
+  btn.textContent = t;
+  btn.dataset.t = t;
+  btn.addEventListener('click', function() {
+    if (active.has(t)) { active.delete(t); btn.classList.remove('on'); }
+    else               { active.add(t);    btn.classList.add('on'); }
+    redraw();
+  });
+  ctrlbar.appendChild(btn);
+});
+var sep = document.createElement('span');
+sep.style.cssText = 'width:1px;height:22px;background:var(--bd);margin:0 2px';
+ctrlbar.appendChild(sep);
+var allBtn = document.createElement('button');
+allBtn.className = 'tb';
+allBtn.textContent = '全選';
+allBtn.addEventListener('click', function() {
+  var allOn = TICKERS.every(function(t){ return active.has(t); });
+  TICKERS.forEach(function(t){ allOn ? active.delete(t) : active.add(t); });
+  ctrlbar.querySelectorAll('.tb[data-t]').forEach(function(b){
+    b.classList.toggle('on', active.has(b.dataset.t));
+  });
+  redraw();
+});
+ctrlbar.appendChild(allBtn);
+
+// ── Filter select — bind once, always works ──
+document.getElementById('ddsel').addEventListener('change', function() {
+  ddMin = +this.value;
+  redraw();
+});
+
+// ── Sort headers — bind once ──
+document.querySelectorAll('th[data-col]').forEach(function(th) {
+  th.addEventListener('click', function() {
+    var c = +th.dataset.col;
+    if (sortCol === c) sortAsc = !sortAsc;
+    else { sortCol = c; sortAsc = true; }
+    redraw();
+  });
+});
+
+// ── Data helpers ──
+function getRows() {
+  var rows = [];
+  TICKERS.forEach(function(t) {
+    if (!active.has(t)) return;
+    RAW[t].forEach(function(e) {
+      if (Math.abs(e.max_dd_pct) >= ddMin) rows.push(Object.assign({ticker:t}, e));
+    });
+  });
+  rows.sort(function(a,b) {
+    var va, vb;
+    switch(sortCol) {
+      case 0: va=a.ticker;      vb=b.ticker;      break;
+      case 1: va=a.peak_date;   vb=b.peak_date;   break;
+      case 2: va=a.peak_high;   vb=b.peak_high;   break;
+      case 3: va=a.trough_date; vb=b.trough_date; break;
+      case 4: va=a.trough_low;  vb=b.trough_low;  break;
+      case 5: va=a.max_dd_pct;  vb=b.max_dd_pct;  break;
+      case 7: va=a.recovery_date||'zzzz'; vb=b.recovery_date||'zzzz'; break;
+      default:va=a.recovery_days||99999;  vb=b.recovery_days||99999;
+    }
+    return sortAsc ? (va<vb?-1:va>vb?1:0) : (va>vb?-1:va<vb?1:0);
+  });
+  return rows;
+}
+
+function ddCls(v) { var a=Math.abs(v); return a<20?'dm':a<30?'ds':a<50?'dv':'de'; }
+function recCls(d) { return !d?'rn':d<=90?'rf':d<=300?'rm':'rl'; }
+
+// ── Render ──
+function drawSummary(rows) {
+  if (!rows.length) { document.getElementById('sgrid').innerHTML=''; return; }
+  var worst = rows.reduce(function(a,b){ return b.max_dd_pct<a.max_dd_pct?b:a; }, rows[0]);
+  var avgDD = (rows.reduce(function(s,r){ return s+r.max_dd_pct; },0)/rows.length).toFixed(1);
+  var recs  = rows.filter(function(r){ return r.recovery_days; });
+  var avgR  = recs.length ? Math.round(recs.reduce(function(s,r){ return s+r.recovery_days; },0)/recs.length) : 0;
+  var maxR  = recs.length ? Math.max.apply(null,recs.map(function(r){ return r.recovery_days; })) : 0;
+  var total = Object.values(RAW).reduce(function(s,a){ return s+a.length; },0);
+  function card(lb,vl,sb,st){ return '<div class="sc"><div class="lb">'+lb+'</div><div class="vl" style="'+st+'">'+vl+'</div><div class="sb">'+sb+'</div></div>'; }
+  document.getElementById('sgrid').innerHTML =
+    card('篩選後事件數', rows.length, '共'+total+'個全部事件', '') +
+    card('最大跌幅', worst.max_dd_pct.toFixed(1)+'%', worst.ticker+' '+worst.trough_date, 'color:#ef4444') +
+    card('平均跌幅', avgDD+'%', '篩選範圍內', '') +
+    card('平均回本', avgR+'天', '已回本事件', 'color:#3b82f6') +
+    card('最長回本', maxR+'天', '歷史最長', 'color:#f97316') +
+    card('尚未回本', rows.filter(function(r){ return !r.recovery_date; }).length, '進行中', 'color:#a78bfa');
+}
+
+function drawChart(rows) {
+  var datasets = [];
+  TICKERS.forEach(function(t) {
+    if (!active.has(t)) return;
+    var eps = rows.filter(function(r){ return r.ticker===t; });
+    if (!eps.length) return;
+    datasets.push({
+      label: t,
+      data: eps.map(function(e) {
+        var d=new Date(e.trough_date);
+        return { x: d.getFullYear()+d.getMonth()/12+d.getDate()/365, y: e.max_dd_pct, r: Math.min(Math.sqrt(Math.abs(e.max_dd_pct))*2.5,30), ep: e };
+      }),
+      backgroundColor: COLORS[t]+'88', borderColor: COLORS[t], borderWidth: 1
+    });
+  });
+  var ctx = document.getElementById('bc').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type:'bubble', data:{datasets:datasets},
+    options:{
+      responsive:true, layout:{padding:{top:20}},
+      plugins:{
+        legend:{labels:{color:'#9ca3af',font:{family:'JetBrains Mono',size:11}}},
+        tooltip:{callbacks:{label:function(item){ var e=item.raw.ep; return e?item.dataset.label+' '+e.trough_date+' '+e.max_dd_pct.toFixed(1)+'%':''; }}}
+      },
+      scales:{
+        x:{type:'linear',ticks:{color:'#6b7280',font:{size:10},callback:function(v){return Math.round(v)+''}},grid:{color:'#1e2230'}},
+        y:{ticks:{color:'#6b7280',font:{size:10},callback:function(v){return v+'%'}},grid:{color:'#1e2230'}}
+      }
+    }
+  });
+}
+
+function drawTable(rows) {
+  document.getElementById('rowcount').textContent = '共 '+rows.length+' 筆';
+  var tb = document.getElementById('tb');
+  tb.innerHTML = rows.length === 0
+    ? '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--mu)">無符合條件的資料</td></tr>'
+    : rows.map(function(r) {
+        var barW = Math.min(Math.abs(r.max_dd_pct)/90*100,100).toFixed(1);
+        return '<tr>'+
+          '<td style="color:'+COLORS[r.ticker]+';font-weight:700">'+r.ticker+'</td>'+
+          '<td>'+r.peak_date+'</td>'+
+          '<td>'+r.peak_high.toLocaleString()+'</td>'+
+          '<td>'+r.trough_date+'</td>'+
+          '<td>'+r.trough_low.toLocaleString()+'</td>'+
+          '<td><span class="dp '+ddCls(r.max_dd_pct)+'">'+r.max_dd_pct.toFixed(1)+'%</span></td>'+
+          '<td><span class="bb"><span class="bf" style="width:'+barW+'%"></span></span></td>'+
+          '<td style="color:var(--mu)">'+(r.recovery_date||'⏳ 尚未回本')+'</td>'+
+          '<td class="'+recCls(r.recovery_days)+'">'+(r.recovery_days?r.recovery_days+'天':'—')+'</td>'+
+          '</tr>';
+      }).join('');
+}
+
+function redraw() {
+  var rows = getRows();
+  drawSummary(rows);
+  drawChart(rows);
+  drawTable(rows);
+}
+
+// ── 等 Chart.js 載入後才執行 ──
+window.addEventListener('load', function() {
+  // Force sync: ddMin from select, select from ddMin
+  var sel = document.getElementById('ddsel');
+  sel.value = String(ddMin);   // set select to match ddMin (0 = 全部)
+  redraw();
+});
+</script>
+</body>
+</html>
