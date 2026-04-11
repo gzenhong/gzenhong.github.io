@@ -19,15 +19,15 @@
 .filter-btn.active { background:var(--color-background-info); color:var(--color-text-info); border-color:var(--color-border-info); font-weight:500; }
 .tbl-wrap { overflow-x:auto; }
 table { width:100%; border-collapse:collapse; font-size:11px; min-width:1200px; }
-thead tr:first-child th { background:var(--color-background-tertiary); padding:5px 6px; text-align:center; font-weight:600; border-bottom:1px solid var(--color-border-secondary); position:sticky; top:0; z-index:3; color:var(--color-text-secondary); white-space:nowrap; }
-thead tr:first-child th.hd-best { background:#EEEDFE; color:#534AB7; }
-thead tr:first-child th.hd-bb  { background:#FAEEDA; color:#854F0B; }
-thead tr:first-child th.hd-db  { background:#E6F1FB; color:#185FA5; }
-thead tr:first-child th.hd-kb  { background:#FBEAF0; color:#993556; }
-thead tr:first-child th.hd-ca  { background:#EAF3DE; color:#3B6D11; }
-thead tr:first-child th.hd-mc  { background:#FCEBEB; color:#A32D2D; }
-thead tr:first-child th.hd-bd  { background:#F1EFE8; color:#5F5E5A; }
-thead tr:first-child th.hd-bw  { background:#E6F1FB; color:#0C447C; }
+thead th { background:var(--color-background-tertiary); padding:5px 6px; text-align:center; font-weight:600; border-bottom:2px solid var(--color-border-secondary); position:sticky; top:0; z-index:3; color:var(--color-text-secondary); white-space:nowrap; }
+thead th.hd-best { background:#EEEDFE; color:#534AB7; }
+thead th.hd-bb   { background:#FAEEDA; color:#854F0B; }
+thead th.hd-db   { background:#E6F1FB; color:#185FA5; }
+thead th.hd-kb   { background:#FBEAF0; color:#993556; }
+thead th.hd-ca   { background:#EAF3DE; color:#3B6D11; }
+thead th.hd-mc   { background:#FCEBEB; color:#A32D2D; }
+thead th.hd-bd   { background:#F1EFE8; color:#5F5E5A; }
+thead th.hd-bw   { background:#E6F1FB; color:#0C447C; }
 tbody tr { border-bottom:1px solid var(--color-border-tertiary); }
 tbody tr:hover { background:var(--color-background-secondary); }
 tbody td { padding:5px 6px; vertical-align:top; line-height:1.5; }
@@ -38,15 +38,16 @@ td.best-cell { background:rgba(127,119,221,0.06); }
 .move-list { margin:0; padding:0; list-style:none; }
 .move-list li { padding:1px 0; border-bottom:1px dashed var(--color-border-tertiary); display:flex; align-items:flex-start; gap:2px; }
 .move-list li:last-child { border-bottom:none; }
-.mrank { display:inline-block; font-size:9px; font-weight:600; min-width:14px; height:14px; border-radius:3px; text-align:center; line-height:14px; background:var(--color-background-tertiary); color:var(--color-text-tertiary); flex-shrink:0; margin-top:1px; }
+.mrank   { display:inline-block; font-size:9px; font-weight:600; min-width:14px; height:14px; border-radius:3px; text-align:center; line-height:14px; background:var(--color-background-tertiary); color:var(--color-text-tertiary); flex-shrink:0; margin-top:1px; }
 .mrank-1 { background:#534AB7; color:#fff; }
-.mzh-s { font-size:11px; color:var(--color-text-primary); }
-.men-s { font-size:10px; color:var(--color-text-tertiary); display:block; }
+.mzh-s   { font-size:11px; color:var(--color-text-primary); }
+.men-s   { font-size:10px; color:var(--color-text-tertiary); display:block; }
 .best-mzh { font-weight:700; font-size:11px; color:#534AB7; }
 .best-men  { font-size:10px; color:#7F77DD; display:block; }
 .count { font-size:10px; color:var(--color-text-tertiary); margin-left:3px; }
 #empty { display:none; text-align:center; padding:24px; color:var(--color-text-tertiary); }
 .note { font-size:10px; color:var(--color-text-tertiary); font-style:italic; }
+.updated { font-size:10px; color:var(--color-text-success); margin-left:6px; }
 </style>
 
 <div class="wrap">
@@ -68,15 +69,15 @@ td.best-cell { background:rgba(127,119,221,0.06); }
       <thead>
         <tr>
           <th style="width:52px;text-align:left">部位</th>
-          <th style="width:82px;text-align:left">肌肉<br><span style="font-weight:400;font-size:10px">Muscle</span></th>
+          <th style="width:85px;text-align:left">肌肉<br><span style="font-weight:400;font-size:10px">Muscle</span></th>
           <th class="hd-best" style="width:118px">★ 最佳動作<br><span style="font-weight:400;font-size:10px">Best Exercise</span></th>
-          <th class="hd-bb"  style="width:118px">BB 槓鈴</th>
-          <th class="hd-db"  style="width:118px">DB 啞鈴</th>
-          <th class="hd-kb"  style="width:118px">KB 壺鈴</th>
-          <th class="hd-ca"  style="width:118px">Cable 纜繩</th>
-          <th class="hd-mc"  style="width:118px">Machine 機器</th>
-          <th class="hd-bd"  style="width:118px">Band 彈力帶</th>
-          <th class="hd-bw"  style="width:118px">BW 徒手</th>
+          <th class="hd-bb"   style="width:118px">BB 槓鈴</th>
+          <th class="hd-db"   style="width:118px">DB 啞鈴</th>
+          <th class="hd-kb"   style="width:118px">KB 壺鈴</th>
+          <th class="hd-ca"   style="width:118px">Cable 纜繩</th>
+          <th class="hd-mc"   style="width:118px">Machine 機器</th>
+          <th class="hd-bd"   style="width:118px">Band 彈力帶</th>
+          <th class="hd-bw"   style="width:118px">BW 徒手</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -84,7 +85,7 @@ td.best-cell { background:rgba(127,119,221,0.06); }
   </div>
   <div id="empty">無符合條件的資料</div>
   <div style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
-    <span class="note">每欄 3 個動作，#1 最優選，#2–3 替代選項。最佳動作為跨 7 種器材綜合最優。★ 需單槓 / 雙槓輔助。<br>3 exercises per column: #1 top pick, #2–3 alternatives. Best = cross-equipment overall winner. ★ requires pull-up bar or parallel bars.</span>
+    <span class="note">每欄 3 個動作，#1 最優選，#2–3 替代。最佳動作為跨 7 種器材綜合最優。★ 需單槓／雙槓。Full Can Raise：拇指朝上、肩胛骨平面舉起，較 Empty Can 對肩峰下空間更友善。<br>Full Can Raise (thumb up, scapular plane) replaces Empty Can Raise — reduced subacromial impingement risk.</span>
   </div>
 </div>
 
@@ -102,7 +103,6 @@ const P = {
   "小腿 Calves":      {bg:"#E1F5EE",border:"#1D9E75",text:"#0F6E56"},
 };
 
-// m:[zh,en], best:[zh,en,eq], bb/db/kb/ca/mc/bd/bw: [[zh,en],...]
 const D = [
   // ══ 胸部 ══
   {g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)",
@@ -237,15 +237,16 @@ const D = [
    bd:[["彈力帶臉拉","Band Face Pull"],["彈力帶俯身反飛鳥","Band Bent-over Reverse Fly"],["彈力帶後束飛鳥","Band Rear Delt Fly"]],
    bw:[["俯臥反飛鳥","Prone Reverse Fly (BW)"],["桌邊划船（高肘）","Australian Row (High Elbow)"],["俯臥 W 字舉","Prone W Raise"]]},
 
+  // ★ 已將 Empty Can → Full Can
   {g:"肩膀 Shoulder", mZh:"棘上肌", mEn:"Supraspinatus",
-   best:["纜繩空罐式舉（低位）","Low-cable Empty Can Raise","ca"],
-   bb:[["槓鈴直立划船（極寬握）","Extra Wide BB Upright Row"],["槓鈴前平舉（拇指朝上）","BB Front Raise (Thumb Up)"],["槓鈴側平舉（控制）","BB Lateral Raise (Controlled)"]],
-   db:[["啞鈴側平舉（拇指朝上）","DB Lateral Raise (Thumb Up)"],["啞鈴空罐式舉","DB Empty Can Raise"],["啞鈴單臂側平舉","Single-arm DB Lateral Raise"]],
-   kb:[["壺鈴空罐式舉","KB Empty Can Raise"],["壺鈴底朝上側平舉","KB Bottoms-up Lateral Raise"],["壺鈴直立划船（寬握）","KB Wide Upright Row"]],
-   ca:[["纜繩空罐式舉（低位）","Low-cable Empty Can Raise"],["纜繩側平舉（拇指朝上）","Cable Lateral Raise (Thumb Up)"],["纜繩前平舉（拇指朝上）","Cable Front Raise (Thumb Up)"]],
+   best:["纜繩滿罐式舉（低位）","Low-cable Full Can Raise","ca"],
+   bb:[["槓鈴直立划船（極寬握）","Extra Wide BB Upright Row"],["槓鈴前平舉（拇指朝上）","BB Front Raise (Thumb Up)"],["槓鈴肩胛平面舉（控制）","BB Scapular Plane Raise"]],
+   db:[["啞鈴滿罐式舉","DB Full Can Raise"],["啞鈴側平舉（拇指朝上）","DB Lateral Raise (Thumb Up)"],["啞鈴肩胛平面舉","DB Scapular Plane Raise"]],
+   kb:[["壺鈴滿罐式舉","KB Full Can Raise"],["壺鈴底朝上側平舉","KB Bottoms-up Lateral Raise"],["壺鈴直立划船（寬握）","KB Wide Upright Row"]],
+   ca:[["纜繩滿罐式舉（低位）","Low-cable Full Can Raise"],["纜繩側平舉（拇指朝上）","Cable Lateral Raise (Thumb Up)"],["纜繩前平舉（拇指朝上）","Cable Front Raise (Thumb Up)"]],
    mc:[["側平舉機（拇指朝上）","Lateral Raise Machine (Thumb Up)"],["後三角飛鳥機（外旋）","Rear Delt Machine (ER variation)"],["坐姿肩推機","Shoulder Press Machine"]],
-   bd:[["彈力帶空罐式舉","Band Empty Can Raise"],["彈力帶側平舉（拇指朝上）","Band Lateral Raise (Thumb Up)"],["彈力帶前平舉（拇指朝上）","Band Front Raise (Thumb Up)"]],
-   bw:[["側臥外展舉臂","Side-lying Arm Abduction"],["俯臥空罐式舉（徒手）","Prone Empty Can Raise (BW)"],["站姿側平舉（控制）","Controlled Lateral Raise (BW)"]]},
+   bd:[["彈力帶滿罐式舉","Band Full Can Raise"],["彈力帶側平舉（拇指朝上）","Band Lateral Raise (Thumb Up)"],["彈力帶前平舉（拇指朝上）","Band Front Raise (Thumb Up)"]],
+   bw:[["側臥外展舉臂","Side-lying Arm Abduction"],["俯臥滿罐式舉（徒手）","Prone Full Can Raise (BW)"],["站姿肩胛平面舉（控制）","Controlled Scapular Plane Raise (BW)"]]},
 
   {g:"肩膀 Shoulder", mZh:"棘下肌 / 小圓肌", mEn:"Infraspinatus / Teres Minor",
    best:["纜繩外旋（中位）","Cable External Rotation (Mid)","ca"],
@@ -274,7 +275,7 @@ const D = [
    db:[["啞鈴過頭三頭伸展","Overhead DB Triceps Extension"],["單臂過頭啞鈴伸展","Single-arm Overhead DB Extension"],["上斜啞鈴三頭屈伸","Incline DB Skull Crusher"]],
    kb:[["壺鈴過頭三頭伸展","KB Overhead Triceps Extension"],["壺鈴單臂過頭伸展","KB Single-arm Overhead Extension"],["壺鈴底朝上過頭伸展","KB Bottoms-up Overhead Extension"]],
    ca:[["纜繩過頭三頭伸展（低位）","Low-cable Overhead Triceps Ext."],["纜繩繩索過頭伸展","Rope Overhead Cable Extension"],["纜繩單臂過頭伸展（低位）","Single-arm Overhead Cable Ext."]],
-   mc:[["過頭三頭伸展機","Overhead Triceps Extension Machine"],["坐姿三頭下壓機（高位）","Triceps Pushdown Machine"],["輔助雙槓撐體機","Assisted Dip Machine"]],
+   mc:[["過頭三頭伸展機","Overhead Triceps Extension Machine"],["坐姿三頭下壓機","Triceps Pushdown Machine"],["輔助雙槓撐體機","Assisted Dip Machine"]],
    bd:[["彈力帶過頭三頭伸展","Band Overhead Triceps Extension"],["彈力帶單臂過頭伸展","Band Single-arm Overhead Ext."],["彈力帶三頭下壓（高位錨點）","Band Triceps Pushdown (High anchor)"]],
    bw:[["雙槓撐體","Parallel Bar Dip ★"],["窄距伏地挺身（前傾）","Close-grip Push-up (Forward lean)"],["椅邊撐體（身體向前）","Bench Dip (Forward lean)"]]},
 
@@ -329,7 +330,9 @@ const D = [
    bd:[["彈力帶錘式彎舉","Band Hammer Curl"],["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶單臂錘式彎舉","Band Single-arm Hammer Curl"]],
    bw:[["對握引體向上","Neutral-grip Pull-up ★"],["桌邊對握划船","Neutral-grip Australian Row"],["毛巾引體向上","Towel Pull-up ★"]]},
 
-  // ══ 前手臂 ══
+  // ══ 前手臂（拆分後）══
+
+  // ★ 新增獨立行：腕屈肌群
   {g:"前手臂 Forearm", mZh:"腕屈肌群", mEn:"Wrist Flexors",
    best:["啞鈴腕部彎舉","DB Wrist Curl (Palms Up)","db"],
    bb:[["槓鈴腕部彎舉（正握）","BB Wrist Curl (Palms Up)"],["槓鈴握持靜態訓練","BB Static Hold"],["槓鈴硬舉（無助力帶）","BB Deadlift (No Straps)"]],
@@ -340,15 +343,27 @@ const D = [
    bd:[["彈力帶腕部彎舉","Band Wrist Curl"],["彈力帶握持靜態","Band Static Hold"],["彈力帶單臂腕彎舉","Band Single-arm Wrist Curl"]],
    bw:[["指尖伏地挺身","Fingertip Push-up"],["懸吊靜態保持","Dead Hang ★"],["毛巾懸吊靜態保持","Towel Dead Hang ★"]]},
 
-  {g:"前手臂 Forearm", mZh:"腕伸肌群 / 肱橈肌", mEn:"Wrist Extensors / Brachioradialis",
-   best:["啞鈴錘式彎舉 / 反向腕伸展","DB Hammer Curl / Reverse Wrist Ext.","db"],
-   bb:[["槓鈴反握彎舉","BB Reverse Curl"],["槓鈴反握腕部伸展","BB Reverse Wrist Extension"],["槓鈴硬舉（無助力帶）","BB Deadlift (No Straps)"]],
-   db:[["啞鈴錘式彎舉","DB Hammer Curl"],["啞鈴反向腕部伸展","DB Reverse Wrist Extension"],["啞鈴反握彎舉","DB Reverse Curl"]],
-   kb:[["壺鈴錘式彎舉","KB Hammer Curl"],["壺鈴反握彎舉","KB Reverse Curl"],["壺鈴底朝上彎舉","KB Bottoms-up Curl"]],
-   ca:[["纜繩反握彎舉（低位）","Low-cable Reverse Curl"],["纜繩反握腕部伸展（低位）","Low-cable Reverse Wrist Extension"],["纜繩錘式彎舉（低位）","Low-cable Hammer Curl"]],
-   mc:[["坐姿二頭彎舉機（反握）","Biceps Curl Machine (Reverse)"],["腕部伸展機（反握）","Wrist Extension Machine (Reverse)"],["握力訓練機","Grip Strength Machine"]],
-   bd:[["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶錘式彎舉","Band Hammer Curl"],["彈力帶反向腕伸展","Band Reverse Wrist Extension"]],
-   bw:[["對握引體向上","Neutral-grip Pull-up ★"],["手腕圓圈活動","Wrist Circle Mobility"],["反向伏地挺身（腕背伸）","Reverse Push-up (Wrist Extension)"]]},
+  // ★ 新增獨立行：腕伸肌群
+  {g:"前手臂 Forearm", mZh:"腕伸肌群", mEn:"Wrist Extensors",
+   best:["啞鈴反向腕部伸展","DB Reverse Wrist Extension","db"],
+   bb:[["槓鈴反握腕部伸展","BB Reverse Wrist Extension"],["槓鈴反握彎舉","BB Reverse Curl"],["槓鈴硬舉（無助力帶）","BB Deadlift (No Straps)"]],
+   db:[["啞鈴反向腕部伸展","DB Reverse Wrist Extension"],["啞鈴反握彎舉","DB Reverse Curl"],["單臂啞鈴反向腕伸展","Single-arm DB Reverse Wrist Ext."]],
+   kb:[["壺鈴反握彎舉","KB Reverse Curl"],["壺鈴反向腕部伸展","KB Reverse Wrist Extension"],["壺鈴底朝上反握","KB Bottoms-up Reverse Hold"]],
+   ca:[["纜繩反握腕部伸展（低位）","Low-cable Reverse Wrist Extension"],["纜繩反握彎舉","Cable Reverse Curl"],["纜繩單臂反握腕伸展","Single-arm Cable Reverse Wrist Ext."]],
+   mc:[["腕部伸展機（反握）","Wrist Extension Machine (Reverse)"],["坐姿二頭彎舉機（反握）","Biceps Curl Machine (Reverse)"],["握力訓練機","Grip Strength Machine"]],
+   bd:[["彈力帶反向腕伸展","Band Reverse Wrist Extension"],["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶單臂反向腕伸展","Band Single-arm Reverse Wrist Ext."]],
+   bw:[["手腕圓圈活動","Wrist Circle Mobility"],["反向伏地挺身（腕背伸）","Reverse Push-up (Wrist Extension)"],["桌邊腕伸展（徒手）","Table Wrist Extension (BW)"]]},
+
+  // ★ 新增獨立行：肱橈肌
+  {g:"前手臂 Forearm", mZh:"肱橈肌", mEn:"Brachioradialis",
+   best:["啞鈴錘式彎舉","DB Hammer Curl","db"],
+   bb:[["槓鈴反握彎舉","BB Reverse Curl"],["槓鈴窄握反握彎舉","Narrow BB Reverse Curl"],["傳教士椅反握彎舉","BB Preacher Reverse Curl"]],
+   db:[["啞鈴錘式彎舉","DB Hammer Curl"],["交替啞鈴錘式彎舉","Alternating DB Hammer Curl"],["上斜啞鈴錘式彎舉","Incline DB Hammer Curl"]],
+   kb:[["壺鈴錘式彎舉","KB Hammer Curl"],["壺鈴底朝上彎舉","KB Bottoms-up Curl"],["壺鈴單臂錘式彎舉","KB Single-arm Hammer Curl"]],
+   ca:[["纜繩反握彎舉（低位）","Low-cable Reverse Curl"],["纜繩錘式彎舉（低位）","Low-cable Hammer Curl"],["纜繩單臂反握彎舉","Single-arm Cable Reverse Curl"]],
+   mc:[["坐姿二頭彎舉機（反握）","Biceps Curl Machine (Reverse)"],["傳教士椅二頭機（反握）","Preacher Curl Machine (Reverse)"],["高位下拉機（反握）","Lat Pulldown Machine (Reverse)"]],
+   bd:[["彈力帶錘式彎舉","Band Hammer Curl"],["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶單臂錘式彎舉","Band Single-arm Hammer Curl"]],
+   bw:[["對握引體向上","Neutral-grip Pull-up ★"],["毛巾引體向上","Towel Pull-up ★"],["桌邊對握划船","Neutral-grip Australian Row"]]},
 
   // ══ 臀部 ══
   {g:"臀部 Glutes", mZh:"臀大肌上部", mEn:"Gluteus Maximus (Upper)",
@@ -384,11 +399,11 @@ const D = [
   {g:"臀部 Glutes", mZh:"臀中肌（後束）", mEn:"Gluteus Medius (Posterior)",
    best:["髖外展機","Hip Abduction Machine","mc"],
    bb:[["槓鈴單腳臀推","BB Single-leg Hip Thrust"],["槓鈴弓步蹲（後退）","BB Reverse Lunge"],["槓鈴側弓步蹲","BB Lateral Lunge"]],
-   db:[["啞鈴側臥外旋抬腿","DB Side-lying External Rotation Raise"],["啞鈴單腳臀橋","DB Single-leg Glute Bridge"],["啞鈴弓步蹲（後退）","DB Reverse Lunge"]],
+   db:[["啞鈴側臥外旋抬腿","DB Side-lying ER Raise"],["啞鈴單腳臀橋","DB Single-leg Glute Bridge"],["啞鈴弓步蹲（後退）","DB Reverse Lunge"]],
    kb:[["壺鈴單腳臀推","KB Single-leg Hip Thrust"],["壺鈴弓步蹲（後退）","KB Reverse Lunge"],["壺鈴搖擺（單臂）","KB Single-arm Swing"]],
-   ca:[["纜繩後踢腿（低位，外旋）","Low-cable Kickback (External Rotation)"],["纜繩側抬腿（低位）","Low-cable Hip Abduction"],["纜繩單腳外展（後束）","Cable Hip Abduction (Posterior)"]],
+   ca:[["纜繩後踢腿（外旋）","Low-cable Kickback (ER)"],["纜繩側抬腿（低位）","Low-cable Hip Abduction"],["纜繩單腳外展（後束）","Cable Hip Abduction (Posterior)"]],
    mc:[["髖外展機","Hip Abduction Machine"],["臀推機（單腳）","Hip Thrust Machine (Single-leg)"],["腿押機（寬距）","Leg Press Machine (Wide)"]],
-   bd:[["彈力帶消防栓式","Band Fire Hydrant"],["彈力帶側走（臀中肌後束）","Band Lateral Walk (Posterior GM)"],["彈力帶俯臥外旋","Band Prone External Rotation"]],
+   bd:[["彈力帶消防栓式","Band Fire Hydrant"],["彈力帶側走（後束）","Band Lateral Walk (Posterior)"],["彈力帶俯臥外旋","Band Prone External Rotation"]],
    bw:[["消防栓式（Fire Hydrant）","Fire Hydrant"],["側臥外旋抬腿","Side-lying ER Raise"],["單腳橋式（外旋）","Single-leg Bridge (ER focus)"]]},
 
   {g:"臀部 Glutes", mZh:"臀小肌", mEn:"Gluteus Minimus",
@@ -406,7 +421,7 @@ const D = [
    bb:[["槓鈴相撲深蹲","BB Sumo Squat"],["槓鈴相撲硬舉","BB Sumo Deadlift"],["槓鈴弓步蹲（外旋）","BB Lunge (ER focus)"]],
    db:[["側臥啞鈴外旋","DB Side-lying External Rotation"],["啞鈴相撲深蹲","DB Sumo Squat"],["啞鈴俯臥外旋","DB Prone External Rotation"]],
    kb:[["壺鈴相撲深蹲","KB Sumo Squat"],["壺鈴相撲硬舉","KB Sumo Deadlift"],["壺鈴底朝上外旋","KB Bottoms-up External Rotation"]],
-   ca:[["纜繩外旋（低位）","Cable External Rotation (Low)"],["纜繩後踢腿（外旋）","Cable Kickback (External Rotation)"],["纜繩相撲深蹲（低位）","Low-cable Sumo Squat"]],
+   ca:[["纜繩外旋（低位）","Cable External Rotation (Low)"],["纜繩後踢腿（外旋）","Cable Kickback (ER)"],["纜繩相撲深蹲（低位）","Low-cable Sumo Squat"]],
    mc:[["旋轉肌外旋機（髖）","Hip External Rotation Machine"],["髖外展機","Hip Abduction Machine"],["腿押機（寬距）","Leg Press Machine (Wide)"]],
    bd:[["彈力帶消防栓式","Band Fire Hydrant"],["彈力帶外旋（髖）","Band Hip External Rotation"],["彈力帶相撲深蹲","Band Sumo Squat"]],
    bw:[["消防栓式（Fire Hydrant）","Fire Hydrant"],["鴿式牽拉（Pigeon Stretch）","Pigeon Stretch (Activation)"],["仰臥 Figure-4 激活","Supine Figure-4 Activation"]]},
@@ -535,7 +550,8 @@ let active="全部 All";
 function makeList(moves,isBest){
   return `<ul class="move-list">${moves.map(([zh,en],i)=>`
     <li><span class="mrank${i===0?' mrank-1':''}">${i+1}</span>
-    <div><span class="${isBest?'best-mzh':'mzh-s'}">${zh}</span><span class="${isBest?'best-men':'men-s'}">${en}</span></div></li>`).join('')}</ul>`;
+    <div><span class="${isBest?'best-mzh':'mzh-s'}">${zh}</span>
+    <span class="${isBest?'best-men':'men-s'}">${en}</span></div></li>`).join('')}</ul>`;
 }
 
 function render(){
