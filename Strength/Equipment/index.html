@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>器材訓練索引 Equipment Index</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+    .header .back-link:hover { color: rgba(255,255,255,0.9); }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .header .subtitle {
+      margin-top: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.5px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #fff;
+      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+      backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+      background: rgba(255,255,255,0.13);
+      border-color: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-text .zh {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .card-text .en {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+
+    .card-arrow {
+      margin-left: auto;
+      color: rgba(255,255,255,0.3);
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .card:hover .card-arrow { color: rgba(255,255,255,0.7); }
+
+    /* 全器材特殊樣式 */
+    .card.featured {
+      background: linear-gradient(135deg, rgba(127,119,221,0.25), rgba(99,153,34,0.15));
+      border-color: rgba(127,119,221,0.4);
+      grid-column: 1 / -1;
+    }
+    .card.featured:hover {
+      background: linear-gradient(135deg, rgba(127,119,221,0.35), rgba(99,153,34,0.25));
+    }
+    .card.featured .card-icon { font-size: 32px; width: 56px; height: 56px; }
+    .card.featured .card-text .zh { font-size: 17px; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      margin-top: 28px;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="../index.html" class="back-link">← 返回 Strength 主頁</a>
+      <h1>🏋️ 器材訓練索引</h1>
+      <p class="subtitle">Equipment Training Index</p>
+    </div>
+
+    <div class="section-label">⭐ 綜合對照</div>
+    <div class="card-grid" style="margin-bottom: 14px;">
+      <a
+        id="all-equipment"
+        href="muscle_training_all_equipment_comparison.html"
+        class="card featured"
+      >
+        <div class="card-icon" style="background: rgba(127,119,221,0.2);">⚡</div>
+        <div class="card-text">
+          <div class="zh">全器材肌肉訓練對照表</div>
+          <div class="en">All Equipment Muscle Training Comparison</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+    </div>
+
+    <div class="section-label">📦 單一器材</div>
+    <div class="card-grid">
+      <a
+        id="barbell"
+        href="muscle_training_barbell_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(239,159,39,0.2);">🏋</div>
+        <div class="card-text">
+          <div class="zh">槓鈴訓練</div>
+          <div class="en">Barbell Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="dumbbell"
+        href="muscle_training_dumbbell_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(55,138,221,0.2);">🏋</div>
+        <div class="card-text">
+          <div class="zh">啞鈴訓練</div>
+          <div class="en">Dumbbell Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="cable"
+        href="muscle_training_cable_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(99,153,34,0.2);">🔗</div>
+        <div class="card-text">
+          <div class="zh">纜繩訓練</div>
+          <div class="en">Cable Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="machine"
+        href="muscle_training_machine_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(226,75,74,0.2);">🤖</div>
+        <div class="card-text">
+          <div class="zh">機器訓練</div>
+          <div class="en">Machine Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="bodyweight"
+        href="muscle_training_bodyweight_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(136,135,128,0.2);">🧍</div>
+        <div class="card-text">
+          <div class="zh">徒手訓練</div>
+          <div class="en">Bodyweight Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="kettlebell"
+        href="muscle_training_kettlebell_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(239,159,39,0.2);">🔔</div>
+        <div class="card-text">
+          <div class="zh">壺鈴訓練</div>
+          <div class="en">Kettlebell Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+
+      <a
+        id="band"
+        href="muscle_training_band_bilingual.html"
+        class="card"
+      >
+        <div class="card-icon" style="background: rgba(29,158,117,0.2);">🪢</div>
+        <div class="card-text">
+          <div class="zh">彈力帶訓練</div>
+          <div class="en">Resistance Band Training</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

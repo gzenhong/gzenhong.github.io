@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二頭肌與前臂訓練器材對照表 Biceps & Forearm Training Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: rgba(60,50,30,0.12);
+    --border2: rgba(60,50,30,0.22);
+    --text: #1e1a12;
+    --text2: #6b6355;
+    --text3: #a09880;
+    --coral: #c94f2c;
+    --coral-bg: #fdf0eb;
+    --blue: #2260a8;
+    --blue-bg: #eef4fc;
+    --teal: #12785a;
+    --teal-bg: #e8f5f0;
+    --pink: #8b3060;
+    --pink-bg: #f8eaf3;
+    --amber: #8a5a10;
+    --amber-bg: #fdf4e3;
+    --dot-pri: #c94f2c;
+    --dot-sec: #2260a8;
+    --dot-ter: #b0a898;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .page-header {
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .page-header .sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .filter-bar {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-bar span {
+    font-size: 11px;
+    color: var(--text3);
+    margin-right: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { background: var(--surface2); }
+  .filter-btn.on { background: var(--text); color: var(--bg); border-color: transparent; }
+
+  .table-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 0.5px solid var(--border2);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .tbl-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  thead th {
+    padding: 10px 10px;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  thead th:first-child,
+  thead th:nth-child(2) { text-align: left; }
+
+  thead th:first-child { min-width: 120px; padding-left: 18px; }
+  thead th:nth-child(2) { min-width: 130px; }
+  thead th:not(:first-child):not(:nth-child(2)) { min-width: 120px; }
+
+  .th-main { font-size: 12px; font-weight: 500; color: var(--text); display: block; }
+  .th-sub { font-size: 10px; color: var(--text3); font-weight: 400; }
+
+  tbody tr { border-bottom: 0.5px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #faf9f6; }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 10px 10px;
+    vertical-align: top;
+    text-align: center;
+  }
+
+  td:first-child { text-align: left; padding-left: 18px; }
+  td:nth-child(2) { text-align: left; }
+
+  .muscle-name { font-weight: 500; font-size: 13px; display: block; line-height: 1.3; }
+  .muscle-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+
+  .muscle-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-top: 3px;
+  }
+
+  .tag-bicep  { background: var(--coral-bg); color: var(--coral); }
+  .tag-brach  { background: var(--blue-bg);  color: var(--blue);  }
+  .tag-brarad { background: var(--teal-bg);  color: var(--teal);  }
+  .tag-flex   { background: var(--pink-bg);  color: var(--pink);  }
+  .tag-ext    { background: var(--amber-bg); color: var(--amber); }
+
+  .func-zh { font-size: 12px; color: var(--text); display: block; line-height: 1.5; }
+  .func-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; line-height: 1.5; margin-top: 2px; }
+
+  .pills { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    color: var(--text2);
+    background: var(--surface2);
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .pill .pill-en {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    display: block;
+    line-height: 1.2;
+  }
+
+  .dot {
+    display: inline-block;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.pri { width: 8px; height: 8px; background: var(--dot-pri); }
+  .dot.sec { width: 7px; height: 7px; background: var(--dot-sec); }
+  .dot.ter { width: 6px; height: 6px; background: var(--dot-ter); }
+
+  .empty { color: var(--border2); font-size: 13px; }
+
+  .legend {
+    max-width: 900px;
+    margin: 14px auto 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .legend-item .dot { flex-shrink: 0; }
+
+  .footer {
+    max-width: 900px;
+    margin: 36px auto 0;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    border-top: 0.5px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>二頭肌與前臂訓練器材對照表<br>
+    <span style="font-weight:300;color:var(--text2)">Biceps &amp; Forearm Training Reference by Equipment</span>
+  </h1>
+  <p class="sub">BB · DB · KB · Cable · BW · Machine · Band</p>
+</div>
+
+<div class="filter-bar">
+  <span>篩選 Filter →</span>
+  <button class="filter-btn on" data-eq="all" onclick="filt(this)">全部 All</button>
+  <button class="filter-btn" data-eq="BB" onclick="filt(this)">BB 槓鈴</button>
+  <button class="filter-btn" data-eq="DB" onclick="filt(this)">DB 啞鈴</button>
+  <button class="filter-btn" data-eq="KB" onclick="filt(this)">KB 壺鈴</button>
+  <button class="filter-btn" data-eq="Cable" onclick="filt(this)">Cable 纜繩</button>
+  <button class="filter-btn" data-eq="BW" onclick="filt(this)">BW 徒手</button>
+  <button class="filter-btn" data-eq="Machine" onclick="filt(this)">Machine 機器</button>
+  <button class="filter-btn" data-eq="Band" onclick="filt(this)">Band 彈力帶</button>
+</div>
+
+<div class="table-wrap">
+  <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="th-main">肌肉</span><span class="th-sub">Muscle</span></th>
+          <th><span class="th-main">主要功能</span><span class="th-sub">Function</span></th>
+          <th data-col="BB"><span class="th-main">BB</span><span class="th-sub">槓鈴 Barbell</span></th>
+          <th data-col="DB"><span class="th-main">DB</span><span class="th-sub">啞鈴 Dumbbell</span></th>
+          <th data-col="KB"><span class="th-main">KB</span><span class="th-sub">壺鈴 Kettlebell</span></th>
+          <th data-col="Cable"><span class="th-main">Cable</span><span class="th-sub">纜繩</span></th>
+          <th data-col="BW"><span class="th-main">BW</span><span class="th-sub">徒手 Bodyweight</span></th>
+          <th data-col="Machine"><span class="th-main">Machine</span><span class="th-sub">器械</span></th>
+          <th data-col="Band"><span class="th-main">Band</span><span class="th-sub">彈力帶</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="dot pri"></span><span>主要動作 Primary（主攻此肌）</span></div>
+  <div class="legend-item"><span class="dot sec"></span><span>次要動作 Secondary（協同參與）</span></div>
+  <div class="legend-item"><span class="dot ter"></span><span>輔助動作 Tertiary（少量徵召）</span></div>
+</div>
+
+<div class="footer">
+  二頭肌與前臂訓練參考表 · Biceps &amp; Forearm Training Reference · 依個人訓練目標與器材搭配使用
+</div>
+
+<script>
+const data = [
+  {
+    zh:"肱二頭肌", en:"Biceps Brachii",
+    tag:"tag-bicep", tagLabel:"二頭 / Biceps",
+    funcZh:"肘屈曲・前臂旋後・肩屈曲輔助",
+    funcEn:"Elbow flexion · Forearm supination · Shoulder flexion assist",
+    eq:{
+      BB:[
+        {zh:"槓鈴彎舉（正握）",en:"Barbell Curl – Supinated",lvl:"pri"},
+        {zh:"反握引體向上",en:"Chin-Up",lvl:"pri"},
+        {zh:"寬距槓鈴彎舉",en:"Wide-grip Barbell Curl",lvl:"pri"},
+        {zh:"窄距槓鈴彎舉",en:"Close-grip Barbell Curl",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"啞鈴彎舉",en:"Dumbbell Curl",lvl:"pri"},
+        {zh:"旋後啞鈴彎舉",en:"Supinating DB Curl",lvl:"pri"},
+        {zh:"斜板彎舉（Incline）",en:"Incline DB Curl",lvl:"pri"},
+        {zh:"集中彎舉",en:"Concentration Curl",lvl:"pri"},
+        {zh:"啞鈴牧師椅彎舉",en:"DB Preacher Curl",lvl:"sec"}
+      ],
+      KB:[
+        {zh:"壺鈴彎舉",en:"KB Curl",lvl:"pri"},
+        {zh:"壺鈴錘式彎舉",en:"KB Hammer Curl",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"纜繩彎舉（低位）",en:"Cable Curl – Low Pulley",lvl:"pri"},
+        {zh:"纜繩過頭彎舉",en:"Overhead Cable Curl",lvl:"pri"},
+        {zh:"纜繩牧師椅彎舉",en:"Cable Preacher Curl",lvl:"pri"},
+        {zh:"纜繩集中彎舉",en:"Cable Concentration Curl",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"反握引體向上",en:"Chin-Up",lvl:"pri"},
+        {zh:"TRX 反向划船彎舉",en:"TRX Bicep Curl",lvl:"pri"},
+        {zh:"桌面底部引體",en:"Table Row – Underhand",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"牧師椅機器彎舉",en:"Preacher Curl Machine",lvl:"pri"},
+        {zh:"坐姿彎舉機",en:"Seated Curl Machine",lvl:"pri"},
+        {zh:"對握式彎舉機",en:"Dual Cable Curl Machine",lvl:"sec"}
+      ],
+      Band:[
+        {zh:"彈力帶彎舉（踩帶）",en:"Band Curl – Foot Anchored",lvl:"pri"},
+        {zh:"彈力帶過頭彎舉",en:"Band Overhead Curl",lvl:"pri"},
+        {zh:"彈力帶牧師椅彎舉",en:"Band Preacher Curl",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"肱肌", en:"Brachialis",
+    tag:"tag-brach", tagLabel:"肱肌 / Brachialis",
+    funcZh:"肘屈曲（最大屈肘力量）",
+    funcEn:"Elbow flexion – primary mover, greatest force",
+    eq:{
+      BB:[
+        {zh:"反握槓鈴彎舉",en:"Reverse Barbell Curl",lvl:"pri"},
+        {zh:"槓鈴彎舉（寬距）",en:"Barbell Curl – Wide",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"錘式彎舉",en:"Hammer Curl",lvl:"pri"},
+        {zh:"斜板錘式彎舉",en:"Incline Hammer Curl",lvl:"pri"},
+        {zh:"交叉體前錘式彎舉",en:"Cross-body Hammer Curl",lvl:"pri"},
+        {zh:"反握啞鈴彎舉",en:"Reverse DB Curl",lvl:"sec"}
+      ],
+      KB:[
+        {zh:"壺鈴錘式彎舉",en:"KB Hammer Curl",lvl:"pri"},
+        {zh:"壺鈴底部朝上彎舉",en:"KB Bottoms-up Curl",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"纜繩錘式彎舉（繩索握把）",en:"Cable Hammer Curl – Rope",lvl:"pri"},
+        {zh:"纜繩反握彎舉",en:"Cable Reverse Curl",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"中立握引體向上",en:"Neutral-grip Pull-Up",lvl:"pri"},
+        {zh:"TRX 錘式彎舉",en:"TRX Hammer Curl",lvl:"pri"}
+      ],
+      Machine:[
+        {zh:"中立握彎舉機",en:"Neutral-grip Curl Machine",lvl:"pri"},
+        {zh:"牧師椅機器彎舉（中立握）",en:"Preacher Machine – Neutral",lvl:"sec"}
+      ],
+      Band:[
+        {zh:"彈力帶錘式彎舉",en:"Band Hammer Curl",lvl:"pri"},
+        {zh:"彈力帶反握彎舉",en:"Band Reverse Curl",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"肱橈肌", en:"Brachioradialis",
+    tag:"tag-brarad", tagLabel:"肱橈 / BR",
+    funcZh:"中立位肘屈曲・前臂厚度關鍵",
+    funcEn:"Elbow flexion in neutral · Key forearm bulk",
+    eq:{
+      BB:[
+        {zh:"反握槓鈴彎舉",en:"Reverse Barbell Curl",lvl:"pri"},
+        {zh:"EZ 槓反握彎舉",en:"EZ-bar Reverse Curl",lvl:"pri"}
+      ],
+      DB:[
+        {zh:"錘式彎舉",en:"Hammer Curl",lvl:"pri"},
+        {zh:"反握啞鈴彎舉",en:"Reverse DB Curl",lvl:"pri"},
+        {zh:"交叉體前錘式彎舉",en:"Cross-body Hammer Curl",lvl:"sec"}
+      ],
+      KB:[
+        {zh:"壺鈴錘式彎舉",en:"KB Hammer Curl",lvl:"pri"}
+      ],
+      Cable:[
+        {zh:"纜繩反握彎舉",en:"Cable Reverse Curl",lvl:"pri"},
+        {zh:"纜繩錘式彎舉（繩索）",en:"Cable Rope Hammer Curl",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"中立握引體向上",en:"Neutral-grip Pull-Up",lvl:"pri"},
+        {zh:"反握俯地挺身",en:"Reverse Push-Up Curl",lvl:"ter"}
+      ],
+      Machine:[
+        {zh:"中立握彎舉機",en:"Neutral-grip Curl Machine",lvl:"sec"}
+      ],
+      Band:[
+        {zh:"彈力帶反握彎舉",en:"Band Reverse Curl",lvl:"pri"},
+        {zh:"彈力帶錘式彎舉",en:"Band Hammer Curl",lvl:"pri"}
+      ]
+    }
+  },
+  {
+    zh:"前臂屈肌群", en:"Forearm Flexors (FCR / FCU / FDS)",
+    tag:"tag-flex", tagLabel:"前臂屈肌 / Flexors",
+    funcZh:"手腕屈曲・手指屈曲・握力",
+    funcEn:"Wrist flexion · Finger flexion · Grip strength",
+    eq:{
+      BB:[
+        {zh:"槓鈴腕彎舉（掌朝上）",en:"Barbell Wrist Curl – Supinated",lvl:"pri"},
+        {zh:"槓鈴彎舉（握力輔助）",en:"Barbell Curl – Grip Assist",lvl:"ter"},
+        {zh:"硬舉（握力）",en:"Deadlift – Grip",lvl:"ter"}
+      ],
+      DB:[
+        {zh:"啞鈴腕彎舉",en:"DB Wrist Curl",lvl:"pri"},
+        {zh:"啞鈴農夫走路",en:"DB Farmer's Walk",lvl:"sec"},
+        {zh:"啞鈴捏片",en:"DB Pinch Hold",lvl:"pri"}
+      ],
+      KB:[
+        {zh:"壺鈴農夫走路",en:"KB Farmer's Walk",lvl:"sec"},
+        {zh:"壺鈴底部朝上握持",en:"KB Bottoms-up Hold",lvl:"pri"}
+      ],
+      Cable:[
+        {zh:"纜繩腕彎舉（低位）",en:"Cable Wrist Curl – Low",lvl:"pri"},
+        {zh:"纜繩手指捲曲",en:"Cable Finger Curl",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"懸吊握桿",en:"Dead Hang",lvl:"sec"},
+        {zh:"手指伏地挺身",en:"Fingertip Push-Up",lvl:"sec"},
+        {zh:"毛巾引體向上",en:"Towel Pull-Up",lvl:"pri"}
+      ],
+      Machine:[
+        {zh:"握力器",en:"Hand Gripper",lvl:"pri"},
+        {zh:"腕力訓練機",en:"Wrist Roller Machine",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶腕彎舉",en:"Band Wrist Curl",lvl:"pri"},
+        {zh:"彈力帶手指伸展",en:"Band Finger Extension",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"前臂伸肌群", en:"Forearm Extensors (ECRL / ECRB / ECU)",
+    tag:"tag-ext", tagLabel:"前臂伸肌 / Extensors",
+    funcZh:"手腕伸展・手指伸展・前臂背側發達",
+    funcEn:"Wrist extension · Finger extension · Dorsal forearm development",
+    eq:{
+      BB:[
+        {zh:"槓鈴反腕彎舉（掌朝下）",en:"Barbell Reverse Wrist Curl",lvl:"pri"},
+        {zh:"反握槓鈴彎舉",en:"Reverse Barbell Curl",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"啞鈴反腕彎舉",en:"DB Reverse Wrist Curl",lvl:"pri"},
+        {zh:"反握啞鈴彎舉",en:"Reverse DB Curl",lvl:"sec"}
+      ],
+      KB:[
+        {zh:"壺鈴腕滾動伸展",en:"KB Wrist Extension Roll",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"纜繩反腕彎舉（高位）",en:"Cable Reverse Wrist Curl – High",lvl:"pri"},
+        {zh:"纜繩反握彎舉",en:"Cable Reverse Curl",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"伏地挺身（反握）",en:"Push-Up – Reverse Grip",lvl:"ter"},
+        {zh:"腕滾輪（伸展向）",en:"Wrist Roller – Extension",lvl:"pri"}
+      ],
+      Machine:[
+        {zh:"腕力訓練機（伸展向）",en:"Wrist Roller – Extension",lvl:"pri"},
+        {zh:"反腕彎舉機",en:"Reverse Wrist Curl Machine",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶反腕彎舉",en:"Band Reverse Wrist Curl",lvl:"pri"},
+        {zh:"彈力帶反握彎舉",en:"Band Reverse Curl",lvl:"sec"}
+      ]
+    }
+  }
+];
+
+const eqOrder = ["BB","DB","KB","Cable","BW","Machine","Band"];
+let activeEq = "all";
+
+function makePills(exercises){
+  if(!exercises || exercises.length === 0) return '<span class="empty">—</span>';
+  return '<div class="pills">' + exercises.map(e=>`
+    <span class="pill">
+      <span class="dot ${e.lvl}"></span>
+      <span>
+        <span style="display:block;font-size:11px;color:var(--text)">${e.zh}</span>
+        <span class="pill-en">${e.en}</span>
+      </span>
+    </span>`).join('') + '</div>';
+}
+
+function buildTable(){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  document.querySelectorAll('thead th[data-col]').forEach(th=>{
+    const eq = th.dataset.col;
+    th.style.display = (activeEq==='all' || activeEq===eq) ? '' : 'none';
+  });
+
+  data.forEach(row=>{
+    const hasAny = activeEq==='all' || (row.eq[activeEq] && row.eq[activeEq].length>0);
+    const tr = document.createElement('tr');
+    if(!hasAny) tr.classList.add('hidden');
+
+    let html = `<td>
+      <span class="muscle-name">${row.zh}</span>
+      <span class="muscle-en">${row.en}</span>
+      <span class="muscle-tag ${row.tag}">${row.tagLabel}</span>
+    </td>`;
+
+    html += `<td>
+      <span class="func-zh">${row.funcZh}</span>
+      <span class="func-en">${row.funcEn}</span>
+    </td>`;
+
+    eqOrder.forEach(eq=>{
+      const vis = activeEq==='all' || activeEq===eq;
+      html += `<td style="${vis?'':'display:none'}">${makePills(row.eq[eq])}</td>`;
+    });
+
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+}
+
+function filt(btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeEq = btn.dataset.eq;
+  buildTable();
+}
+
+buildTable();
+</script>
+</body>
+</html>

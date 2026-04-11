@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>胸部肌肉訓練器材對照表 Chest Training Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: rgba(60,50,30,0.12);
+    --border2: rgba(60,50,30,0.22);
+    --text: #1e1a12;
+    --text2: #6b6355;
+    --text3: #a09880;
+    --coral: #c94f2c;
+    --coral-bg: #fdf0eb;
+    --blue: #2260a8;
+    --blue-bg: #eef4fc;
+    --teal: #12785a;
+    --teal-bg: #e8f5f0;
+    --gray: #5a5a5a;
+    --gray-bg: #f0efed;
+    --dot-pri: #c94f2c;
+    --dot-sec: #2260a8;
+    --dot-ter: #b0a898;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .page-header {
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .page-header .sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .filter-bar {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-bar span {
+    font-size: 11px;
+    color: var(--text3);
+    margin-right: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { background: var(--surface2); }
+  .filter-btn.on { background: var(--text); color: var(--bg); border-color: transparent; }
+
+  .table-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 0.5px solid var(--border2);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .tbl-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  thead th {
+    padding: 10px 10px;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  thead th:first-child,
+  thead th:nth-child(2) { text-align: left; }
+
+  thead th:first-child { min-width: 120px; padding-left: 18px; }
+  thead th:nth-child(2) { min-width: 130px; }
+  thead th:not(:first-child):not(:nth-child(2)) { min-width: 120px; }
+
+  .th-main { font-size: 12px; font-weight: 500; color: var(--text); display: block; }
+  .th-sub { font-size: 10px; color: var(--text3); font-weight: 400; }
+
+  tbody tr { border-bottom: 0.5px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #faf9f6; }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 10px 10px;
+    vertical-align: top;
+    text-align: center;
+  }
+
+  td:first-child { text-align: left; padding-left: 18px; }
+  td:nth-child(2) { text-align: left; }
+
+  .muscle-name { font-weight: 500; font-size: 13px; display: block; line-height: 1.3; }
+  .muscle-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+
+  .muscle-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-top: 3px;
+  }
+
+  .tag-upper  { background: var(--coral-bg); color: var(--coral); }
+  .tag-mid    { background: var(--blue-bg);  color: var(--blue); }
+  .tag-lower  { background: var(--teal-bg);  color: var(--teal); }
+  .tag-minor  { background: var(--gray-bg);  color: var(--gray); }
+
+  .func-zh { font-size: 12px; color: var(--text); display: block; line-height: 1.5; }
+  .func-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; line-height: 1.5; margin-top: 2px; }
+
+  .pills { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    color: var(--text2);
+    background: var(--surface2);
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .pill .pill-en {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    display: block;
+    line-height: 1.2;
+  }
+
+  .dot {
+    display: inline-block;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.pri { width: 8px; height: 8px; background: var(--dot-pri); }
+  .dot.sec { width: 7px; height: 7px; background: var(--dot-sec); }
+  .dot.ter { width: 6px; height: 6px; background: var(--dot-ter); }
+
+  .empty { color: var(--border2); font-size: 13px; }
+
+  .legend {
+    max-width: 900px;
+    margin: 14px auto 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .legend-item .dot { flex-shrink: 0; }
+
+  .footer {
+    max-width: 900px;
+    margin: 36px auto 0;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    border-top: 0.5px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>胸部肌肉訓練器材對照表<br>
+    <span style="font-weight:300;color:var(--text2)">Chest Training Reference by Equipment</span>
+  </h1>
+  <p class="sub">BB · DB · Cable · BW · Machine · Band</p>
+</div>
+
+<div class="filter-bar">
+  <span>篩選 Filter →</span>
+  <button class="filter-btn on" data-eq="all" onclick="filt(this)">全部 All</button>
+  <button class="filter-btn" data-eq="BB" onclick="filt(this)">BB 槓鈴</button>
+  <button class="filter-btn" data-eq="DB" onclick="filt(this)">DB 啞鈴</button>
+  <button class="filter-btn" data-eq="Cable" onclick="filt(this)">Cable 纜繩</button>
+  <button class="filter-btn" data-eq="BW" onclick="filt(this)">BW 徒手</button>
+  <button class="filter-btn" data-eq="Machine" onclick="filt(this)">Machine 機器</button>
+  <button class="filter-btn" data-eq="Band" onclick="filt(this)">Band 彈力帶</button>
+</div>
+
+<div class="table-wrap">
+  <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="th-main">肌肉</span><span class="th-sub">Muscle</span></th>
+          <th><span class="th-main">主要功能</span><span class="th-sub">Function</span></th>
+          <th data-col="BB"><span class="th-main">BB</span><span class="th-sub">槓鈴 Barbell</span></th>
+          <th data-col="DB"><span class="th-main">DB</span><span class="th-sub">啞鈴 Dumbbell</span></th>
+          <th data-col="Cable"><span class="th-main">Cable</span><span class="th-sub">纜繩 Cable</span></th>
+          <th data-col="BW"><span class="th-main">BW</span><span class="th-sub">徒手 Bodyweight</span></th>
+          <th data-col="Machine"><span class="th-main">Machine</span><span class="th-sub">機器 Machine</span></th>
+          <th data-col="Band"><span class="th-main">Band</span><span class="th-sub">彈力帶 Band</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="dot pri"></span><span>主要動作 Primary（主攻此肌）</span></div>
+  <div class="legend-item"><span class="dot sec"></span><span>次要動作 Secondary（協同參與）</span></div>
+  <div class="legend-item"><span class="dot ter"></span><span>輔助動作 Tertiary（少量徵召）</span></div>
+</div>
+
+<div class="footer">
+  胸部訓練參考表 · Chest Training Reference · 依個人訓練目標與器材搭配使用
+</div>
+
+<script>
+const data = [
+  {
+    zh:"胸大肌上束", en:"Pectoralis Major – Clavicular Head",
+    tag:"tag-upper", tagLabel:"上束 / Clavicular",
+    funcZh:"水平內收（上斜）・肩屈曲",
+    funcEn:"Horizontal adduction (incline) · Shoulder flexion",
+    eq:{
+      BB:[
+        {zh:"上斜槓鈴臥推 30°",en:"Incline BB Bench Press 30°",lvl:"pri"},
+        {zh:"上斜槓鈴臥推 45°",en:"Incline BB Bench Press 45°",lvl:"pri"},
+        {zh:"平臥推（協同）",en:"Flat BB Bench Press",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"上斜啞鈴臥推",en:"Incline DB Bench Press",lvl:"pri"},
+        {zh:"上斜啞鈴飛鳥",en:"Incline DB Fly",lvl:"pri"},
+        {zh:"平板啞鈴臥推",en:"Flat DB Bench Press",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"低位纜繩夾胸",en:"Low Cable Crossover",lvl:"pri"},
+        {zh:"低位單臂纜繩夾胸",en:"Low Cable Single-arm Fly",lvl:"pri"},
+        {zh:"纜繩上斜夾胸",en:"Incline Cable Fly",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"上斜伏地挺身",en:"Feet-elevated Push-up",lvl:"pri"},
+        {zh:"伏地挺身",en:"Push-up",lvl:"sec"},
+        {zh:"鑽石伏地挺身",en:"Diamond Push-up",lvl:"ter"}
+      ],
+      Machine:[
+        {zh:"上斜胸推機",en:"Incline Chest Press Machine",lvl:"pri"},
+        {zh:"上斜蝴蝶機",en:"Pec Deck – Upper",lvl:"pri"},
+        {zh:"史密斯上斜臥推",en:"Smith Machine Incline Press",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶上斜推",en:"Band Incline Press",lvl:"pri"},
+        {zh:"彈力帶低位夾胸",en:"Band Low Fly",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"胸大肌中束", en:"Pectoralis Major – Sternal Head",
+    tag:"tag-mid", tagLabel:"中束 / Sternal",
+    funcZh:"水平內收・肩水平外展抗阻",
+    funcEn:"Horizontal adduction · Resists horizontal abduction",
+    eq:{
+      BB:[
+        {zh:"平板槓鈴臥推",en:"Flat BB Bench Press",lvl:"pri"},
+        {zh:"窄距臥推",en:"Close-grip Bench Press",lvl:"sec"},
+        {zh:"寬距臥推",en:"Wide-grip Bench Press",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"平板啞鈴臥推",en:"Flat DB Bench Press",lvl:"pri"},
+        {zh:"平板啞鈴飛鳥",en:"Flat DB Fly",lvl:"pri"},
+        {zh:"啞鈴仰臥拉舉",en:"DB Pullover",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"中位纜繩夾胸",en:"Mid Cable Crossover",lvl:"pri"},
+        {zh:"中位單臂夾胸",en:"Mid Cable Single-arm Fly",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"標準伏地挺身",en:"Standard Push-up",lvl:"pri"},
+        {zh:"寬距伏地挺身",en:"Wide Push-up",lvl:"pri"},
+        {zh:"雙槓撐體（直立）",en:"Dips – Upright",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"平板胸推機",en:"Flat Chest Press Machine",lvl:"pri"},
+        {zh:"蝴蝶機夾胸",en:"Pec Deck Fly",lvl:"pri"},
+        {zh:"史密斯平臥推",en:"Smith Machine Flat Press",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶平推",en:"Band Flat Press",lvl:"pri"},
+        {zh:"彈力帶夾胸",en:"Band Chest Fly",lvl:"pri"},
+        {zh:"彈力帶俯臥撐",en:"Band Push-up",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"胸大肌下束", en:"Pectoralis Major – Abdominal Head",
+    tag:"tag-lower", tagLabel:"下束 / Abdominal",
+    funcZh:"水平內收（下斜）・肩伸展・內旋",
+    funcEn:"Horizontal adduction (decline) · Shoulder extension · IR",
+    eq:{
+      BB:[
+        {zh:"下斜槓鈴臥推",en:"Decline BB Bench Press",lvl:"pri"},
+        {zh:"平板臥推（協同）",en:"Flat BB Bench Press",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"下斜啞鈴臥推",en:"Decline DB Bench Press",lvl:"pri"},
+        {zh:"下斜啞鈴飛鳥",en:"Decline DB Fly",lvl:"pri"},
+        {zh:"啞鈴仰臥拉舉",en:"DB Pullover",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"高位纜繩夾胸",en:"High Cable Crossover",lvl:"pri"},
+        {zh:"高位單臂纜繩夾胸",en:"High Cable Single-arm Fly",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"雙槓撐體（前傾）",en:"Dips – Forward Lean",lvl:"pri"},
+        {zh:"下斜伏地挺身",en:"Decline Push-up",lvl:"pri"},
+        {zh:"窄距伏地挺身",en:"Close-grip Push-up",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"下斜胸推機",en:"Decline Chest Press Machine",lvl:"pri"},
+        {zh:"蝴蝶機（下段位）",en:"Pec Deck – Lower",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶下斜推",en:"Band Decline Press",lvl:"pri"},
+        {zh:"彈力帶高位夾胸",en:"Band High Fly",lvl:"pri"}
+      ]
+    }
+  },
+  {
+    zh:"胸小肌", en:"Pectoralis Minor",
+    tag:"tag-minor", tagLabel:"胸小肌 / P.Minor",
+    funcZh:"肩胛前引・下壓・肋骨上提（呼吸）",
+    funcEn:"Scapular protraction · Depression · Rib elevation",
+    eq:{
+      BB:[
+        {zh:"窄距臥推末段鎖定",en:"Close-grip Press – Lockout",lvl:"ter"},
+        {zh:"平板臥推",en:"Flat BB Bench Press",lvl:"ter"}
+      ],
+      DB:[
+        {zh:"啞鈴仰臥拉舉",en:"DB Pullover",lvl:"sec"},
+        {zh:"平板啞鈴飛鳥",en:"Flat DB Fly",lvl:"ter"}
+      ],
+      Cable:[
+        {zh:"纜繩前推（前鋸肌啟動）",en:"Cable Serratus Punch",lvl:"pri"},
+        {zh:"纜繩夾胸末段",en:"Cable Crossover – End ROM",lvl:"ter"}
+      ],
+      BW:[
+        {zh:"肩胛前推俯臥撐",en:"Protraction Push-up",lvl:"pri"},
+        {zh:"伏地挺身末段鎖定",en:"Push-up – Scapular Protract",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"胸推機末段鎖定",en:"Chest Press – End Lockout",lvl:"ter"}
+      ],
+      Band:[
+        {zh:"彈力帶肩胛前推",en:"Band Scapular Protraction",lvl:"pri"},
+        {zh:"彈力帶前推（直臂）",en:"Band Straight-arm Punch",lvl:"sec"}
+      ]
+    }
+  }
+];
+
+const eqOrder = ["BB","DB","Cable","BW","Machine","Band"];
+let activeEq = "all";
+
+function makePills(exercises){
+  if(!exercises || exercises.length === 0) return '<span class="empty">—</span>';
+  return '<div class="pills">' + exercises.map(e=>`
+    <span class="pill">
+      <span class="dot ${e.lvl}"></span>
+      <span>
+        <span style="display:block;font-size:11px;color:var(--text)">${e.zh}</span>
+        <span class="pill-en">${e.en}</span>
+      </span>
+    </span>`).join('') + '</div>';
+}
+
+function buildTable(){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  document.querySelectorAll('thead th[data-col]').forEach(th=>{
+    const eq = th.dataset.col;
+    th.style.display = (activeEq==='all' || activeEq===eq) ? '' : 'none';
+  });
+
+  data.forEach(row=>{
+    const hasAny = activeEq==='all' || (row.eq[activeEq] && row.eq[activeEq].length>0);
+    const tr = document.createElement('tr');
+    if(!hasAny) tr.classList.add('hidden');
+
+    let html = `<td>
+      <span class="muscle-name">${row.zh}</span>
+      <span class="muscle-en">${row.en}</span>
+      <span class="muscle-tag ${row.tag}">${row.tagLabel}</span>
+    </td>`;
+
+    html += `<td>
+      <span class="func-zh">${row.funcZh}</span>
+      <span class="func-en">${row.funcEn}</span>
+    </td>`;
+
+    eqOrder.forEach(eq=>{
+      const vis = activeEq==='all' || activeEq===eq;
+      html += `<td style="${vis?'':'display:none'}">${makePills(row.eq[eq])}</td>`;
+    });
+
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+}
+
+function filt(btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeEq = btn.dataset.eq;
+  buildTable();
+}
+
+buildTable();
+</script>
+</body>
+</html>

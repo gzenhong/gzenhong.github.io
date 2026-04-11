@@ -1,0 +1,155 @@
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 12px 0; font-size: 13px; color: var(--color-text-primary); }
+.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.equip-label { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: #E1F5EE; color: #0F6E56; border: 1px solid #1D9E75; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.filter-btn { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; font-size: 12px; transition: all .15s; }
+.filter-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th { background: var(--color-background-tertiary); padding: 7px 8px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--color-border-tertiary); position: sticky; top: 0; z-index: 1; color: var(--color-text-secondary); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--color-border-tertiary); }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td { padding: 6px 8px; vertical-align: top; line-height: 1.6; }
+.group-label { font-weight: 500; font-size: 11px; padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.badge { font-size: 11px; padding: 2px 6px; border-radius: 10px; display: inline-block; background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+.zh { font-weight: 500; color: var(--color-text-primary); }
+.en { font-size: 11px; color: #A32D2D; }
+.move-primary .zh { font-weight: 500; color: var(--color-text-primary); }
+.move-secondary .zh { color: var(--color-text-secondary); }
+.count { font-size: 11px; color: var(--color-text-tertiary); margin-left: 5px; }
+#empty { display:none; text-align:center; padding:32px; color:var(--color-text-tertiary); font-size:13px; }
+.note { font-size:10px; color:var(--color-text-tertiary); font-style:italic; }
+</style>
+
+<div class="wrap">
+  <div class="top-row">
+    <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">器材 Equipment：</span>
+    <span class="equip-label">🪢 彈力帶 Resistance Band</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:68px">部位<br><span style="font-weight:400;font-size:11px">Body Part</span></th>
+          <th style="width:105px">主要肌肉<br><span style="font-weight:400;font-size:11px">Prime Mover</span></th>
+          <th style="width:105px">次要肌肉<br><span style="font-weight:400;font-size:11px">Secondary</span></th>
+          <th>主要動作<br><span style="font-weight:400;font-size:11px">Primary Exercise</span></th>
+          <th>次要動作<br><span style="font-weight:400;font-size:11px">Secondary Exercise</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:10px;padding:8px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">彈力帶特點：漸進式阻力（越拉越重），攜帶方便，適合暖身、復健、旅行訓練，以及在自由重量動作上疊加阻力曲線變化。<br>Resistance bands provide accommodating resistance (increasing load through ROM). Portable, ideal for warm-ups, rehab, travel training, and adding variable resistance to free-weight movements.</span>
+  </div>
+</div>
+
+<script>
+const palette = {
+  "胸部 Chest":   { bg:"#E6F1FB", border:"#378ADD", text:"#185FA5" },
+  "背部 Back":    { bg:"#EAF3DE", border:"#639922", text:"#3B6D11" },
+  "肩膀 Shoulder":{ bg:"#FAEEDA", border:"#EF9F27", text:"#854F0B" },
+  "三頭 Triceps": { bg:"#FBEAF0", border:"#D4537E", text:"#993556" },
+  "二頭 Biceps":  { bg:"#E1F5EE", border:"#1D9E75", text:"#0F6E56" },
+  "前手臂 Forearm":{ bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+  "前大腿 Quads": { bg:"#EEEDFE", border:"#7F77DD", text:"#534AB7" },
+  "後大腿 Hamstrings":{ bg:"#F1EFE8", border:"#888780", text:"#5F5E5A" },
+  "小腿 Calves":  { bg:"#FCEBEB", border:"#E24B4A", text:"#A32D2D" },
+  "腹部 Core":    { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+};
+
+const data = [
+  // 胸部
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"前三角肌", sEn:"Anterior Deltoid", pZh:"彈力帶上斜推胸", pEn:"Band Incline Chest Press", xZh:"彈力帶低位夾胸（低→高）", xEn:"Band Low-to-High Fly" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"肱三頭肌", sEn:"Triceps Brachii", pZh:"彈力帶平推胸", pEn:"Band Chest Press", xZh:"彈力帶夾胸", xEn:"Band Chest Fly" },
+  { g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)", sZh:"前三角肌", sEn:"Anterior Deltoid", pZh:"彈力帶高位夾胸（高→低）", pEn:"Band High-to-Low Fly", xZh:"彈力帶伏地挺身（加阻）", xEn:"Band-resisted Push-up" },
+  // 背部
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"大圓肌", sEn:"Teres Major", pZh:"彈力帶下拉", pEn:"Band Lat Pulldown", xZh:"彈力帶直臂下壓", xEn:"Band Straight-arm Pulldown" },
+  { g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid/Lower)", sZh:"菱形肌", sEn:"Rhomboids", pZh:"彈力帶坐姿划船", pEn:"Band Seated Row", xZh:"彈力帶臉拉", xEn:"Band Face Pull" },
+  { g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)", sZh:"提肩胛肌", sEn:"Levator Scapulae", pZh:"彈力帶聳肩", pEn:"Band Shrug", xZh:"彈力帶直立划船", xEn:"Band Upright Row" },
+  { g:"背部 Back", mZh:"菱形肌", mEn:"Rhomboids", sZh:"斜方肌中段", sEn:"Mid Trapezius", pZh:"彈力帶拉開（Band Pull-apart）", pEn:"Band Pull-apart", xZh:"彈力帶臉拉", xEn:"Band Face Pull" },
+  { g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"彈力帶早安式", pEn:"Band Good Morning", xZh:"彈力帶硬舉", xEn:"Band Deadlift" },
+  // 肩膀
+  { g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid", sZh:"肱三頭肌", sEn:"Triceps Brachii", pZh:"彈力帶肩推", pEn:"Band Overhead Press", xZh:"彈力帶前平舉", xEn:"Band Front Raise" },
+  { g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid", sZh:"斜方肌上部", sEn:"Upper Trapezius", pZh:"彈力帶側平舉", pEn:"Band Lateral Raise", xZh:"彈力帶直立划船", xEn:"Band Upright Row" },
+  { g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid", sZh:"菱形肌", sEn:"Rhomboids", pZh:"彈力帶拉開（Band Pull-apart）", pEn:"Band Pull-apart", xZh:"彈力帶俯身反飛鳥", xEn:"Band Bent-over Reverse Fly" },
+  { g:"肩膀 Shoulder", mZh:"旋轉肌群", mEn:"Rotator Cuff", sZh:"三角肌", sEn:"Deltoid", pZh:"彈力帶外旋", pEn:"Band External Rotation", xZh:"彈力帶內旋", xEn:"Band Internal Rotation" },
+  // 三頭
+  { g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head", sZh:"後三角肌", sEn:"Posterior Deltoid", pZh:"彈力帶過頭三頭伸展", pEn:"Band Overhead Triceps Extension", xZh:"彈力帶單臂過頭伸展", xEn:"Band Single-arm Overhead Extension" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head", sZh:"肱三頭肌長頭", sEn:"Triceps Long Head", pZh:"彈力帶下壓", pEn:"Band Triceps Pushdown", xZh:"彈力帶踢腿式伸展", xEn:"Band Kickback" },
+  // 二頭
+  { g:"二頭 Biceps", mZh:"肱二頭肌", mEn:"Biceps Brachii", sZh:"肱橈肌", sEn:"Brachioradialis", pZh:"彈力帶彎舉", pEn:"Band Biceps Curl", xZh:"彈力帶集中彎舉", xEn:"Band Concentration Curl" },
+  { g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis", sZh:"肱二頭肌", sEn:"Biceps Brachii", pZh:"彈力帶錘式彎舉", pEn:"Band Hammer Curl", xZh:"彈力帶反握彎舉", xEn:"Band Reverse Curl" },
+  // 前手臂
+  { g:"前手臂 Forearm", mZh:"腕屈肌群", mEn:"Wrist Flexors", sZh:"指屈肌", sEn:"Finger Flexors", pZh:"彈力帶腕彎舉", pEn:"Band Wrist Curl", xZh:"彈力帶握力訓練", xEn:"Band Grip Squeeze" },
+  { g:"前手臂 Forearm", mZh:"腕伸肌群", mEn:"Wrist Extensors", sZh:"指伸肌", sEn:"Finger Extensors", pZh:"彈力帶反向腕彎舉", pEn:"Band Reverse Wrist Curl", xZh:"彈力帶手指外展", xEn:"Band Finger Extension" },
+  // 前大腿
+  { g:"前大腿 Quads", mZh:"股四頭肌", mEn:"Quadriceps", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"彈力帶深蹲", pEn:"Band Squat", xZh:"彈力帶保加利亞蹲", xEn:"Band Bulgarian Split Squat" },
+  { g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris", sZh:"髂腰肌", sEn:"Iliopsoas", pZh:"彈力帶弓步蹲", pEn:"Band Lunge", xZh:"彈力帶腿伸展（坐姿）", xEn:"Band Seated Leg Extension" },
+  { g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas", sZh:"股直肌", sEn:"Rectus Femoris", pZh:"彈力帶站姿抬膝", pEn:"Band Standing Knee Raise", xZh:"彈力帶登階", xEn:"Band Step-up" },
+  // 後大腿
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌", mEn:"Biceps Femoris", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"彈力帶硬舉", pEn:"Band Deadlift", xZh:"彈力帶單腳 RDL", xEn:"Band Single-leg RDL" },
+  { g:"後大腿 Hamstrings", mZh:"臀大肌", mEn:"Gluteus Maximus", sZh:"大腿後側群", sEn:"Hamstring Group", pZh:"彈力帶臀推", pEn:"Band Hip Thrust", xZh:"彈力帶後踢腿", xEn:"Band Donkey Kick" },
+  { g:"後大腿 Hamstrings", mZh:"臀中肌", mEn:"Gluteus Medius", sZh:"臀小肌", sEn:"Gluteus Minimus", pZh:"彈力帶螃蟹走路", pEn:"Band Lateral Walk", xZh:"彈力帶蛤蜊式", xEn:"Band Clamshell" },
+  { g:"後大腿 Hamstrings", mZh:"半腱肌／半膜肌", mEn:"Semitend. / Semimemb.", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"彈力帶站姿腿後勾", pEn:"Band Standing Leg Curl", xZh:"彈力帶俯臥腿彎舉", xEn:"Band Prone Leg Curl" },
+  // 小腿
+  { g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius", sZh:"比目魚肌", sEn:"Soleus", pZh:"彈力帶站姿提踵", pEn:"Band Standing Calf Raise", xZh:"彈力帶單腳提踵", xEn:"Band Single-leg Calf Raise" },
+  { g:"小腿 Calves", mZh:"脛骨前肌", mEn:"Tibialis Anterior", sZh:"伸趾長肌", sEn:"Extensor Digitorum Longus", pZh:"彈力帶勾腳背", pEn:"Band Dorsiflexion", xZh:"彈力帶坐姿勾腳背", xEn:"Band Seated Dorsiflexion" },
+  // 腹部
+  { g:"腹部 Core", mZh:"腹直肌", mEn:"Rectus Abdominis", sZh:"髂腰肌", sEn:"Iliopsoas", pZh:"彈力帶捲腹（固定高位）", pEn:"Band Crunch (Anchored High)", xZh:"彈力帶反向捲腹", xEn:"Band Reverse Crunch" },
+  { g:"腹部 Core", mZh:"腹外斜肌", mEn:"External Oblique", sZh:"腹內斜肌", sEn:"Internal Oblique", pZh:"彈力帶伐木（高→低）", pEn:"Band Woodchop (High–Low)", xZh:"彈力帶站姿旋轉", xEn:"Band Standing Rotation" },
+  { g:"腹部 Core", mZh:"腹內斜肌", mEn:"Internal Oblique", sZh:"腹外斜肌", sEn:"External Oblique", pZh:"彈力帶 Pallof Press", pEn:"Band Pallof Press", xZh:"彈力帶伐木（低→高）", xEn:"Band Woodchop (Low–High)" },
+  { g:"腹部 Core", mZh:"腹橫肌", mEn:"Transversus Abdominis", sZh:"多裂肌", sEn:"Multifidus", pZh:"彈力帶 Pallof Press", pEn:"Band Pallof Press", xZh:"彈力帶抗旋轉保持", xEn:"Band Anti-rotation Hold" },
+];
+
+const groupKeys = [...new Set(data.map(d => d.g))];
+const allGroups = ["全部 All", ...groupKeys];
+let active = "全部 All";
+
+function render() {
+  const rows = active === "全部 All" ? data : data.filter(d => d.g === active);
+  const tbody = document.getElementById("tbody");
+  const empty = document.getElementById("empty");
+  if (!rows.length) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  let html = "";
+  rows.forEach(r => {
+    const p = palette[r.g];
+    const label = `<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${r.g.split(" ")[0]}<br><span style="font-weight:400;font-size:10px">${r.g.split(" ").slice(1).join(" ")}</span></span>`;
+    html += `<tr>
+      <td>${label}</td>
+      <td><div class="zh">${r.mZh}</div><div class="en">${r.mEn}</div></td>
+      <td><div class="zh badge">${r.sZh}</div><div class="en" style="margin-top:2px">${r.sEn}</div></td>
+      <td class="move-primary"><div class="zh">${r.pZh}</div><div class="en">${r.pEn}</div></td>
+      <td class="move-secondary"><div class="zh">${r.xZh}</div><div class="en">${r.xEn}</div></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  allGroups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (g === active ? " active" : "");
+    const count = g === "全部 All" ? data.length : data.filter(d => d.g === g).length;
+    const label = g === "全部 All" ? "全部 All" : g.split(" ")[0] + " " + g.split(" ").slice(1).join(" ");
+    btn.innerHTML = label + `<span class="count">(${count})</span>`;
+    btn.onclick = () => {
+      active = g;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>

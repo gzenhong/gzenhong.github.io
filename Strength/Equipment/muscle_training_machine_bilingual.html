@@ -1,0 +1,291 @@
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 12px 0; font-size: 13px; color: var(--color-text-primary); }
+.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.equip-label { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: var(--color-background-danger); color: var(--color-text-danger); border: 1px solid var(--color-border-danger); }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.filter-btn { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; font-size: 12px; transition: all .15s; }
+.filter-btn.active { background: var(--color-background-danger); color: var(--color-text-danger); border-color: var(--color-border-danger); font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th { background: var(--color-background-tertiary); padding: 7px 8px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--color-border-tertiary); position: sticky; top: 0; z-index: 1; color: var(--color-text-secondary); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--color-border-tertiary); }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td { padding: 6px 8px; vertical-align: top; line-height: 1.6; }
+.group-label { font-weight: 500; font-size: 11px; padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.badge { font-size: 11px; padding: 2px 6px; border-radius: 10px; display: inline-block; background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+.machine-tag { font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 2px; display: inline-block; background: var(--color-background-tertiary); color: var(--color-text-tertiary); border: 1px solid var(--color-border-tertiary); }
+.zh { font-weight: 500; color: var(--color-text-primary); }
+.en { font-size: 11px; color: #A32D2D; }
+.sec-zh { color: var(--color-text-secondary); font-weight: 400; }
+.count { font-size: 11px; color: var(--color-text-tertiary); margin-left: 5px; }
+#empty { display:none; text-align:center; padding:32px; color:var(--color-text-tertiary); font-size:13px; }
+.note { font-size: 11px; color: var(--color-text-tertiary); font-style: italic; }
+</style>
+
+<div class="wrap">
+  <div class="top-row">
+    <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">器材 Equipment：</span>
+    <span class="equip-label">⚙️ 機器 Machine</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:68px">部位<br><span style="font-weight:400;font-size:11px">Body Part</span></th>
+          <th style="width:105px">主要肌肉<br><span style="font-weight:400;font-size:11px">Prime Mover</span></th>
+          <th style="width:105px">次要肌肉<br><span style="font-weight:400;font-size:11px">Secondary</span></th>
+          <th>主要動作 / 機器<br><span style="font-weight:400;font-size:11px">Primary Exercise / Machine</span></th>
+          <th>次要動作 / 機器<br><span style="font-weight:400;font-size:11px">Secondary Exercise / Machine</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:10px;padding:8px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">灰色小標籤為建議使用的機器名稱。機器固定動作軌跡，適合初學者或訓練至力竭。<br>Grey tags indicate the recommended machine. Fixed-path machines suit beginners and training to failure safely.</span>
+  </div>
+</div>
+
+<script>
+const palette = {
+  "胸部 Chest":        { bg:"#E6F1FB", border:"#378ADD", text:"#185FA5" },
+  "背部 Back":         { bg:"#EAF3DE", border:"#639922", text:"#3B6D11" },
+  "肩膀 Shoulder":     { bg:"#FAEEDA", border:"#EF9F27", text:"#854F0B" },
+  "三頭 Triceps":      { bg:"#FBEAF0", border:"#D4537E", text:"#993556" },
+  "二頭 Biceps":       { bg:"#E1F5EE", border:"#1D9E75", text:"#0F6E56" },
+  "前手臂 Forearm":    { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+  "前大腿 Quads":      { bg:"#EEEDFE", border:"#7F77DD", text:"#534AB7" },
+  "後大腿 Hamstrings": { bg:"#F1EFE8", border:"#888780", text:"#5F5E5A" },
+  "小腿 Calves":       { bg:"#FCEBEB", border:"#E24B4A", text:"#A32D2D" },
+  "腹部 Core":       { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+};
+
+const data = [
+  // 胸部
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"前三角肌", sEn:"Anterior Deltoid",
+    pZh:"上斜胸推機", pEn:"Incline Chest Press Machine", pM:"Incline Press Machine",
+    xZh:"坐姿上斜夾胸機", xEn:"Seated Incline Pec Fly Machine", xM:"Pec Deck (Incline)" },
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"喙肱肌", sEn:"Coracobrachialis",
+    pZh:"上斜胸推機", pEn:"Incline Chest Press Machine", pM:"Incline Press Machine",
+    xZh:"蝴蝶夾胸機（高位）", xEn:"Pec Deck Fly (High)", xM:"Pec Deck Machine" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"前三角肌", sEn:"Anterior Deltoid",
+    pZh:"坐姿胸推機", pEn:"Seated Chest Press Machine", pM:"Chest Press Machine",
+    xZh:"蝴蝶夾胸機（中位）", xEn:"Pec Deck Fly (Mid)", xM:"Pec Deck Machine" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"肱三頭肌", sEn:"Triceps Brachii",
+    pZh:"坐姿胸推機", pEn:"Seated Chest Press Machine", pM:"Chest Press Machine",
+    xZh:"史密斯機平板臥推", xEn:"Smith Machine Flat Bench Press", xM:"Smith Machine" },
+  { g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)", sZh:"腹直肌上部", sEn:"Upper Rectus Abdominis",
+    pZh:"下斜胸推機", pEn:"Decline Chest Press Machine", pM:"Decline Press Machine",
+    xZh:"蝴蝶夾胸機（低位）", xEn:"Pec Deck Fly (Low)", xM:"Pec Deck Machine" },
+  { g:"胸部 Chest", mZh:"胸小肌", mEn:"Pectoralis Minor", sZh:"前鋸肌", sEn:"Serratus Anterior",
+    pZh:"坐姿胸推機（窄握）", pEn:"Chest Press Machine (Narrow)", pM:"Chest Press Machine",
+    xZh:"坐姿下壓機", xEn:"Seated Dip Machine", xM:"Assisted Dip Machine" },
+  { g:"胸部 Chest", mZh:"前鋸肌", mEn:"Serratus Anterior", sZh:"胸小肌", sEn:"Pectoralis Minor",
+    pZh:"坐姿胸推機（肩胛前引）", pEn:"Chest Press Machine (Protraction)", pM:"Chest Press Machine",
+    xZh:"蝴蝶夾胸機", xEn:"Pec Deck Machine", xM:"Pec Deck Machine" },
+  // 背部
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"大圓肌", sEn:"Teres Major",
+    pZh:"高位下拉機（寬握）", pEn:"Lat Pulldown Machine (Wide)", pM:"Lat Pulldown Machine",
+    xZh:"坐姿划船機（寬握）", xEn:"Seated Row Machine (Wide)", xM:"Row Machine" },
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"後三角肌", sEn:"Posterior Deltoid",
+    pZh:"高位下拉機（正握）", pEn:"Lat Pulldown Machine (Overhand)", pM:"Lat Pulldown Machine",
+    xZh:"坐姿划船機（反握）", xEn:"Seated Row Machine (Underhand)", xM:"Row Machine" },
+  { g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid/Lower)", sZh:"菱形肌", sEn:"Rhomboids",
+    pZh:"坐姿划船機", pEn:"Seated Cable Row Machine", pM:"Seated Row Machine",
+    xZh:"後三角飛鳥機", xEn:"Rear Delt Fly Machine", xM:"Rear Delt Machine" },
+  { g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)", sZh:"提肩胛肌", sEn:"Levator Scapulae",
+    pZh:"聳肩機", pEn:"Shrug Machine", pM:"Shrug Machine",
+    xZh:"史密斯機聳肩", xEn:"Smith Machine Shrug", xM:"Smith Machine" },
+  { g:"背部 Back", mZh:"菱形肌", mEn:"Rhomboids", sZh:"斜方肌中段", sEn:"Mid Trapezius",
+    pZh:"後三角飛鳥機", pEn:"Rear Delt Fly Machine", pM:"Rear Delt Machine",
+    xZh:"坐姿划船機（窄握）", xEn:"Seated Row Machine (Narrow)", xM:"Row Machine" },
+  { g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae", sZh:"多裂肌", sEn:"Multifidus",
+    pZh:"背伸展機（羅馬椅）", pEn:"Back Extension Machine", pM:"Back Extension Machine",
+    xZh:"史密斯機早安式", xEn:"Smith Machine Good Morning", xM:"Smith Machine" },
+  { g:"背部 Back", mZh:"大圓肌", mEn:"Teres Major", sZh:"背闊肌", sEn:"Latissimus Dorsi",
+    pZh:"高位下拉機（窄握）", pEn:"Lat Pulldown Machine (Narrow)", pM:"Lat Pulldown Machine",
+    xZh:"坐姿划船機（寬握）", xEn:"Seated Row Machine (Wide)", xM:"Row Machine" },
+  // 肩膀
+  { g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid", sZh:"胸大肌上部", sEn:"Upper Pec Major",
+    pZh:"坐姿肩推機", pEn:"Seated Shoulder Press Machine", pM:"Shoulder Press Machine",
+    xZh:"史密斯機肩推", xEn:"Smith Machine Shoulder Press", xM:"Smith Machine" },
+  { g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid", sZh:"斜方肌上部", sEn:"Upper Trapezius",
+    pZh:"側平舉機", pEn:"Lateral Raise Machine", pM:"Lateral Raise Machine",
+    xZh:"坐姿肩推機（寬握）", xEn:"Shoulder Press Machine (Wide)", xM:"Shoulder Press Machine" },
+  { g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid", sZh:"菱形肌", sEn:"Rhomboids",
+    pZh:"後三角飛鳥機", pEn:"Rear Delt Fly Machine", pM:"Rear Delt Machine",
+    xZh:"坐姿划船機（高肘）", xEn:"Seated Row Machine (High Elbow)", xM:"Row Machine" },
+  { g:"肩膀 Shoulder", mZh:"棘上肌", mEn:"Supraspinatus", sZh:"三角肌側束", sEn:"Lateral Deltoid",
+    pZh:"側平舉機（拇指朝上）", pEn:"Lateral Raise Machine (Thumb Up)", pM:"Lateral Raise Machine",
+    xZh:"後三角飛鳥機（外旋）", xEn:"Rear Delt Machine (External Rotation)", xM:"Rear Delt Machine" },
+  { g:"肩膀 Shoulder", mZh:"棘下肌", mEn:"Infraspinatus", sZh:"小圓肌", sEn:"Teres Minor",
+    pZh:"旋轉肌外旋機", pEn:"External Rotation Machine", pM:"Rotator Cuff Machine",
+    xZh:"後三角飛鳥機", xEn:"Rear Delt Fly Machine", xM:"Rear Delt Machine" },
+  { g:"肩膀 Shoulder", mZh:"小圓肌", mEn:"Teres Minor", sZh:"棘下肌", sEn:"Infraspinatus",
+    pZh:"旋轉肌外旋機", pEn:"External Rotation Machine", pM:"Rotator Cuff Machine",
+    xZh:"後三角飛鳥機", xEn:"Rear Delt Fly Machine", xM:"Rear Delt Machine" },
+  { g:"肩膀 Shoulder", mZh:"肩胛下肌", mEn:"Subscapularis", sZh:"胸大肌", sEn:"Pectoralis Major",
+    pZh:"旋轉肌內旋機", pEn:"Internal Rotation Machine", pM:"Rotator Cuff Machine",
+    xZh:"坐姿胸推機（內旋發力）", xEn:"Chest Press Machine (Internal Rotation)", xM:"Chest Press Machine" },
+  // 三頭
+  { g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head", sZh:"後三角肌", sEn:"Posterior Deltoid",
+    pZh:"過頭三頭伸展機", pEn:"Overhead Triceps Extension Machine", pM:"Triceps Extension Machine",
+    xZh:"坐姿三頭下壓機", xEn:"Seated Triceps Pushdown Machine", xM:"Triceps Machine" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head", sZh:"肱三頭肌長頭", sEn:"Triceps Long Head",
+    pZh:"坐姿三頭下壓機", pEn:"Seated Triceps Pushdown Machine", pM:"Triceps Machine",
+    xZh:"史密斯機窄握臥推", xEn:"Smith Machine Close-grip Press", xM:"Smith Machine" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌內側頭", mEn:"Triceps Medial Head", sZh:"肱三頭肌外側頭", sEn:"Triceps Lateral Head",
+    pZh:"坐姿三頭下壓機（反握）", pEn:"Triceps Pushdown Machine (Reverse)", pM:"Triceps Machine",
+    xZh:"輔助雙槓撐體機", xEn:"Assisted Dip Machine", xM:"Assisted Dip Machine" },
+  { g:"三頭 Triceps", mZh:"肘肌", mEn:"Anconeus", sZh:"肱三頭肌", sEn:"Triceps Brachii",
+    pZh:"坐姿三頭下壓機", pEn:"Seated Triceps Pushdown Machine", pM:"Triceps Machine",
+    xZh:"輔助雙槓撐體機", xEn:"Assisted Dip Machine", xM:"Assisted Dip Machine" },
+  // 二頭
+  { g:"二頭 Biceps", mZh:"肱二頭肌長頭", mEn:"Biceps Long Head", sZh:"肱橈肌", sEn:"Brachioradialis",
+    pZh:"坐姿二頭彎舉機（窄握）", pEn:"Seated Biceps Curl Machine (Narrow)", pM:"Biceps Curl Machine",
+    xZh:"傳教士椅二頭機", xEn:"Preacher Curl Machine", xM:"Preacher Curl Machine" },
+  { g:"二頭 Biceps", mZh:"肱二頭肌短頭", mEn:"Biceps Short Head", sZh:"喙肱肌", sEn:"Coracobrachialis",
+    pZh:"坐姿二頭彎舉機（寬握）", pEn:"Seated Biceps Curl Machine (Wide)", pM:"Biceps Curl Machine",
+    xZh:"傳教士椅二頭機", xEn:"Preacher Curl Machine", xM:"Preacher Curl Machine" },
+  { g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis", sZh:"肱二頭肌", sEn:"Biceps Brachii",
+    pZh:"坐姿二頭彎舉機（反握）", pEn:"Seated Biceps Curl Machine (Reverse)", pM:"Biceps Curl Machine",
+    xZh:"傳教士椅二頭機（反握）", xEn:"Preacher Curl Machine (Reverse)", xM:"Preacher Curl Machine" },
+  { g:"二頭 Biceps", mZh:"喙肱肌", mEn:"Coracobrachialis", sZh:"肱二頭肌短頭", sEn:"Biceps Short Head",
+    pZh:"坐姿二頭彎舉機（寬握）", pEn:"Seated Biceps Curl Machine (Wide)", pM:"Biceps Curl Machine",
+    xZh:"傳教士椅二頭機", xEn:"Preacher Curl Machine", xM:"Preacher Curl Machine" },
+  // 前手臂
+  { g:"前手臂 Forearm", mZh:"肱橈肌", mEn:"Brachioradialis", sZh:"肱肌", sEn:"Brachialis",
+    pZh:"坐姿二頭彎舉機（反握）", pEn:"Biceps Curl Machine (Reverse)", pM:"Biceps Curl Machine",
+    xZh:"傳教士椅機（反握）", xEn:"Preacher Curl Machine (Reverse)", xM:"Preacher Curl Machine" },
+  { g:"前手臂 Forearm", mZh:"橈側腕屈肌", mEn:"Flexor Carpi Radialis", sZh:"指屈肌", sEn:"Finger Flexors",
+    pZh:"腕部彎舉機", pEn:"Wrist Curl Machine", pM:"Wrist Curl Machine",
+    xZh:"握力訓練機", xEn:"Grip Strength Machine", xM:"Grip Machine" },
+  { g:"前手臂 Forearm", mZh:"尺側腕屈肌", mEn:"Flexor Carpi Ulnaris", sZh:"指淺屈肌", sEn:"Flexor Digitorum Superficialis",
+    pZh:"腕部彎舉機（尺偏）", pEn:"Wrist Curl Machine (Ulnar Dev.)", pM:"Wrist Curl Machine",
+    xZh:"握力訓練機", xEn:"Grip Strength Machine", xM:"Grip Machine" },
+  { g:"前手臂 Forearm", mZh:"指屈肌群", mEn:"Finger Flexors", sZh:"拇指屈肌", sEn:"Flexor Pollicis",
+    pZh:"握力訓練機", pEn:"Grip Strength Machine", pM:"Grip Machine",
+    xZh:"前臂滾輪機", xEn:"Forearm Roller Machine", xM:"Forearm Roller" },
+  { g:"前手臂 Forearm", mZh:"橈側腕伸肌", mEn:"Extensor Carpi Radialis", sZh:"尺側腕伸肌", sEn:"Extensor Carpi Ulnaris",
+    pZh:"腕部伸展機（反握）", pEn:"Wrist Extension Machine (Reverse)", pM:"Wrist Curl Machine",
+    xZh:"前臂伸展訓練機", xEn:"Forearm Extension Machine", xM:"Forearm Machine" },
+  // 前大腿
+  { g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris", sZh:"髂腰肌", sEn:"Iliopsoas",
+    pZh:"腿伸展機", pEn:"Leg Extension Machine", pM:"Leg Extension Machine",
+    xZh:"史密斯機保加利亞蹲", xEn:"Smith Machine Bulgarian Split Squat", xM:"Smith Machine" },
+  { g:"前大腿 Quads", mZh:"股外側肌", mEn:"Vastus Lateralis", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"腿押機（窄距）", pEn:"Leg Press Machine (Narrow)", pM:"Leg Press Machine",
+    xZh:"腿伸展機", xEn:"Leg Extension Machine", xM:"Leg Extension Machine" },
+  { g:"前大腿 Quads", mZh:"股內側肌", mEn:"Vastus Medialis", sZh:"內收肌", sEn:"Adductors",
+    pZh:"腿押機（寬距）", pEn:"Leg Press Machine (Wide)", pM:"Leg Press Machine",
+    xZh:"哈克蹲機", xEn:"Hack Squat Machine", xM:"Hack Squat Machine" },
+  { g:"前大腿 Quads", mZh:"股中間肌", mEn:"Vastus Intermedius", sZh:"股外側肌", sEn:"Vastus Lateralis",
+    pZh:"腿押機", pEn:"Leg Press Machine", pM:"Leg Press Machine",
+    xZh:"哈克蹲機", xEn:"Hack Squat Machine", xM:"Hack Squat Machine" },
+  { g:"前大腿 Quads", mZh:"縫匠肌", mEn:"Sartorius", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"史密斯機弓步蹲", pEn:"Smith Machine Lunge", pM:"Smith Machine",
+    xZh:"腿押機（單腳）", xEn:"Single-leg Leg Press", xM:"Leg Press Machine" },
+  { g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"坐姿抬膝機", pEn:"Seated Knee Raise Machine", pM:"Knee Raise Machine",
+    xZh:"史密斯機登階", xEn:"Smith Machine Step-up", xM:"Smith Machine" },
+  // 後大腿
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌長頭", mEn:"Biceps Femoris (Long)", sZh:"臀大肌", sEn:"Gluteus Maximus",
+    pZh:"臥式腿彎舉機", pEn:"Lying Leg Curl Machine", pM:"Lying Leg Curl Machine",
+    xZh:"坐式腿彎舉機", xEn:"Seated Leg Curl Machine", xM:"Seated Leg Curl Machine" },
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌短頭", mEn:"Biceps Femoris (Short)", sZh:"腓腸肌", sEn:"Gastrocnemius",
+    pZh:"坐式腿彎舉機", pEn:"Seated Leg Curl Machine", pM:"Seated Leg Curl Machine",
+    xZh:"臥式腿彎舉機", xEn:"Lying Leg Curl Machine", xM:"Lying Leg Curl Machine" },
+  { g:"後大腿 Hamstrings", mZh:"半腱肌", mEn:"Semitendinosus", sZh:"臀大肌", sEn:"Gluteus Maximus",
+    pZh:"臥式腿彎舉機", pEn:"Lying Leg Curl Machine", pM:"Lying Leg Curl Machine",
+    xZh:"站姿腿彎舉機", xEn:"Standing Leg Curl Machine", xM:"Standing Leg Curl Machine" },
+  { g:"後大腿 Hamstrings", mZh:"半膜肌", mEn:"Semimembranosus", sZh:"內收大肌", sEn:"Adductor Magnus",
+    pZh:"臥式腿彎舉機", pEn:"Lying Leg Curl Machine", pM:"Lying Leg Curl Machine",
+    xZh:"腿押機（窄距）", xEn:"Leg Press Machine (Narrow)", xM:"Leg Press Machine" },
+  { g:"後大腿 Hamstrings", mZh:"臀大肌", mEn:"Gluteus Maximus", sZh:"大腿後側群", sEn:"Hamstring Group",
+    pZh:"臀推機", pEn:"Hip Thrust Machine", pM:"Hip Thrust Machine",
+    xZh:"臀部後踢機", xEn:"Glute Kickback Machine", xM:"Glute Kickback Machine" },
+  { g:"後大腿 Hamstrings", mZh:"臀中肌", mEn:"Gluteus Medius", sZh:"臀小肌", sEn:"Gluteus Minimus",
+    pZh:"髖外展機", pEn:"Hip Abduction Machine", pM:"Hip Abduction Machine",
+    xZh:"臀部後踢機", xEn:"Glute Kickback Machine", xM:"Glute Kickback Machine" },
+  // 小腿
+  { g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius", sZh:"比目魚肌", sEn:"Soleus",
+    pZh:"站姿提踵機", pEn:"Standing Calf Raise Machine", pM:"Standing Calf Raise Machine",
+    xZh:"腿押機提踵", xEn:"Leg Press Calf Raise", xM:"Leg Press Machine" },
+  { g:"小腿 Calves", mZh:"比目魚肌", mEn:"Soleus", sZh:"腓腸肌", sEn:"Gastrocnemius",
+    pZh:"坐姿提踵機", pEn:"Seated Calf Raise Machine", pM:"Seated Calf Raise Machine",
+    xZh:"坐姿腿押機提踵", xEn:"Seated Leg Press Calf Raise", xM:"Leg Press Machine" },
+  { g:"小腿 Calves", mZh:"脛骨前肌", mEn:"Tibialis Anterior", sZh:"伸趾長肌", sEn:"Extensor Digitorum Longus",
+    pZh:"脛骨前肌訓練機", pEn:"Tibialis Raise Machine", pM:"Tib Bar Machine",
+    xZh:"勾腳踝機（坐姿）", xEn:"Seated Dorsiflexion Machine", xM:"Ankle Dorsiflexion Machine" },
+  { g:"小腿 Calves", mZh:"腓骨肌群", mEn:"Fibularis Group", sZh:"腓腸肌外側", sEn:"Gastrocnemius (Lateral)",
+    pZh:"踝關節外翻機", pEn:"Ankle Eversion Machine", pM:"Ankle Eversion Machine",
+    xZh:"站姿提踵機（腳尖朝內）", xEn:"Standing Calf Raise (Toes In)", xM:"Standing Calf Raise Machine" },
+  // 腹部
+  { g:"腹部 Core", mZh:"腹直肌", mEn:"Rectus Abdominis", sZh:"髂腰肌", sEn:"Iliopsoas",
+    pZh:"坐姿腹部捲腹機", pEn:"Seated Ab Crunch Machine", pM:"Ab Crunch Machine",
+    xZh:"腹部滾輪機", xEn:"Ab Roller Machine", xM:"Ab Roller Machine" },
+  { g:"腹部 Core", mZh:"腹外斜肌", mEn:"External Oblique", sZh:"腹內斜肌", sEn:"Internal Oblique",
+    pZh:"旋轉訓練機", pEn:"Rotary Torso Machine", pM:"Rotary Torso Machine",
+    xZh:"坐姿斜腹捲腹機", xEn:"Seated Oblique Crunch Machine", xM:"Oblique Crunch Machine" },
+  { g:"腹部 Core", mZh:"腹內斜肌", mEn:"Internal Oblique", sZh:"腹外斜肌", sEn:"External Oblique",
+    pZh:"旋轉訓練機", pEn:"Rotary Torso Machine", pM:"Rotary Torso Machine",
+    xZh:"坐姿斜腹捲腹機", xEn:"Seated Oblique Crunch Machine", xM:"Oblique Crunch Machine" },
+  { g:"腹部 Core", mZh:"腹橫肌", mEn:"Transversus Abdominis", sZh:"多裂肌", sEn:"Multifidus",
+    pZh:"", pEn:"", pM:"",
+    xZh:"", xEn:"", xM:"" },
+];
+
+const groupKeys = [...new Set(data.map(d => d.g))];
+const allGroups = ["全部 All", ...groupKeys];
+let active = "全部 All";
+
+function render() {
+  const rows = active === "全部 All" ? data : data.filter(d => d.g === active);
+  const tbody = document.getElementById("tbody");
+  const empty = document.getElementById("empty");
+  if (!rows.length) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  let html = "";
+  rows.forEach(r => {
+    const p = palette[r.g];
+    const gParts = r.g.split(" ");
+    const label = `<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${gParts[0]}<br><span style="font-weight:400;font-size:10px">${gParts.slice(1).join(" ")}</span></span>`;
+    html += `<tr>
+      <td>${label}</td>
+      <td><div class="zh">${r.mZh}</div><div class="en">${r.mEn}</div></td>
+      <td><div class="zh badge">${r.sZh}</div><div class="en" style="margin-top:2px">${r.sEn}</div></td>
+      <td>
+        ${r.pZh ? `<div class="zh">${r.pZh}</div><div class="en">${r.pEn}</div>${r.pM ? `<span class="machine-tag">${r.pM}</span>` : ''}` : ''}
+      </td>
+      <td>
+        ${r.xZh ? `<div class="sec-zh">${r.xZh}</div><div class="en">${r.xEn}</div>${r.xM ? `<span class="machine-tag">${r.xM}</span>` : ''}` : ''}
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  allGroups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (g === active ? " active" : "");
+    const count = g === "全部 All" ? data.length : data.filter(d => d.g === g).length;
+    const label = g === "全部 All" ? "全部 All" : g.split(" ")[0] + " " + g.split(" ").slice(1).join(" ");
+    btn.innerHTML = label + `<span class="count">(${count})</span>`;
+    btn.onclick = () => {
+      active = g;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>

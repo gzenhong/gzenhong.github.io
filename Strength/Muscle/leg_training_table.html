@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腿部肌肉訓練器材對照表 Leg Training Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: rgba(60,50,30,0.12);
+    --border2: rgba(60,50,30,0.22);
+    --text: #1e1a12;
+    --text2: #6b6355;
+    --text3: #a09880;
+    --coral: #c94f2c;
+    --coral-bg: #fdf0eb;
+    --blue: #2260a8;
+    --blue-bg: #eef4fc;
+    --teal: #12785a;
+    --teal-bg: #e8f5f0;
+    --pink: #8b3060;
+    --pink-bg: #f8eaf3;
+    --amber: #8a5a10;
+    --amber-bg: #fdf4e3;
+    --green: #2e6b2e;
+    --green-bg: #edf6ed;
+    --purple: #5c3a9e;
+    --purple-bg: #f2eefe;
+    --dot-pri: #c94f2c;
+    --dot-sec: #2260a8;
+    --dot-ter: #b0a898;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .page-header {
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .page-header .sub {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .section-label {
+    max-width: 900px;
+    margin: 28px auto 10px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border2);
+  }
+
+  .filter-bar {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-bar span {
+    font-size: 11px;
+    color: var(--text3);
+    margin-right: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { background: var(--surface2); }
+  .filter-btn.on { background: var(--text); color: var(--bg); border-color: transparent; }
+
+  .table-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 0.5px solid var(--border2);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .tbl-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  thead th {
+    padding: 10px 10px;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  thead th:first-child,
+  thead th:nth-child(2) { text-align: left; }
+
+  thead th:first-child { min-width: 120px; padding-left: 18px; }
+  thead th:nth-child(2) { min-width: 130px; }
+  thead th:not(:first-child):not(:nth-child(2)) { min-width: 120px; }
+
+  .th-main { font-size: 12px; font-weight: 500; color: var(--text); display: block; }
+  .th-sub { font-size: 10px; color: var(--text3); font-weight: 400; }
+
+  tbody tr { border-bottom: 0.5px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #faf9f6; }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 10px 10px;
+    vertical-align: top;
+    text-align: center;
+  }
+
+  td:first-child { text-align: left; padding-left: 18px; }
+  td:nth-child(2) { text-align: left; }
+
+  .muscle-name { font-weight: 500; font-size: 13px; display: block; line-height: 1.3; }
+  .muscle-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+
+  .muscle-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-top: 3px;
+  }
+
+  .tag-quad   { background: var(--blue-bg);   color: var(--blue); }
+  .tag-ham    { background: var(--coral-bg);  color: var(--coral); }
+  .tag-add    { background: var(--purple-bg); color: var(--purple); }
+  .tag-gas    { background: var(--teal-bg);   color: var(--teal); }
+  .tag-sol    { background: var(--pink-bg);   color: var(--pink); }
+  .tag-tib    { background: var(--amber-bg);  color: var(--amber); }
+  .tag-per    { background: var(--green-bg);  color: var(--green); }
+
+  .func-zh { font-size: 12px; color: var(--text); display: block; line-height: 1.5; }
+  .func-en { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; display: block; line-height: 1.5; margin-top: 2px; }
+
+  .pills { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    color: var(--text2);
+    background: var(--surface2);
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  .pill .pill-en {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    display: block;
+    line-height: 1.2;
+  }
+
+  .dot {
+    display: inline-block;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.pri { width: 8px; height: 8px; background: var(--dot-pri); }
+  .dot.sec { width: 7px; height: 7px; background: var(--dot-sec); }
+  .dot.ter { width: 6px; height: 6px; background: var(--dot-ter); }
+
+  .empty { color: var(--border2); font-size: 13px; }
+
+  .legend {
+    max-width: 900px;
+    margin: 14px auto 0;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 0 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .legend-item .dot { flex-shrink: 0; }
+
+  .footer {
+    max-width: 900px;
+    margin: 36px auto 0;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    border-top: 0.5px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>腿部肌肉訓練器材對照表<br>
+    <span style="font-weight:300;color:var(--text2)">Leg Training Reference by Equipment</span>
+  </h1>
+  <p class="sub">BB · DB · KB · Cable · BW · Machine · Band</p>
+</div>
+
+<div class="filter-bar">
+  <span>篩選 Filter →</span>
+  <button class="filter-btn on" data-eq="all" onclick="filt(this)">全部 All</button>
+  <button class="filter-btn" data-eq="BB" onclick="filt(this)">BB 槓鈴</button>
+  <button class="filter-btn" data-eq="DB" onclick="filt(this)">DB 啞鈴</button>
+  <button class="filter-btn" data-eq="KB" onclick="filt(this)">KB 壺鈴</button>
+  <button class="filter-btn" data-eq="Cable" onclick="filt(this)">Cable 纜繩</button>
+  <button class="filter-btn" data-eq="BW" onclick="filt(this)">BW 徒手</button>
+  <button class="filter-btn" data-eq="Machine" onclick="filt(this)">Machine 機器</button>
+  <button class="filter-btn" data-eq="Band" onclick="filt(this)">Band 彈力帶</button>
+</div>
+
+<div class="section-label" id="label-thigh">大腿 Thigh</div>
+
+<div class="table-wrap" id="table-thigh">
+  <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="th-main">肌肉</span><span class="th-sub">Muscle</span></th>
+          <th><span class="th-main">主要功能</span><span class="th-sub">Function</span></th>
+          <th data-col="BB"><span class="th-main">BB</span><span class="th-sub">槓鈴 Barbell</span></th>
+          <th data-col="DB"><span class="th-main">DB</span><span class="th-sub">啞鈴 Dumbbell</span></th>
+          <th data-col="KB"><span class="th-main">KB</span><span class="th-sub">壺鈴 Kettlebell</span></th>
+          <th data-col="Cable"><span class="th-main">Cable</span><span class="th-sub">纜繩</span></th>
+          <th data-col="BW"><span class="th-main">BW</span><span class="th-sub">徒手 Bodyweight</span></th>
+          <th data-col="Machine"><span class="th-main">Machine</span><span class="th-sub">機器</span></th>
+          <th data-col="Band"><span class="th-main">Band</span><span class="th-sub">彈力帶</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-thigh"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-label" id="label-calf">小腿 Calf</div>
+
+<div class="table-wrap" id="table-calf">
+  <div class="tbl-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="th-main">肌肉</span><span class="th-sub">Muscle</span></th>
+          <th><span class="th-main">主要功能</span><span class="th-sub">Function</span></th>
+          <th data-col="BB"><span class="th-main">BB</span><span class="th-sub">槓鈴 Barbell</span></th>
+          <th data-col="DB"><span class="th-main">DB</span><span class="th-sub">啞鈴 Dumbbell</span></th>
+          <th data-col="KB"><span class="th-main">KB</span><span class="th-sub">壺鈴 Kettlebell</span></th>
+          <th data-col="Cable"><span class="th-main">Cable</span><span class="th-sub">纜繩</span></th>
+          <th data-col="BW"><span class="th-main">BW</span><span class="th-sub">徒手 Bodyweight</span></th>
+          <th data-col="Machine"><span class="th-main">Machine</span><span class="th-sub">機器</span></th>
+          <th data-col="Band"><span class="th-main">Band</span><span class="th-sub">彈力帶</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-calf"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="dot pri"></span><span>主要動作 Primary（主攻此肌）</span></div>
+  <div class="legend-item"><span class="dot sec"></span><span>次要動作 Secondary（協同參與）</span></div>
+  <div class="legend-item"><span class="dot ter"></span><span>輔助動作 Tertiary（少量徵召）</span></div>
+</div>
+
+<div class="footer">
+  腿部訓練參考表 · Leg Training Reference · 依個人訓練目標與器材搭配使用
+</div>
+
+<script>
+const thighData = [
+  {
+    zh:"股四頭肌", en:"Quadriceps",
+    tag:"tag-quad", tagLabel:"股四頭 / Quad",
+    funcZh:"膝關節伸展・站立支撐",
+    funcEn:"Knee extension · Weight-bearing support",
+    eq:{
+      BB:[
+        {zh:"後蹲舉",en:"Back Squat",lvl:"pri"},
+        {zh:"前蹲舉",en:"Front Squat",lvl:"pri"},
+        {zh:"傳統硬舉",en:"Conventional Deadlift",lvl:"sec"},
+        {zh:"分腿蹲",en:"Split Squat",lvl:"sec"},
+        {zh:"Hack 深蹲（槓鈴）",en:"Barbell Hack Squat",lvl:"pri"}
+      ],
+      DB:[
+        {zh:"啞鈴深蹲",en:"DB Goblet Squat",lvl:"pri"},
+        {zh:"啞鈴分腿蹲",en:"DB Split Squat",lvl:"sec"},
+        {zh:"啞鈴跨步蹲",en:"DB Lunge",lvl:"sec"},
+        {zh:"啞鈴保加利亞分腿蹲",en:"DB Bulgarian Split Squat",lvl:"pri"}
+      ],
+      KB:[
+        {zh:"壺鈴深蹲",en:"KB Goblet Squat",lvl:"pri"},
+        {zh:"壺鈴弓箭步",en:"KB Lunge",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"纜繩深蹲",en:"Cable Squat",lvl:"sec"},
+        {zh:"纜繩分腿蹲",en:"Cable Split Squat",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"徒手深蹲",en:"Bodyweight Squat",lvl:"pri"},
+        {zh:"保加利亞分腿蹲",en:"Bulgarian Split Squat",lvl:"pri"},
+        {zh:"弓箭步",en:"Forward Lunge",lvl:"sec"},
+        {zh:"單腳深蹲（Pistol）",en:"Pistol Squat",lvl:"pri"},
+        {zh:"反向弓箭步",en:"Reverse Lunge",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"腿伸展機",en:"Leg Extension",lvl:"pri"},
+        {zh:"腿推機（低腳位）",en:"Leg Press – Low Foot",lvl:"pri"},
+        {zh:"Hack 深蹲機",en:"Hack Squat Machine",lvl:"pri"},
+        {zh:"史密斯深蹲",en:"Smith Machine Squat",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶深蹲",en:"Band Squat",lvl:"pri"},
+        {zh:"彈力帶弓箭步",en:"Band Lunge",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"腿後肌群", en:"Hamstrings",
+    tag:"tag-ham", tagLabel:"腿後 / Ham",
+    funcZh:"髖伸展・膝屈曲",
+    funcEn:"Hip extension · Knee flexion",
+    eq:{
+      BB:[
+        {zh:"傳統硬舉",en:"Conventional Deadlift",lvl:"pri"},
+        {zh:"相撲硬舉",en:"Sumo Deadlift",lvl:"pri"},
+        {zh:"羅馬尼亞硬舉",en:"Romanian Deadlift",lvl:"pri"},
+        {zh:"直腿硬舉",en:"Stiff-leg Deadlift",lvl:"pri"},
+        {zh:"早安式",en:"Good Morning",lvl:"sec"},
+        {zh:"後蹲舉",en:"Back Squat",lvl:"ter"}
+      ],
+      DB:[
+        {zh:"啞鈴羅馬尼亞硬舉",en:"DB RDL",lvl:"pri"},
+        {zh:"啞鈴單腳硬舉",en:"DB Single-leg DL",lvl:"pri"},
+        {zh:"啞鈴直腿硬舉",en:"DB SLDL",lvl:"pri"}
+      ],
+      KB:[
+        {zh:"壺鈴擺盪",en:"KB Swing",lvl:"pri"},
+        {zh:"壺鈴硬舉",en:"KB Deadlift",lvl:"pri"},
+        {zh:"壺鈴單腳硬舉",en:"KB Single-leg DL",lvl:"pri"}
+      ],
+      Cable:[
+        {zh:"纜繩羅馬尼亞硬舉",en:"Cable RDL",lvl:"pri"},
+        {zh:"纜繩腿彎舉（站姿）",en:"Cable Leg Curl – Standing",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"北歐腿彎舉",en:"Nordic Hamstring Curl",lvl:"pri"},
+        {zh:"單腳臀橋",en:"Single-leg Glute Bridge",lvl:"sec"},
+        {zh:"滑盤腿彎舉",en:"Slider Leg Curl",lvl:"pri"}
+      ],
+      Machine:[
+        {zh:"俯臥腿彎舉",en:"Prone Leg Curl",lvl:"pri"},
+        {zh:"坐姿腿彎舉",en:"Seated Leg Curl",lvl:"pri"},
+        {zh:"站姿腿彎舉",en:"Standing Leg Curl",lvl:"pri"},
+        {zh:"腿推機（高腳位）",en:"Leg Press – High Foot",lvl:"ter"}
+      ],
+      Band:[
+        {zh:"彈力帶腿彎舉",en:"Band Leg Curl",lvl:"pri"},
+        {zh:"彈力帶羅馬尼亞硬舉",en:"Band RDL",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"內收肌群", en:"Adductor Group",
+    tag:"tag-add", tagLabel:"內收 / Add",
+    funcZh:"髖內收・骨盆穩定",
+    funcEn:"Hip adduction · Pelvic stability",
+    eq:{
+      BB:[
+        {zh:"相撲硬舉",en:"Sumo Deadlift",lvl:"pri"},
+        {zh:"相撲深蹲",en:"Sumo Squat",lvl:"pri"},
+        {zh:"寬站距深蹲",en:"Wide-stance Squat",lvl:"sec"}
+      ],
+      DB:[
+        {zh:"啞鈴相撲深蹲",en:"DB Sumo Squat",lvl:"pri"},
+        {zh:"啞鈴側弓步",en:"DB Lateral Lunge",lvl:"sec"}
+      ],
+      KB:[
+        {zh:"壺鈴相撲深蹲",en:"KB Sumo Squat",lvl:"pri"},
+        {zh:"壺鈴側弓步",en:"KB Lateral Lunge",lvl:"sec"}
+      ],
+      Cable:[
+        {zh:"纜繩髖內收（站姿）",en:"Cable Hip Adduction",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"側弓步蹲",en:"Lateral Lunge",lvl:"pri"},
+        {zh:"哥本哈根支撐",en:"Copenhagen Hip Adduction",lvl:"pri"},
+        {zh:"相撲徒手深蹲",en:"Sumo Bodyweight Squat",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"坐姿髖內收機",en:"Hip Adduction Machine",lvl:"pri"},
+        {zh:"腿推機（寬腳位）",en:"Leg Press – Wide Foot",lvl:"sec"}
+      ],
+      Band:[
+        {zh:"彈力帶髖內收",en:"Band Hip Adduction",lvl:"pri"},
+        {zh:"彈力帶相撲深蹲",en:"Band Sumo Squat",lvl:"sec"}
+      ]
+    }
+  },
+  {
+    zh:"縫匠肌", en:"Sartorius",
+    tag:"tag-quad", tagLabel:"大腿 / Thigh",
+    funcZh:"髖屈曲・外旋・膝屈曲",
+    funcEn:"Hip flexion · External rotation · Knee flexion",
+    eq:{
+      BB:[
+        {zh:"分腿蹲",en:"Split Squat",lvl:"ter"}
+      ],
+      DB:[
+        {zh:"啞鈴跨步蹲",en:"DB Lunge",lvl:"ter"}
+      ],
+      KB:[],
+      Cable:[
+        {zh:"纜繩髖屈曲",en:"Cable Hip Flexion",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"弓箭步",en:"Forward Lunge",lvl:"ter"},
+        {zh:"單腳深蹲",en:"Pistol Squat",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"坐姿腿彎舉",en:"Seated Leg Curl",lvl:"ter"}
+      ],
+      Band:[
+        {zh:"彈力帶髖屈曲",en:"Band Hip Flexion",lvl:"ter"}
+      ]
+    }
+  }
+];
+
+const calfData = [
+  {
+    zh:"腓腸肌", en:"Gastrocnemius",
+    tag:"tag-gas", tagLabel:"腓腸 / Gastro",
+    funcZh:"踝蹠屈・膝屈曲協同",
+    funcEn:"Ankle plantarflexion · Assists knee flexion",
+    eq:{
+      BB:[
+        {zh:"槓鈴站姿提踵",en:"BB Standing Calf Raise",lvl:"pri"},
+        {zh:"槓鈴驢式提踵",en:"BB Donkey Calf Raise",lvl:"pri"}
+      ],
+      DB:[
+        {zh:"啞鈴單腳提踵",en:"DB Single-leg Calf Raise",lvl:"pri"},
+        {zh:"啞鈴站姿提踵",en:"DB Standing Calf Raise",lvl:"pri"}
+      ],
+      KB:[
+        {zh:"壺鈴單腳提踵",en:"KB Single-leg Calf Raise",lvl:"pri"}
+      ],
+      Cable:[
+        {zh:"纜繩提踵（站姿）",en:"Cable Standing Calf Raise",lvl:"sec"}
+      ],
+      BW:[
+        {zh:"徒手站姿提踵",en:"BW Standing Calf Raise",lvl:"pri"},
+        {zh:"單腳徒手提踵",en:"Single-leg BW Calf Raise",lvl:"pri"},
+        {zh:"跳繩",en:"Jump Rope",lvl:"sec"},
+        {zh:"短跑衝刺",en:"Sprint",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"站姿提踵機",en:"Standing Calf Raise Machine",lvl:"pri"},
+        {zh:"驢式提踵機",en:"Donkey Calf Raise Machine",lvl:"pri"},
+        {zh:"腿推機提踵",en:"Leg Press Calf Raise",lvl:"sec"}
+      ],
+      Band:[
+        {zh:"彈力帶提踵輔助",en:"Band-assisted Calf Raise",lvl:"ter"}
+      ]
+    }
+  },
+  {
+    zh:"比目魚肌", en:"Soleus",
+    tag:"tag-sol", tagLabel:"比目魚 / Soleus",
+    funcZh:"踝蹠屈（膝屈時主力）・姿勢維持",
+    funcEn:"Ankle plantarflexion – dominant when knee bent · Postural support",
+    eq:{
+      BB:[
+        {zh:"槓鈴坐姿提踵",en:"BB Seated Calf Raise",lvl:"pri"}
+      ],
+      DB:[
+        {zh:"啞鈴坐姿提踵",en:"DB Seated Calf Raise",lvl:"pri"}
+      ],
+      KB:[
+        {zh:"壺鈴坐姿提踵",en:"KB Seated Calf Raise",lvl:"pri"}
+      ],
+      Cable:[
+        {zh:"纜繩坐姿提踵",en:"Cable Seated Calf Raise",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"徒手坐姿提踵",en:"BW Seated Calf Raise",lvl:"pri"},
+        {zh:"單腳坐姿提踵",en:"Single-leg Seated Calf Raise",lvl:"pri"}
+      ],
+      Machine:[
+        {zh:"坐姿提踵機",en:"Seated Calf Raise Machine",lvl:"pri"},
+        {zh:"腿推機提踵（膝微彎）",en:"Leg Press Calf Raise – Bent Knee",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶坐姿蹠屈",en:"Band Seated Plantarflexion",lvl:"pri"}
+      ]
+    }
+  },
+  {
+    zh:"脛骨前肌", en:"Tibialis Anterior",
+    tag:"tag-tib", tagLabel:"脛前 / Tib Ant",
+    funcZh:"踝背屈・足弓支撐",
+    funcEn:"Ankle dorsiflexion · Foot arch support",
+    eq:{
+      BB:[],
+      DB:[],
+      KB:[],
+      Cable:[
+        {zh:"纜繩踝背屈",en:"Cable Ankle Dorsiflexion",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"反向提踵",en:"Reverse Calf Raise",lvl:"pri"},
+        {zh:"踝背屈靠牆練習",en:"Tibialis Raise – Wall",lvl:"pri"},
+        {zh:"腳尖上勾步行",en:"Toes-up Walking",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"Tib Bar 機器",en:"Tib Bar Machine",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶踝背屈",en:"Band Dorsiflexion",lvl:"pri"},
+        {zh:"彈力帶反向提踵",en:"Band Reverse Calf Raise",lvl:"pri"}
+      ]
+    }
+  },
+  {
+    zh:"腓骨肌群", en:"Peroneus / Fibularis",
+    tag:"tag-per", tagLabel:"腓骨 / Peroneus",
+    funcZh:"踝外翻・踝關節側向穩定",
+    funcEn:"Ankle eversion · Lateral ankle stability",
+    eq:{
+      BB:[],
+      DB:[],
+      KB:[],
+      Cable:[
+        {zh:"纜繩踝外翻",en:"Cable Ankle Eversion",lvl:"pri"}
+      ],
+      BW:[
+        {zh:"單腳平衡站立",en:"Single-leg Balance",lvl:"pri"},
+        {zh:"側向跳躍落地",en:"Lateral Jump Landing",lvl:"sec"},
+        {zh:"單腳深蹲",en:"Pistol Squat",lvl:"sec"}
+      ],
+      Machine:[
+        {zh:"平衡板訓練",en:"Balance Board",lvl:"pri"}
+      ],
+      Band:[
+        {zh:"彈力帶踝外翻",en:"Band Ankle Eversion",lvl:"pri"},
+        {zh:"彈力帶側走（踝部）",en:"Band Lateral Walk – Ankle",lvl:"sec"}
+      ]
+    }
+  }
+];
+
+const eqOrder = ["BB","DB","KB","Cable","BW","Machine","Band"];
+let activeEq = "all";
+
+function makePills(exercises){
+  if(!exercises || exercises.length === 0) return '<span class="empty">—</span>';
+  return '<div class="pills">' + exercises.map(e=>`
+    <span class="pill">
+      <span class="dot ${e.lvl}"></span>
+      <span>
+        <span style="display:block;font-size:11px;color:var(--text)">${e.zh}</span>
+        <span class="pill-en">${e.en}</span>
+      </span>
+    </span>`).join('') + '</div>';
+}
+
+function buildTable(data, tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+
+  document.querySelectorAll(`#${tbodyId.replace('tbody','table')} thead th[data-col]`).forEach(th=>{
+    const eq = th.dataset.col;
+    th.style.display = (activeEq==='all' || activeEq===eq) ? '' : 'none';
+  });
+
+  data.forEach(row=>{
+    const hasAny = activeEq==='all' || (row.eq[activeEq] && row.eq[activeEq].length>0);
+    const tr = document.createElement('tr');
+    if(!hasAny) tr.classList.add('hidden');
+
+    let html = `<td>
+      <span class="muscle-name">${row.zh}</span>
+      <span class="muscle-en">${row.en}</span>
+      <span class="muscle-tag ${row.tag}">${row.tagLabel}</span>
+    </td>`;
+
+    html += `<td>
+      <span class="func-zh">${row.funcZh}</span>
+      <span class="func-en">${row.funcEn}</span>
+    </td>`;
+
+    eqOrder.forEach(eq=>{
+      const vis = activeEq==='all' || activeEq===eq;
+      html += `<td style="${vis?'':'display:none'}">${makePills(row.eq[eq])}</td>`;
+    });
+
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+}
+
+function filt(btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeEq = btn.dataset.eq;
+  buildTable(thighData, 'tbody-thigh');
+  buildTable(calfData,  'tbody-calf');
+}
+
+buildTable(thighData, 'tbody-thigh');
+buildTable(calfData,  'tbody-calf');
+</script>
+</body>
+</html>

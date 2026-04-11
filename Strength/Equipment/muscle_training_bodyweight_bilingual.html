@@ -1,0 +1,311 @@
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 12px 0; font-size: 13px; color: var(--color-text-primary); }
+.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.equip-label { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: var(--color-background-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-secondary); }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.filter-btn { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; font-size: 12px; transition: all .15s; }
+.filter-btn.active { background: var(--color-background-tertiary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th { background: var(--color-background-tertiary); padding: 7px 8px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--color-border-tertiary); position: sticky; top: 0; z-index: 1; color: var(--color-text-secondary); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--color-border-tertiary); }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td { padding: 6px 8px; vertical-align: top; line-height: 1.6; }
+.group-label { font-weight: 500; font-size: 11px; padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.badge { font-size: 11px; padding: 2px 6px; border-radius: 10px; display: inline-block; background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+.diff-tag { font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-top: 2px; display: inline-block; border: 1px solid; }
+.diff-b { background:#E1F5EE; color:#0F6E56; border-color:#1D9E75; }
+.diff-i { background:#FAEEDA; color:#854F0B; border-color:#EF9F27; }
+.diff-a { background:#FCEBEB; color:#A32D2D; border-color:#E24B4A; }
+.zh { font-weight: 500; color: var(--color-text-primary); }
+.en { font-size: 11px; color: #A32D2D; }
+.sec-zh { color: var(--color-text-secondary); font-weight: 400; }
+.count { font-size: 11px; color: var(--color-text-tertiary); margin-left: 5px; }
+#empty { display:none; text-align:center; padding:32px; color:var(--color-text-tertiary); font-size:13px; }
+.note { font-size: 11px; color: var(--color-text-tertiary); font-style: italic; }
+.legend { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+.legend-label { font-size:11px; color:var(--color-text-secondary); }
+</style>
+
+<div class="wrap">
+  <div class="top-row">
+    <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">器材 Equipment：</span>
+    <span class="equip-label">🤸 徒手 Bodyweight</span>
+  </div>
+  <div class="legend">
+    <span class="legend-label">難度 Difficulty：</span>
+    <span class="diff-tag diff-b">初階 Beginner</span>
+    <span class="diff-tag diff-i">中階 Intermediate</span>
+    <span class="diff-tag diff-a">進階 Advanced</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:68px">部位<br><span style="font-weight:400;font-size:11px">Body Part</span></th>
+          <th style="width:105px">主要肌肉<br><span style="font-weight:400;font-size:11px">Prime Mover</span></th>
+          <th style="width:105px">次要肌肉<br><span style="font-weight:400;font-size:11px">Secondary</span></th>
+          <th>主要動作<br><span style="font-weight:400;font-size:11px">Primary Exercise</span></th>
+          <th>次要動作<br><span style="font-weight:400;font-size:11px">Secondary Exercise</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:10px;padding:8px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">★ 需要單槓或雙槓輔助。徒手訓練無法像器材精確調整負荷，以動作變化（角度、單雙邊）控制難度為主。<br>★ Requires pull-up bar or parallel bars. Load is controlled via angle, leverage, and unilateral variations.</span>
+  </div>
+</div>
+
+<script>
+const palette = {
+  "胸部 Chest":        { bg:"#E6F1FB", border:"#378ADD", text:"#185FA5" },
+  "背部 Back":         { bg:"#EAF3DE", border:"#639922", text:"#3B6D11" },
+  "肩膀 Shoulder":     { bg:"#FAEEDA", border:"#EF9F27", text:"#854F0B" },
+  "三頭 Triceps":      { bg:"#FBEAF0", border:"#D4537E", text:"#993556" },
+  "二頭 Biceps":       { bg:"#E1F5EE", border:"#1D9E75", text:"#0F6E56" },
+  "前手臂 Forearm":    { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+  "前大腿 Quads":      { bg:"#EEEDFE", border:"#7F77DD", text:"#534AB7" },
+  "後大腿 Hamstrings": { bg:"#F1EFE8", border:"#888780", text:"#5F5E5A" },
+  "小腿 Calves":       { bg:"#FCEBEB", border:"#E24B4A", text:"#A32D2D" },
+  "腹部 Core":       { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+};
+
+// diff: b=beginner, i=intermediate, a=advanced
+const data = [
+  // 胸部
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"前三角肌", sEn:"Anterior Deltoid",
+    pZh:"上斜伏地挺身", pEn:"Incline Push-up", pD:"b",
+    xZh:"Pike 伏地挺身", xEn:"Pike Push-up", xD:"i" },
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"喙肱肌", sEn:"Coracobrachialis",
+    pZh:"上斜伏地挺身", pEn:"Incline Push-up", pD:"b",
+    xZh:"弓箭步伏地挺身", xEn:"Archer Push-up (Incline)", xD:"i" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"前三角肌", sEn:"Anterior Deltoid",
+    pZh:"標準伏地挺身", pEn:"Standard Push-up", pD:"b",
+    xZh:"寬距伏地挺身", xEn:"Wide Push-up", xD:"b" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"肱三頭肌", sEn:"Triceps Brachii",
+    pZh:"標準伏地挺身", pEn:"Standard Push-up", pD:"b",
+    xZh:"爆發伏地挺身", xEn:"Explosive Push-up", xD:"i" },
+  { g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)", sZh:"腹直肌上部", sEn:"Upper Rectus Abdominis",
+    pZh:"下斜伏地挺身", pEn:"Decline Push-up", pD:"i",
+    xZh:"雙槓撐體（前傾）★", xEn:"Forward-lean Dip ★", xD:"i" },
+  { g:"胸部 Chest", mZh:"胸小肌", mEn:"Pectoralis Minor", sZh:"前鋸肌", sEn:"Serratus Anterior",
+    pZh:"雙槓撐體（前傾）★", pEn:"Forward-lean Dip ★", pD:"i",
+    xZh:"下斜伏地挺身（肩胛前引）", xEn:"Decline Push-up (Protraction)", xD:"i" },
+  { g:"胸部 Chest", mZh:"前鋸肌", mEn:"Serratus Anterior", sZh:"胸小肌", sEn:"Pectoralis Minor",
+    pZh:"伏地挺身加肩胛前引", pEn:"Push-up Plus (Serratus)", pD:"b",
+    xZh:"下斜伏地挺身（前引）", xEn:"Decline Push-up Plus", xD:"i" },
+  // 背部
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"大圓肌", sEn:"Teres Major",
+    pZh:"引體向上（寬握）★", pEn:"Wide-grip Pull-up ★", pD:"i",
+    xZh:"負重引體向上★", xEn:"Weighted Pull-up ★", xD:"a" },
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"後三角肌", sEn:"Posterior Deltoid",
+    pZh:"反握引體向上★", pEn:"Chin-up ★", pD:"i",
+    xZh:"單臂引體向上（輔助）★", xEn:"Assisted Single-arm Pull-up ★", xD:"a" },
+  { g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid/Lower)", sZh:"菱形肌", sEn:"Rhomboids",
+    pZh:"俯臥 Y/T/W 舉", pEn:"Prone Y/T/W Raise", pD:"b",
+    xZh:"划船式引體向上★", xEn:"Row Pull-up ★", xD:"i" },
+  { g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)", sZh:"提肩胛肌", sEn:"Levator Scapulae",
+    pZh:"肩胛聳肩（懸吊）★", pEn:"Scapular Shrug (Dead Hang) ★", pD:"b",
+    xZh:"肩胛上提引體向上★", xEn:"Scapular Pull-up ★", xD:"i" },
+  { g:"背部 Back", mZh:"菱形肌", mEn:"Rhomboids", sZh:"斜方肌中段", sEn:"Mid Trapezius",
+    pZh:"俯臥 T 字舉", pEn:"Prone T Raise", pD:"b",
+    xZh:"桌邊划船", xEn:"Table / Australian Row", xD:"b" },
+  { g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae", sZh:"多裂肌", sEn:"Multifidus",
+    pZh:"超人式背伸展", pEn:"Superman Hold", pD:"b",
+    xZh:"反向超人（對側手腳）", xEn:"Bird-dog", xD:"b" },
+  { g:"背部 Back", mZh:"大圓肌", mEn:"Teres Major", sZh:"背闊肌", sEn:"Latissimus Dorsi",
+    pZh:"窄握引體向上★", pEn:"Narrow-grip Pull-up ★", pD:"i",
+    xZh:"桌邊划船（窄握）", xEn:"Narrow-grip Australian Row", xD:"b" },
+  // 肩膀
+  { g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid", sZh:"胸大肌上部", sEn:"Upper Pec Major",
+    pZh:"Pike 伏地挺身", pEn:"Pike Push-up", pD:"i",
+    xZh:"倒立伏地挺身（靠牆）★", xEn:"Wall Handstand Push-up ★", xD:"a" },
+  { g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid", sZh:"斜方肌上部", sEn:"Upper Trapezius",
+    pZh:"側臥側平舉（徒手）", pEn:"Side-lying Lateral Raise (BW)", pD:"b",
+    xZh:"倒立伏地挺身（寬距）★", xEn:"Wide Handstand Push-up ★", xD:"a" },
+  { g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid", sZh:"菱形肌", sEn:"Rhomboids",
+    pZh:"俯臥反飛鳥", pEn:"Prone Reverse Fly (BW)", pD:"b",
+    xZh:"桌邊反向划船（高肘）", xEn:"Australian Row (High Elbow)", xD:"b" },
+  { g:"肩膀 Shoulder", mZh:"棘上肌", mEn:"Supraspinatus", sZh:"三角肌側束", sEn:"Lateral Deltoid",
+    pZh:"側臥外展舉臂", pEn:"Side-lying Arm Abduction", pD:"b",
+    xZh:"俯臥空罐式舉（徒手）", xEn:"Prone Empty Can Raise (BW)", xD:"b" },
+  { g:"肩膀 Shoulder", mZh:"棘下肌", mEn:"Infraspinatus", sZh:"小圓肌", sEn:"Teres Minor",
+    pZh:"側臥外旋（徒手）", pEn:"Side-lying External Rotation (BW)", pD:"b",
+    xZh:"俯臥 W 字舉", pEn:"Prone W Raise", xD:"b" , xZh_fix:true},
+  { g:"肩膀 Shoulder", mZh:"小圓肌", mEn:"Teres Minor", sZh:"棘下肌", sEn:"Infraspinatus",
+    pZh:"側臥外旋（徒手）", pEn:"Side-lying External Rotation (BW)", pD:"b",
+    xZh:"俯臥 Y 字舉", xEn:"Prone Y Raise", xD:"b" },
+  { g:"肩膀 Shoulder", mZh:"肩胛下肌", mEn:"Subscapularis", sZh:"胸大肌", sEn:"Pectoralis Major",
+    pZh:"側臥內旋（徒手）", pEn:"Side-lying Internal Rotation (BW)", pD:"b",
+    xZh:"伏地挺身（窄距內旋）", xEn:"Close-grip Push-up (Internal Rotation)", xD:"b" },
+  // 三頭
+  { g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head", sZh:"後三角肌", sEn:"Posterior Deltoid",
+    pZh:"雙槓撐體★", pEn:"Parallel Bar Dip ★", pD:"i",
+    xZh:"窄距伏地挺身（頭頂方向）", xEn:"Close-grip Push-up (Forward)", xD:"i" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head", sZh:"肱三頭肌長頭", sEn:"Triceps Long Head",
+    pZh:"窄距伏地挺身", pEn:"Close-grip Push-up", pD:"b",
+    xZh:"鑽石伏地挺身", xEn:"Diamond Push-up", xD:"i" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌內側頭", mEn:"Triceps Medial Head", sZh:"肱三頭肌外側頭", sEn:"Triceps Lateral Head",
+    pZh:"反向撐體（椅邊）", pEn:"Bench / Chair Triceps Dip", pD:"b",
+    xZh:"鑽石伏地挺身", xEn:"Diamond Push-up", xD:"i" },
+  { g:"三頭 Triceps", mZh:"肘肌", mEn:"Anconeus", sZh:"肱三頭肌", sEn:"Triceps Brachii",
+    pZh:"窄距伏地挺身", pEn:"Close-grip Push-up", pD:"b",
+    xZh:"雙槓撐體★", xEn:"Parallel Bar Dip ★", xD:"i" },
+  // 二頭
+  { g:"二頭 Biceps", mZh:"肱二頭肌長頭", mEn:"Biceps Long Head", sZh:"肱橈肌", sEn:"Brachioradialis",
+    pZh:"反握引體向上★", pEn:"Chin-up ★", pD:"i",
+    xZh:"單臂反握引體向上（輔助）★", xEn:"Assisted Single-arm Chin-up ★", xD:"a" },
+  { g:"二頭 Biceps", mZh:"肱二頭肌短頭", mEn:"Biceps Short Head", sZh:"喙肱肌", sEn:"Coracobrachialis",
+    pZh:"寬握引體向上★", pEn:"Wide-grip Chin-up ★", pD:"i",
+    xZh:"桌邊反握划船", xEn:"Underhand Australian Row", xD:"b" },
+  { g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis", sZh:"肱二頭肌", sEn:"Biceps Brachii",
+    pZh:"對握引體向上★", pEn:"Neutral-grip Pull-up ★", pD:"i",
+    xZh:"桌邊對握划船", xEn:"Neutral-grip Australian Row", xD:"b" },
+  { g:"二頭 Biceps", mZh:"喙肱肌", mEn:"Coracobrachialis", sZh:"肱二頭肌短頭", sEn:"Biceps Short Head",
+    pZh:"反握引體向上★", pEn:"Chin-up ★", pD:"i",
+    xZh:"桌邊反握划船", xEn:"Underhand Australian Row", xD:"b" },
+  // 前手臂
+  { g:"前手臂 Forearm", mZh:"肱橈肌", mEn:"Brachioradialis", sZh:"肱肌", sEn:"Brachialis",
+    pZh:"對握引體向上★", pEn:"Neutral-grip Pull-up ★", pD:"i",
+    xZh:"毛巾引體向上★", xEn:"Towel Pull-up ★", xD:"a" },
+  { g:"前手臂 Forearm", mZh:"橈側腕屈肌", mEn:"Flexor Carpi Radialis", sZh:"指屈肌", sEn:"Finger Flexors",
+    pZh:"指尖伏地挺身", pEn:"Fingertip Push-up", pD:"i",
+    xZh:"毛巾懸吊靜態保持★", xEn:"Towel Dead Hang ★", xD:"i" },
+  { g:"前手臂 Forearm", mZh:"尺側腕屈肌", mEn:"Flexor Carpi Ulnaris", sZh:"指淺屈肌", sEn:"Flexor Digitorum Superficialis",
+    pZh:"指尖伏地挺身", pEn:"Fingertip Push-up", pD:"i",
+    xZh:"毛巾懸吊靜態保持★", xEn:"Towel Dead Hang ★", xD:"i" },
+  { g:"前手臂 Forearm", mZh:"指屈肌群", mEn:"Finger Flexors", sZh:"拇指屈肌", sEn:"Flexor Pollicis",
+    pZh:"懸吊靜態保持（Dead Hang）★", pEn:"Dead Hang ★", pD:"b",
+    xZh:"毛巾引體向上★", xEn:"Towel Pull-up ★", xD:"a" },
+  { g:"前手臂 Forearm", mZh:"橈側腕伸肌", mEn:"Extensor Carpi Radialis", sZh:"尺側腕伸肌", sEn:"Extensor Carpi Ulnaris",
+    pZh:"反向伏地挺身（腕背伸）", pEn:"Reverse Push-up (Wrist Extension)", pD:"i",
+    xZh:"手腕圓圈活動", xEn:"Wrist Circle Mobility", xD:"b" },
+  // 前大腿
+  { g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris", sZh:"髂腰肌", sEn:"Iliopsoas",
+    pZh:"保加利亞分腿蹲（徒手）", pEn:"Bodyweight Bulgarian Split Squat", pD:"i",
+    xZh:"弓步蹲（徒手）", xEn:"Bodyweight Lunge", xD:"b" },
+  { g:"前大腿 Quads", mZh:"股外側肌", mEn:"Vastus Lateralis", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"徒手深蹲（窄距）", pEn:"Narrow-stance Squat", pD:"b",
+    xZh:"側蹲（Cossack Squat）", xEn:"Cossack Squat", xD:"i" },
+  { g:"前大腿 Quads", mZh:"股內側肌", mEn:"Vastus Medialis", sZh:"內收肌", sEn:"Adductors",
+    pZh:"相撲深蹲（徒手）", pEn:"Bodyweight Sumo Squat", pD:"b",
+    xZh:"單腳蹲（Pistol Squat 輔助）", xEn:"Assisted Pistol Squat", xD:"i" },
+  { g:"前大腿 Quads", mZh:"股中間肌", mEn:"Vastus Intermedius", sZh:"股外側肌", sEn:"Vastus Lateralis",
+    pZh:"徒手深蹲", pEn:"Bodyweight Squat", pD:"b",
+    xZh:"跳躍深蹲", xEn:"Jump Squat", xD:"i" },
+  { g:"前大腿 Quads", mZh:"縫匠肌", mEn:"Sartorius", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"側弓步蹲（徒手）", pEn:"Bodyweight Lateral Lunge", pD:"b",
+    xZh:"Cossack Squat", xEn:"Cossack Squat", xD:"i" },
+  { g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas", sZh:"股直肌", sEn:"Rectus Femoris",
+    pZh:"登山者式", pEn:"Mountain Climber", pD:"b",
+    xZh:"懸吊抬膝★", xEn:"Hanging Knee Raise ★", xD:"i" },
+  // 後大腿
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌長頭", mEn:"Biceps Femoris (Long)", sZh:"臀大肌", sEn:"Gluteus Maximus",
+    pZh:"北歐腿彎舉（Nordic Curl）", pEn:"Nordic Hamstring Curl", pD:"a",
+    xZh:"單腳羅馬尼亞硬舉（徒手）", xEn:"Single-leg RDL (BW)", xD:"i" },
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌短頭", mEn:"Biceps Femoris (Short)", sZh:"腓腸肌", sEn:"Gastrocnemius",
+    pZh:"滑盤腿彎舉（地板滑動）", pEn:"Slider Leg Curl", pD:"i",
+    xZh:"橋式腿彎舉", xEn:"Supine Hip Extension Leg Curl", xD:"i" },
+  { g:"後大腿 Hamstrings", mZh:"半腱肌", mEn:"Semitendinosus", sZh:"臀大肌", sEn:"Gluteus Maximus",
+    pZh:"北歐腿彎舉", pEn:"Nordic Hamstring Curl", pD:"a",
+    xZh:"單腳橋式", xEn:"Single-leg Glute Bridge", xD:"i" },
+  { g:"後大腿 Hamstrings", mZh:"半膜肌", mEn:"Semimembranosus", sZh:"內收大肌", sEn:"Adductor Magnus",
+    pZh:"北歐腿彎舉", pEn:"Nordic Hamstring Curl", pD:"a",
+    xZh:"相撲徒手深蹲", xEn:"Bodyweight Sumo Squat", xD:"b" },
+  { g:"後大腿 Hamstrings", mZh:"臀大肌", mEn:"Gluteus Maximus", sZh:"大腿後側群", sEn:"Hamstring Group",
+    pZh:"單腳臀橋", pEn:"Single-leg Glute Bridge", pD:"i",
+    xZh:"深蹲跳", xEn:"Squat Jump", xD:"i" },
+  { g:"後大腿 Hamstrings", mZh:"臀中肌", mEn:"Gluteus Medius", sZh:"臀小肌", sEn:"Gluteus Minimus",
+    pZh:"側臥抬腿", pEn:"Side-lying Hip Abduction", pD:"b",
+    xZh:"單腳側向跨步蹲", xEn:"Lateral Step-up (BW)", xD:"i" },
+  // 小腿
+  { g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius", sZh:"比目魚肌", sEn:"Soleus",
+    pZh:"站姿單腳提踵", pEn:"Single-leg Standing Calf Raise", pD:"b",
+    xZh:"跳繩 / 跳躍", xEn:"Jump Rope / Jumping", xD:"i" },
+  { g:"小腿 Calves", mZh:"比目魚肌", mEn:"Soleus", sZh:"腓腸肌", sEn:"Gastrocnemius",
+    pZh:"坐姿提踵（膝彎 90°）", pEn:"Seated Calf Raise (Knee 90°)", pD:"b",
+    xZh:"負重坐姿提踵", xEn:"Weighted Seated Calf Raise (BW+)", xD:"i" },
+  { g:"小腿 Calves", mZh:"脛骨前肌", mEn:"Tibialis Anterior", sZh:"伸趾長肌", sEn:"Extensor Digitorum Longus",
+    pZh:"站姿勾腳踝（靠牆）", pEn:"Wall Tibialis Raise", pD:"b",
+    xZh:"腳跟行走", xEn:"Heel Walk", xD:"b" },
+  { g:"小腿 Calves", mZh:"腓骨肌群", mEn:"Fibularis Group", sZh:"腓腸肌外側", sEn:"Gastrocnemius (Lateral)",
+    pZh:"單腳平衡訓練（外翻）", pEn:"Single-leg Balance (Eversion)", pD:"b",
+    xZh:"側向跨步跳", xEn:"Lateral Bound", xD:"i" },
+  // 腹部
+  { g:"腹部 Core", mZh:"腹直肌", mEn:"Rectus Abdominis", sZh:"髂腰肌", sEn:"Iliopsoas",
+    pZh:"腹輪（Ab Wheel Rollout）", pEn:"Ab Wheel Rollout", pD:"i",
+    xZh:"懸吊舉腿", xEn:"Hanging Leg Raise", xD:"a" },
+  { g:"腹部 Core", mZh:"腹外斜肌", mEn:"External Oblique", sZh:"腹內斜肌", sEn:"Internal Oblique",
+    pZh:"自行車捲腹", pEn:"Bicycle Crunch", pD:"b",
+    xZh:"懸吊側舉腿", xEn:"Hanging Oblique Knee Raise", xD:"a" },
+  { g:"腹部 Core", mZh:"腹內斜肌", mEn:"Internal Oblique", sZh:"腹外斜肌", sEn:"External Oblique",
+    pZh:"側棒式加旋轉", pEn:"Side Plank with Rotation", pD:"i",
+    xZh:"登山者旋轉", xEn:"Mountain Climber Twist", xD:"b" },
+  { g:"腹部 Core", mZh:"腹橫肌", mEn:"Transversus Abdominis", sZh:"多裂肌", sEn:"Multifidus",
+    pZh:"死蟲式（Dead Bug）", pEn:"Dead Bug", pD:"b",
+    xZh:"棒式（Plank）", xEn:"Plank", xD:"b" },
+];
+
+const diffLabel = { b:"初階 Beginner", i:"中階 Intermediate", a:"進階 Advanced" };
+const diffClass = { b:"diff-b", i:"diff-i", a:"diff-a" };
+
+const groupKeys = [...new Set(data.map(d => d.g))];
+const allGroups = ["全部 All", ...groupKeys];
+let active = "全部 All";
+
+function render() {
+  const rows = active === "全部 All" ? data : data.filter(d => d.g === active);
+  const tbody = document.getElementById("tbody");
+  const empty = document.getElementById("empty");
+  if (!rows.length) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  let html = "";
+  rows.forEach(r => {
+    const p = palette[r.g];
+    const gParts = r.g.split(" ");
+    const label = `<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${gParts[0]}<br><span style="font-weight:400;font-size:10px">${gParts.slice(1).join(" ")}</span></span>`;
+    const xEn = r.xZh_fix ? "Prone W Raise" : r.xEn;
+    html += `<tr>
+      <td>${label}</td>
+      <td><div class="zh">${r.mZh}</div><div class="en">${r.mEn}</div></td>
+      <td><div class="zh badge">${r.sZh}</div><div class="en" style="margin-top:2px">${r.sEn}</div></td>
+      <td>
+        <div class="zh">${r.pZh}</div>
+        <div class="en">${r.pEn}</div>
+        <span class="diff-tag ${diffClass[r.pD]}">${diffLabel[r.pD]}</span>
+      </td>
+      <td>
+        <div class="sec-zh">${r.xZh}</div>
+        <div class="en">${xEn}</div>
+        <span class="diff-tag ${diffClass[r.xD]}">${diffLabel[r.xD]}</span>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  allGroups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (g === active ? " active" : "");
+    const count = g === "全部 All" ? data.length : data.filter(d => d.g === g).length;
+    const label = g === "全部 All" ? "全部 All" : g.split(" ")[0] + " " + g.split(" ").slice(1).join(" ");
+    btn.innerHTML = label + `<span class="count">(${count})</span>`;
+    btn.onclick = () => {
+      active = g;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>

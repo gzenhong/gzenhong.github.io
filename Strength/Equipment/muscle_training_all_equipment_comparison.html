@@ -1,0 +1,651 @@
+
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 12px 0; font-size: 12px; color: var(--color-text-primary); }
+.legend { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:10px; align-items:center; }
+.legend-label { font-size:11px; color:var(--color-text-secondary); }
+.eq-tag { font-size:10px; padding:1px 7px; border-radius:10px; display:inline-block; border:1px solid; white-space:nowrap; }
+.eq-best { background:#EEEDFE; color:#534AB7; border-color:#7F77DD; font-weight:600; }
+.eq-bb   { background:#FAEEDA; color:#854F0B; border-color:#EF9F27; }
+.eq-db   { background:#E6F1FB; color:#185FA5; border-color:#378ADD; }
+.eq-ca   { background:#EAF3DE; color:#3B6D11; border-color:#639922; }
+.eq-mc   { background:#FCEBEB; color:#A32D2D; border-color:#E24B4A; }
+.eq-bw   { background:#F1EFE8; color:#5F5E5A; border-color:#888780; }
+.eq-kb   { background:#FAEEDA; color:#854F0B; border-color:#EF9F27; }
+.eq-bd   { background:#E1F5EE; color:#0F6E56; border-color:#1D9E75; }
+.filter-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.filter-btn { padding:3px 10px; border-radius:20px; border:1px solid var(--color-border-secondary); background:var(--color-background-secondary); color:var(--color-text-secondary); cursor:pointer; font-size:11px; transition:all .15s; }
+.filter-btn.active { background:var(--color-background-info); color:var(--color-text-info); border-color:var(--color-border-info); font-weight:500; }
+.tbl-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:11px; min-width:1040px; }
+thead th { background:var(--color-background-tertiary); padding:6px 7px; text-align:left; font-weight:500; border-bottom:1px solid var(--color-border-secondary); position:sticky; top:0; z-index:2; color:var(--color-text-secondary); white-space:nowrap; line-height:1.4; }
+thead th.hd-best { background:#EEEDFE; color:#534AB7; }
+thead th.hd-bb   { background:#FAEEDA; color:#854F0B; }
+thead th.hd-db   { background:#E6F1FB; color:#185FA5; }
+thead th.hd-ca   { background:#EAF3DE; color:#3B6D11; }
+thead th.hd-mc   { background:#FCEBEB; color:#A32D2D; }
+thead th.hd-bw   { background:#F1EFE8; color:#5F5E5A; }
+thead th.hd-kb   { background:#FAEEDA; color:#854F0B; }
+thead th.hd-bd   { background:#E1F5EE; color:#0F6E56; }
+tbody tr { border-bottom:1px solid var(--color-border-tertiary); }
+tbody tr:hover { background:var(--color-background-secondary); }
+tbody td { padding:6px 7px; vertical-align:top; line-height:1.5; }
+td.best-cell { background:rgba(127,119,221,0.06); }
+.group-label { font-weight:500; font-size:10px; padding:2px 6px; border-radius:4px; display:inline-block; white-space:nowrap; }
+.mzh { font-weight:500; font-size:11px; color:var(--color-text-primary); }
+.men { font-size:10px; color:var(--color-text-tertiary); }
+.azh { font-size:11px; color:var(--color-text-primary); }
+.aen { font-size:10px; color:#A32D2D; }
+.best-azh { font-weight:600; font-size:11px; color:#534AB7; }
+.best-aen { font-size:10px; color:#3C3489; }
+.count { font-size:10px; color:var(--color-text-tertiary); margin-left:4px; }
+#empty { display:none; text-align:center; padding:24px; color:var(--color-text-tertiary); }
+.note { font-size:10px; color:var(--color-text-tertiary); font-style:italic; }
+</style>
+
+<div class="wrap">
+  <div class="legend">
+    <span class="legend-label">器材：</span>
+    <span class="eq-tag eq-best">★ 最佳 Best</span>
+    <span class="eq-tag eq-bb">槓鈴 BB</span>
+    <span class="eq-tag eq-db">啞鈴 DB</span>
+    <span class="eq-tag eq-ca">纜繩 Cable</span>
+    <span class="eq-tag eq-mc">機器 Machine</span>
+    <span class="eq-tag eq-bw">徒手 BW</span>
+    <span class="eq-tag eq-kb">壺鈴 KB</span>
+    <span class="eq-tag eq-bd">彈力帶 Band</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:58px">部位<br><span style="font-weight:400;font-size:10px">Body Part</span></th>
+          <th style="width:90px">主要肌肉<br><span style="font-weight:400;font-size:10px">Prime Mover</span></th>
+          <th class="hd-best" style="width:120px">★ 最佳動作<br><span style="font-weight:400;font-size:10px">Best Exercise</span></th>
+          <th class="hd-bb"   style="width:110px">槓鈴 Barbell</th>
+          <th class="hd-db"   style="width:110px">啞鈴 Dumbbell</th>
+          <th class="hd-ca"   style="width:110px">纜繩 Cable</th>
+          <th class="hd-mc"   style="width:110px">機器 Machine</th>
+          <th class="hd-bw"   style="width:110px">徒手 Bodyweight</th>
+          <th class="hd-kb"   style="width:110px">壺鈴 Kettlebell</th>
+          <th class="hd-bd"   style="width:110px">彈力帶 Band</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:8px;padding:7px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">★ 最佳動作以最大化目標肌肉張力、全程受力、安全性與可漸進超負荷為依據。各器材欄為該器材針對此肌肉的代表性動作。<br>Best = maximises target tension, full-ROM loading, safety & progressive overload potential. Each equipment column shows its best representative exercise for that muscle.</span>
+  </div>
+</div>
+
+<script>
+const palette = {
+  "胸部 Chest":        { bg:"#E6F1FB", border:"#378ADD", text:"#185FA5" },
+  "背部 Back":         { bg:"#EAF3DE", border:"#639922", text:"#3B6D11" },
+  "肩膀 Shoulder":     { bg:"#FAEEDA", border:"#EF9F27", text:"#854F0B" },
+  "三頭 Triceps":      { bg:"#FBEAF0", border:"#D4537E", text:"#993556" },
+  "二頭 Biceps":       { bg:"#E1F5EE", border:"#1D9E75", text:"#0F6E56" },
+  "前手臂 Forearm":    { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+  "前大腿 Quads":      { bg:"#EEEDFE", border:"#7F77DD", text:"#534AB7" },
+  "後大腿 Hamstrings": { bg:"#F1EFE8", border:"#888780", text:"#5F5E5A" },
+  "小腿 Calves":       { bg:"#FCEBEB", border:"#E24B4A", text:"#A32D2D" },
+  "腹部 Core":         { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+};
+
+// best: 最佳動作  bb/db/ca/mc/bw: 各器材代表動作
+const data = [
+  // ── 胸部 ──
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)",
+    bestZh:"上斜啞鈴飛鳥",          bestEn:"Incline DB Fly",             bestEq:"db",
+    bbZh:"上斜槓鈴臥推",            bbEn:"Incline BB Bench Press",
+    dbZh:"上斜啞鈴飛鳥",            dbEn:"Incline DB Fly",
+    caZh:"纜繩夾胸（低→高）",      caEn:"Low-cable Crossover (Low–High)",
+    mcZh:"上斜胸推機",              mcEn:"Incline Chest Press Machine",
+    bwZh:"上斜伏地挺身",            bwEn:"Incline Push-up",
+    kbZh:"壺鈴上斜地板臥推",            kbEn:"KB Incline Floor Press",
+    bdZh:"彈力帶上斜推胸",            bdEn:"Band Incline Chest Press" },
+
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)",
+    bestZh:"平板槓鈴臥推",          bestEn:"Flat BB Bench Press",        bestEq:"bb",
+    bbZh:"平板槓鈴臥推",            bbEn:"Flat BB Bench Press",
+    dbZh:"平板啞鈴臥推",            dbEn:"Flat DB Bench Press",
+    caZh:"纜繩夾胸（中位）",        caEn:"Cable Crossover (Mid)",
+    mcZh:"坐姿胸推機",              mcEn:"Chest Press Machine",
+    bwZh:"標準伏地挺身",            bwEn:"Standard Push-up",
+    kbZh:"壺鈴地板臥推",            kbEn:"KB Floor Press",
+    bdZh:"彈力帶平推胸",            bdEn:"Band Chest Press" },
+
+  { g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)",
+    bestZh:"纜繩夾胸（高→低）",    bestEn:"Cable Crossover (High–Low)", bestEq:"ca",
+    bbZh:"下斜槓鈴臥推",            bbEn:"Decline BB Bench Press",
+    dbZh:"下斜啞鈴飛鳥",            dbEn:"Decline DB Fly",
+    caZh:"纜繩夾胸（高→低）",      caEn:"Cable Crossover (High–Low)",
+    mcZh:"下斜胸推機",              mcEn:"Decline Chest Press Machine",
+    bwZh:"下斜伏地挺身",            bwEn:"Decline Push-up",
+    kbZh:"壺鈴仰臥過頭拉",            kbEn:"KB Pullover",
+    bdZh:"彈力帶高位夾胸（高→低）",            bdEn:"Band High-to-Low Fly" },
+
+  { g:"胸部 Chest", mZh:"胸小肌", mEn:"Pectoralis Minor",
+    bestZh:"纜繩直臂下壓（高位）",  bestEn:"High-cable Straight-arm Pulldown", bestEq:"ca",
+    bbZh:"槓鈴仰臥過頭拉",          bbEn:"BB Pullover",
+    dbZh:"啞鈴仰臥過頭拉",          dbEn:"DB Pullover",
+    caZh:"纜繩直臂下壓（高位）",    caEn:"High-cable Straight-arm Pulldown",
+    mcZh:"坐姿胸推機（窄握）",      mcEn:"Chest Press Machine (Narrow)",
+    bwZh:"雙槓撐體（前傾）",        bwEn:"Forward-lean Dip ★",
+    kbZh:"壺鈴仰臥過頭拉",            kbEn:"KB Pullover",
+    bdZh:"彈力帶直臂下壓",            bdEn:"Band Straight-arm Pulldown" },
+
+  { g:"胸部 Chest", mZh:"前鋸肌", mEn:"Serratus Anterior",
+    bestZh:"纜繩前推（肩胛前引）",  bestEn:"Cable Serratus Punch",      bestEq:"ca",
+    bbZh:"槓鈴仰臥過頭拉",          bbEn:"BB Pullover",
+    dbZh:"啞鈴仰臥過頭拉",          dbEn:"DB Pullover",
+    caZh:"纜繩前推（肩胛前引）",    caEn:"Cable Serratus Punch",
+    mcZh:"坐姿胸推機（肩胛前引）",  mcEn:"Chest Press Machine (Protraction)",
+    bwZh:"伏地挺身加肩胛前引",      bwEn:"Push-up Plus",
+    kbZh:"壺鈴仰臥過頭拉",            kbEn:"KB Pullover",
+    bdZh:"彈力帶前推（肩胛前引）",            bdEn:"Band Push (Protraction)" },
+
+  // ── 背部 ──
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi",
+    bestZh:"槓鈴俯身划船",          bestEn:"BB Bent-over Row",           bestEq:"bb",
+    bbZh:"槓鈴俯身划船",            bbEn:"BB Bent-over Row",
+    dbZh:"單臂啞鈴划船",            dbEn:"Single-arm DB Row",
+    caZh:"纜繩高位下拉（寬握）",    caEn:"Wide-grip Cable Pulldown",
+    mcZh:"高位下拉機",              mcEn:"Lat Pulldown Machine",
+    bwZh:"引體向上（寬握）",        bwEn:"Wide-grip Pull-up ★",
+    kbZh:"單臂壺鈴划船",            kbEn:"Single-arm KB Row",
+    bdZh:"彈力帶下拉",            bdEn:"Band Lat Pulldown" },
+
+  { g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid / Lower)",
+    bestZh:"纜繩坐姿划船",          bestEn:"Seated Cable Row",           bestEq:"ca",
+    bbZh:"槓鈴俯身划船",            bbEn:"BB Bent-over Row",
+    dbZh:"俯身啞鈴划船",            dbEn:"Bent-over DB Row",
+    caZh:"纜繩坐姿划船",            caEn:"Seated Cable Row",
+    mcZh:"坐姿划船機",              mcEn:"Seated Row Machine",
+    bwZh:"俯臥 Y/T/W 舉",          bwEn:"Prone Y/T/W Raise",
+    kbZh:"壺鈴俯身划船（寬肘）",            kbEn:"KB Bent-over Row (Wide Elbow)",
+    bdZh:"彈力帶坐姿划船",            bdEn:"Band Seated Row" },
+
+  { g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)",
+    bestZh:"槓鈴聳肩",              bestEn:"BB Shrug",                   bestEq:"bb",
+    bbZh:"槓鈴聳肩",                bbEn:"BB Shrug",
+    dbZh:"啞鈴聳肩",                dbEn:"DB Shrug",
+    caZh:"纜繩聳肩（低位）",        caEn:"Low-cable Shrug",
+    mcZh:"聳肩機",                  mcEn:"Shrug Machine",
+    bwZh:"肩胛聳肩（懸吊）",        bwEn:"Scapular Shrug (Dead Hang) ★",
+    kbZh:"壺鈴聳肩",            kbEn:"KB Shrug",
+    bdZh:"彈力帶聳肩",            bdEn:"Band Shrug" },
+
+  { g:"背部 Back", mZh:"菱形肌", mEn:"Rhomboids",
+    bestZh:"纜繩臉拉（Face Pull）",  bestEn:"Cable Face Pull",            bestEq:"ca",
+    bbZh:"槓鈴窄握俯身划船",        bbEn:"Close-grip BB Row",
+    dbZh:"俯臥啞鈴 Y/T/W 舉",      dbEn:"Prone DB Y/T/W Raise",
+    caZh:"纜繩臉拉（Face Pull）",    caEn:"Cable Face Pull",
+    mcZh:"後三角飛鳥機",            mcEn:"Rear Delt Fly Machine",
+    bwZh:"俯臥 T 字舉",             bwEn:"Prone T Raise",
+    kbZh:"壺鈴俯身划船（寬肘）",            kbEn:"KB Bent-over Row (Wide Elbow)",
+    bdZh:"彈力帶拉開（Pull-apart）",            bdEn:"Band Pull-apart" },
+
+  { g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae",
+    bestZh:"槓鈴硬舉",              bestEn:"BB Deadlift",                bestEq:"bb",
+    bbZh:"槓鈴硬舉",                bbEn:"BB Deadlift",
+    dbZh:"啞鈴羅馬尼亞硬舉",        dbEn:"DB Romanian Deadlift",
+    caZh:"纜繩早安式（低位）",      caEn:"Low-cable Good Morning",
+    mcZh:"背伸展機",                mcEn:"Back Extension Machine",
+    bwZh:"超人式背伸展",            bwEn:"Superman Hold",
+    kbZh:"壺鈴擺盪",            kbEn:"KB Swing",
+    bdZh:"彈力帶早安式",            bdEn:"Band Good Morning" },
+
+  { g:"背部 Back", mZh:"大圓肌", mEn:"Teres Major",
+    bestZh:"單臂啞鈴划船",          bestEn:"Single-arm DB Row",          bestEq:"db",
+    bbZh:"槓鈴俯身划船（窄握）",    bbEn:"Narrow-grip BB Row",
+    dbZh:"單臂啞鈴划船",            dbEn:"Single-arm DB Row",
+    caZh:"纜繩窄握下拉（高位）",    caEn:"Close-grip Cable Pulldown",
+    mcZh:"高位下拉機（窄握）",      mcEn:"Lat Pulldown Machine (Narrow)",
+    bwZh:"窄握引體向上",            bwEn:"Narrow-grip Pull-up ★",
+    kbZh:"單臂壺鈴划船",            kbEn:"Single-arm KB Row",
+    bdZh:"彈力帶下拉（窄握）",            bdEn:"Band Close-grip Pulldown" },
+
+  // ── 肩膀 ──
+  { g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid",
+    bestZh:"啞鈴肩推",              bestEn:"DB Overhead Press",          bestEq:"db",
+    bbZh:"槓鈴軍式推舉",            bbEn:"BB Military Press",
+    dbZh:"啞鈴肩推",                dbEn:"DB Overhead Press",
+    caZh:"纜繩前平舉（低位）",      caEn:"Low-cable Front Raise",
+    mcZh:"坐姿肩推機",              mcEn:"Shoulder Press Machine",
+    bwZh:"Pike 伏地挺身",           bwEn:"Pike Push-up",
+    kbZh:"壺鈴肩推",            kbEn:"KB Overhead Press",
+    bdZh:"彈力帶肩推",            bdEn:"Band Overhead Press" },
+
+  { g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid",
+    bestZh:"纜繩側平舉（低位）",    bestEn:"Low-cable Lateral Raise",   bestEq:"ca",
+    bbZh:"槓鈴直立划船（寬握）",    bbEn:"Wide-grip BB Upright Row",
+    dbZh:"啞鈴側平舉",              dbEn:"DB Lateral Raise",
+    caZh:"纜繩側平舉（低位）",      caEn:"Low-cable Lateral Raise",
+    mcZh:"側平舉機",                mcEn:"Lateral Raise Machine",
+    bwZh:"倒立伏地挺身（靠牆）",    bwEn:"Wall Handstand Push-up ★",
+    kbZh:"壺鈴側平舉",            kbEn:"KB Lateral Raise",
+    bdZh:"彈力帶側平舉",            bdEn:"Band Lateral Raise" },
+
+  { g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid",
+    bestZh:"纜繩臉拉（Face Pull）",  bestEn:"Cable Face Pull",            bestEq:"ca",
+    bbZh:"槓鈴俯身划船（高肘）",    bbEn:"BB Row (High Elbow)",
+    dbZh:"俯身啞鈴反飛鳥",          dbEn:"Bent-over DB Reverse Fly",
+    caZh:"纜繩臉拉（Face Pull）",    caEn:"Cable Face Pull",
+    mcZh:"後三角飛鳥機",            mcEn:"Rear Delt Fly Machine",
+    bwZh:"俯臥反飛鳥",              bwEn:"Prone Reverse Fly (BW)",
+    kbZh:"壺鈴俯身反飛鳥",            kbEn:"KB Bent-over Reverse Fly",
+    bdZh:"彈力帶拉開（Pull-apart）",            bdEn:"Band Pull-apart" },
+
+  { g:"肩膀 Shoulder", mZh:"棘上肌", mEn:"Supraspinatus",
+    bestZh:"纜繩空罐式舉（低位）",  bestEn:"Low-cable Empty Can Raise", bestEq:"ca",
+    bbZh:"槓鈴直立划船（極寬握）",  bbEn:"Extra Wide-grip BB Upright Row",
+    dbZh:"啞鈴側平舉（拇指朝上）",  dbEn:"DB Lateral Raise (Thumb Up)",
+    caZh:"纜繩空罐式舉（低位）",    caEn:"Low-cable Empty Can Raise",
+    mcZh:"側平舉機（拇指朝上）",    mcEn:"Lateral Raise Machine (Thumb Up)",
+    bwZh:"側臥外展舉臂",            bwEn:"Side-lying Arm Abduction",
+    kbZh:"壺鈴側平舉（拇指朝上）",            kbEn:"KB Lateral Raise (Thumb Up)",
+    bdZh:"彈力帶側平舉（拇指朝上）",            bdEn:"Band Lateral Raise (Thumb Up)" },
+
+  { g:"肩膀 Shoulder", mZh:"棘下肌", mEn:"Infraspinatus",
+    bestZh:"纜繩外旋（中位）",      bestEn:"Cable External Rotation (Mid)", bestEq:"ca",
+    bbZh:"槓鈴俯身外旋",            bbEn:"BB Prone External Rotation",
+    dbZh:"側臥啞鈴外旋",            dbEn:"DB Side-lying External Rotation",
+    caZh:"纜繩外旋（中位）",        caEn:"Cable External Rotation (Mid)",
+    mcZh:"旋轉肌外旋機",            mcEn:"External Rotation Machine",
+    bwZh:"側臥外旋（徒手）",        bwEn:"Side-lying External Rotation (BW)",
+    kbZh:"壺鈴底朝上肩推",            kbEn:"KB Bottoms-up Press",
+    bdZh:"彈力帶外旋",            bdEn:"Band External Rotation" },
+
+  { g:"肩膀 Shoulder", mZh:"小圓肌", mEn:"Teres Minor",
+    bestZh:"纜繩外旋（低位）",      bestEn:"Cable External Rotation (Low)", bestEq:"ca",
+    bbZh:"槓鈴俯身外旋",            bbEn:"BB Bent-over External Rotation",
+    dbZh:"啞鈴俯身外旋",            dbEn:"DB Bent-over External Rotation",
+    caZh:"纜繩外旋（低位）",        caEn:"Cable External Rotation (Low)",
+    mcZh:"旋轉肌外旋機",            mcEn:"External Rotation Machine",
+    bwZh:"俯臥 W 字舉",             bwEn:"Prone W Raise",
+    kbZh:"壺鈴底朝上肩推",            kbEn:"KB Bottoms-up Press",
+    bdZh:"彈力帶外旋",            bdEn:"Band External Rotation" },
+
+  { g:"肩膀 Shoulder", mZh:"肩胛下肌", mEn:"Subscapularis",
+    bestZh:"纜繩內旋（中位）",      bestEn:"Cable Internal Rotation (Mid)", bestEq:"ca",
+    bbZh:"槓鈴臥推（內旋發力）",    bbEn:"BB Bench Press (Internal Rotation)",
+    dbZh:"啞鈴側臥內旋",            dbEn:"DB Side-lying Internal Rotation",
+    caZh:"纜繩內旋（中位）",        caEn:"Cable Internal Rotation (Mid)",
+    mcZh:"旋轉肌內旋機",            mcEn:"Internal Rotation Machine",
+    bwZh:"側臥內旋（徒手）",        bwEn:"Side-lying Internal Rotation (BW)",
+    kbZh:"壺鈴繞頭（Halo）",            kbEn:"KB Halo",
+    bdZh:"彈力帶內旋",            bdEn:"Band Internal Rotation" },
+
+  // ── 三頭 ──
+  { g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head",
+    bestZh:"纜繩過頭三頭伸展（低位）", bestEn:"Low-cable Overhead Triceps Ext.", bestEq:"ca",
+    bbZh:"槓鈴過頭三頭伸展",        bbEn:"BB Overhead Triceps Extension",
+    dbZh:"啞鈴過頭三頭伸展",        dbEn:"Overhead DB Triceps Extension",
+    caZh:"纜繩過頭三頭伸展（低位）", caEn:"Low-cable Overhead Triceps Ext.",
+    mcZh:"過頭三頭伸展機",          mcEn:"Overhead Triceps Extension Machine",
+    bwZh:"雙槓撐體",                bwEn:"Parallel Bar Dip ★",
+    kbZh:"壺鈴過頭三頭伸展",            kbEn:"KB Overhead Triceps Extension",
+    bdZh:"彈力帶過頭三頭伸展",            bdEn:"Band Overhead Triceps Extension" },
+
+  { g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head",
+    bestZh:"纜繩繩索下壓（高位）",  bestEn:"Cable Rope Pushdown",       bestEq:"ca",
+    bbZh:"槓鈴仰臥三頭屈伸",        bbEn:"BB Skull Crusher",
+    dbZh:"啞鈴仰臥三頭屈伸",        dbEn:"DB Skull Crusher",
+    caZh:"纜繩繩索下壓（高位）",    caEn:"Cable Rope Pushdown",
+    mcZh:"坐姿三頭下壓機",          mcEn:"Triceps Pushdown Machine",
+    bwZh:"窄距伏地挺身",            bwEn:"Close-grip Push-up",
+    kbZh:"壺鈴仰臥三頭屈伸",            kbEn:"KB Skull Crusher",
+    bdZh:"彈力帶下壓",            bdEn:"Band Triceps Pushdown" },
+
+  { g:"三頭 Triceps", mZh:"肱三頭肌內側頭", mEn:"Triceps Medial Head",
+    bestZh:"纜繩反握下壓（高位）",  bestEn:"Cable Reverse-grip Pushdown", bestEq:"ca",
+    bbZh:"槓鈴窄握臥推",            bbEn:"Close-grip BB Bench Press",
+    dbZh:"啞鈴踢腿式伸展",          dbEn:"DB Kickback",
+    caZh:"纜繩反握下壓（高位）",    caEn:"Cable Reverse-grip Pushdown",
+    mcZh:"坐姿三頭下壓機（反握）",  mcEn:"Triceps Machine (Reverse grip)",
+    bwZh:"反向撐體（椅邊）",        bwEn:"Bench Triceps Dip",
+    kbZh:"壺鈴窄握地板臥推",            kbEn:"Close-grip KB Floor Press",
+    bdZh:"彈力帶踢腿式伸展",            bdEn:"Band Kickback" },
+
+  { g:"三頭 Triceps", mZh:"肘肌", mEn:"Anconeus",
+    bestZh:"纜繩單臂下壓（高位）",  bestEn:"Single-arm Cable Pushdown", bestEq:"ca",
+    bbZh:"槓鈴窄握臥推",            bbEn:"Close-grip BB Bench Press",
+    dbZh:"啞鈴踢腿式伸展",          dbEn:"DB Kickback",
+    caZh:"纜繩單臂下壓（高位）",    caEn:"Single-arm Cable Pushdown",
+    mcZh:"坐姿三頭下壓機",          mcEn:"Triceps Pushdown Machine",
+    bwZh:"窄距伏地挺身",            bwEn:"Close-grip Push-up",
+    kbZh:"壺鈴窄握地板臥推",            kbEn:"Close-grip KB Floor Press",
+    bdZh:"彈力帶下壓",            bdEn:"Band Triceps Pushdown" },
+
+  // ── 二頭 ──
+  { g:"二頭 Biceps", mZh:"肱二頭肌長頭", mEn:"Biceps Long Head",
+    bestZh:"纜繩高位彎舉",          bestEn:"High-cable Curl",           bestEq:"ca",
+    bbZh:"站姿槓鈴彎舉（窄握）",    bbEn:"BB Curl (Narrow grip)",
+    dbZh:"上斜啞鈴彎舉",            dbEn:"Incline DB Curl",
+    caZh:"纜繩高位彎舉",            caEn:"High-cable Curl",
+    mcZh:"坐姿二頭彎舉機（窄握）",  mcEn:"Biceps Curl Machine (Narrow)",
+    bwZh:"反握引體向上",            bwEn:"Chin-up ★",
+    kbZh:"壺鈴彎舉",            kbEn:"KB Curl",
+    bdZh:"彈力帶彎舉",            bdEn:"Band Biceps Curl" },
+
+  { g:"二頭 Biceps", mZh:"肱二頭肌短頭", mEn:"Biceps Short Head",
+    bestZh:"槓鈴彎舉（寬握）",      bestEn:"Wide-grip BB Curl",         bestEq:"bb",
+    bbZh:"站姿槓鈴彎舉（寬握）",    bbEn:"Wide-grip BB Curl",
+    dbZh:"集中彎舉",                dbEn:"DB Concentration Curl",
+    caZh:"纜繩彎舉（低位，寬握）",  caEn:"Low-cable Curl (Wide grip)",
+    mcZh:"坐姿二頭彎舉機（寬握）",  mcEn:"Biceps Curl Machine (Wide)",
+    bwZh:"寬握引體向上",            bwEn:"Wide-grip Chin-up ★",
+    kbZh:"壺鈴彎舉",            kbEn:"KB Curl",
+    bdZh:"彈力帶彎舉",            bdEn:"Band Biceps Curl" },
+
+  { g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis",
+    bestZh:"啞鈴錘式彎舉",          bestEn:"DB Hammer Curl",            bestEq:"db",
+    bbZh:"槓鈴反握彎舉",            bbEn:"BB Reverse Curl",
+    dbZh:"啞鈴錘式彎舉",            dbEn:"DB Hammer Curl",
+    caZh:"纜繩錘式彎舉（低位）",    caEn:"Low-cable Hammer Curl",
+    mcZh:"坐姿二頭彎舉機（反握）",  mcEn:"Biceps Curl Machine (Reverse)",
+    bwZh:"對握引體向上",            bwEn:"Neutral-grip Pull-up ★",
+    kbZh:"壺鈴底朝上彎舉",            kbEn:"KB Bottoms-up Curl",
+    bdZh:"彈力帶錘式彎舉",            bdEn:"Band Hammer Curl" },
+
+  { g:"二頭 Biceps", mZh:"喙肱肌", mEn:"Coracobrachialis",
+    bestZh:"纜繩高位彎舉",          bestEn:"High-cable Curl",           bestEq:"ca",
+    bbZh:"站姿槓鈴彎舉（寬握）",    bbEn:"Wide-grip BB Curl",
+    dbZh:"啞鈴高位彎舉",            dbEn:"DB High-position Curl",
+    caZh:"纜繩高位彎舉",            caEn:"High-cable Curl",
+    mcZh:"傳教士椅二頭機",          mcEn:"Preacher Curl Machine",
+    bwZh:"反握引體向上",            bwEn:"Chin-up ★",
+    kbZh:"壺鈴彎舉",            kbEn:"KB Curl",
+    bdZh:"彈力帶彎舉",            bdEn:"Band Biceps Curl" },
+
+  // ── 前手臂 ──
+  { g:"前手臂 Forearm", mZh:"肱橈肌", mEn:"Brachioradialis",
+    bestZh:"啞鈴錘式彎舉",          bestEn:"DB Hammer Curl",            bestEq:"db",
+    bbZh:"槓鈴反握彎舉",            bbEn:"BB Reverse Curl",
+    dbZh:"啞鈴錘式彎舉",            dbEn:"DB Hammer Curl",
+    caZh:"纜繩反握彎舉（低位）",    caEn:"Low-cable Reverse Curl",
+    mcZh:"坐姿二頭彎舉機（反握）",  mcEn:"Biceps Curl Machine (Reverse)",
+    bwZh:"對握引體向上",            bwEn:"Neutral-grip Pull-up ★",
+    kbZh:"壺鈴底朝上持握",            kbEn:"KB Bottoms-up Hold",
+    bdZh:"彈力帶錘式彎舉",            bdEn:"Band Hammer Curl" },
+
+  { g:"前手臂 Forearm", mZh:"橈側腕屈肌", mEn:"Flexor Carpi Radialis",
+    bestZh:"啞鈴腕部彎舉",          bestEn:"DB Wrist Curl (Palms Up)",  bestEq:"db",
+    bbZh:"槓鈴腕部彎舉（正握）",    bbEn:"BB Wrist Curl (Palms Up)",
+    dbZh:"啞鈴腕部彎舉",            dbEn:"DB Wrist Curl (Palms Up)",
+    caZh:"纜繩腕部彎舉（低位）",    caEn:"Low-cable Wrist Curl",
+    mcZh:"腕部彎舉機",              mcEn:"Wrist Curl Machine",
+    bwZh:"指尖伏地挺身",            bwEn:"Fingertip Push-up",
+    kbZh:"壺鈴腕彎舉",            kbEn:"KB Wrist Curl",
+    bdZh:"彈力帶腕彎舉",            bdEn:"Band Wrist Curl" },
+
+  { g:"前手臂 Forearm", mZh:"指屈肌群", mEn:"Finger Flexors",
+    bestZh:"槓鈴硬舉（無助力帶）",  bestEn:"BB Deadlift (No Straps)",   bestEq:"bb",
+    bbZh:"槓鈴硬舉（無助力帶）",    bbEn:"BB Deadlift (No Straps)",
+    dbZh:"啞鈴農夫走路",            dbEn:"DB Farmer's Walk",
+    caZh:"纜繩握持靜態保持",        caEn:"Cable Handle Static Hold",
+    mcZh:"握力訓練機",              mcEn:"Grip Strength Machine",
+    bwZh:"懸吊靜態保持（Dead Hang）", bwEn:"Dead Hang ★",
+    kbZh:"壺鈴底朝上持握",            kbEn:"KB Bottoms-up Hold",
+    bdZh:"彈力帶握力訓練",            bdEn:"Band Grip Squeeze" },
+
+  { g:"前手臂 Forearm", mZh:"橈側腕伸肌", mEn:"Extensor Carpi Radialis",
+    bestZh:"啞鈴反向腕部伸展",      bestEn:"DB Reverse Wrist Extension", bestEq:"db",
+    bbZh:"槓鈴反握腕部伸展",        bbEn:"BB Reverse Wrist Extension",
+    dbZh:"啞鈴反向腕部伸展",        dbEn:"DB Reverse Wrist Extension",
+    caZh:"纜繩反握腕部伸展（低位）", caEn:"Low-cable Reverse Wrist Extension",
+    mcZh:"腕部伸展機（反握）",      mcEn:"Wrist Extension Machine (Reverse)",
+    bwZh:"手腕圓圈活動",            bwEn:"Wrist Circle Mobility",
+    kbZh:"",            kbEn:"",
+    bdZh:"彈力帶反向腕彎舉",            bdEn:"Band Reverse Wrist Curl" },
+
+  // ── 前大腿 ──
+  { g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris",
+    bestZh:"槓鈴後蹲（高槓）",      bestEn:"BB High-bar Back Squat",    bestEq:"bb",
+    bbZh:"槓鈴後蹲（高槓）",        bbEn:"BB High-bar Back Squat",
+    dbZh:"啞鈴保加利亞蹲",          dbEn:"DB Bulgarian Split Squat",
+    caZh:"纜繩保加利亞蹲（低位）",  caEn:"Low-cable Bulgarian Split Squat",
+    mcZh:"腿伸展機",                mcEn:"Leg Extension Machine",
+    bwZh:"保加利亞分腿蹲（徒手）",  bwEn:"BW Bulgarian Split Squat",
+    kbZh:"壺鈴高腳杯深蹲",            kbEn:"KB Goblet Squat",
+    bdZh:"彈力帶深蹲",            bdEn:"Band Squat" },
+
+  { g:"前大腿 Quads", mZh:"股外側肌", mEn:"Vastus Lateralis",
+    bestZh:"腿押機（窄距）",        bestEn:"Leg Press Machine (Narrow)", bestEq:"mc",
+    bbZh:"槓鈴窄距深蹲",            bbEn:"BB Narrow-stance Squat",
+    dbZh:"啞鈴窄距深蹲",            dbEn:"DB Narrow-stance Squat",
+    caZh:"纜繩腿伸展（低位）",      caEn:"Low-cable Leg Extension",
+    mcZh:"腿押機（窄距）",          mcEn:"Leg Press Machine (Narrow)",
+    bwZh:"徒手窄距深蹲",            bwEn:"Narrow-stance Squat (BW)",
+    kbZh:"壺鈴高腳杯深蹲",            kbEn:"KB Goblet Squat",
+    bdZh:"彈力帶深蹲",            bdEn:"Band Squat" },
+
+  { g:"前大腿 Quads", mZh:"股內側肌", mEn:"Vastus Medialis",
+    bestZh:"哈克蹲機",              bestEn:"Hack Squat Machine",        bestEq:"mc",
+    bbZh:"槓鈴相撲深蹲",            bbEn:"BB Sumo Squat",
+    dbZh:"啞鈴寬距深蹲（相撲）",    dbEn:"DB Sumo Squat",
+    caZh:"纜繩相撲深蹲（低位）",    caEn:"Low-cable Sumo Squat",
+    mcZh:"哈克蹲機",                mcEn:"Hack Squat Machine",
+    bwZh:"相撲深蹲（徒手）",        bwEn:"BW Sumo Squat",
+    kbZh:"壺鈴相撲深蹲",            kbEn:"KB Sumo Squat",
+    bdZh:"彈力帶相撲深蹲",            bdEn:"Band Sumo Squat" },
+
+  { g:"前大腿 Quads", mZh:"股中間肌", mEn:"Vastus Intermedius",
+    bestZh:"槓鈴後蹲",              bestEn:"BB Back Squat",             bestEq:"bb",
+    bbZh:"槓鈴後蹲",                bbEn:"BB Back Squat",
+    dbZh:"啞鈴深蹲（Goblet）",      dbEn:"DB Goblet Squat",
+    caZh:"纜繩深蹲（低位）",        caEn:"Low-cable Squat",
+    mcZh:"腿押機",                  mcEn:"Leg Press Machine",
+    bwZh:"徒手深蹲",                bwEn:"Bodyweight Squat",
+    kbZh:"壺鈴高腳杯深蹲",            kbEn:"KB Goblet Squat",
+    bdZh:"彈力帶深蹲",            bdEn:"Band Squat" },
+
+  { g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas",
+    bestZh:"懸吊抬膝（單槓）",      bestEn:"Hanging Knee Raise",        bestEq:"bw",
+    bbZh:"槓鈴登階",                bbEn:"BB Step-up",
+    dbZh:"啞鈴登階",                dbEn:"DB Step-up",
+    caZh:"纜繩站姿抬膝（低位）",    caEn:"Low-cable Standing Knee Raise",
+    mcZh:"坐姿抬膝機",              mcEn:"Seated Knee Raise Machine",
+    bwZh:"懸吊抬膝（單槓）",        bwEn:"Hanging Knee Raise ★",
+    kbZh:"壺鈴登階",            kbEn:"KB Step-up",
+    bdZh:"彈力帶站姿抬膝",            bdEn:"Band Standing Knee Raise" },
+
+  // ── 後大腿 ──
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌長頭", mEn:"Biceps Femoris (Long)",
+    bestZh:"槓鈴羅馬尼亞硬舉",      bestEn:"BB Romanian Deadlift",      bestEq:"bb",
+    bbZh:"槓鈴羅馬尼亞硬舉",        bbEn:"BB Romanian Deadlift",
+    dbZh:"啞鈴羅馬尼亞硬舉",        dbEn:"DB Romanian Deadlift",
+    caZh:"纜繩單腳 RDL（低位）",    caEn:"Low-cable Single-leg RDL",
+    mcZh:"臥式腿彎舉機",            mcEn:"Lying Leg Curl Machine",
+    bwZh:"北歐腿彎舉",              bwEn:"Nordic Hamstring Curl",
+    kbZh:"壺鈴擺盪",            kbEn:"KB Swing",
+    bdZh:"彈力帶硬舉",            bdEn:"Band Deadlift" },
+
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌短頭", mEn:"Biceps Femoris (Short)",
+    bestZh:"坐式腿彎舉機",          bestEn:"Seated Leg Curl Machine",   bestEq:"mc",
+    bbZh:"槓鈴北歐腿彎舉（輔助）",  bbEn:"BB-assisted Nordic Curl",
+    dbZh:"俯臥啞鈴腿彎舉",          dbEn:"Prone DB Leg Curl",
+    caZh:"纜繩站姿腿後勾（低位）",  caEn:"Low-cable Standing Leg Curl",
+    mcZh:"坐式腿彎舉機",            mcEn:"Seated Leg Curl Machine",
+    bwZh:"滑盤腿彎舉",              bwEn:"Slider Leg Curl",
+    kbZh:"壺鈴擺盪",            kbEn:"KB Swing",
+    bdZh:"彈力帶站姿腿後勾",            bdEn:"Band Standing Leg Curl" },
+
+  { g:"後大腿 Hamstrings", mZh:"半腱肌 / 半膜肌", mEn:"Semitend. / Semimemb.",
+    bestZh:"北歐腿彎舉（徒手）",    bestEn:"Nordic Hamstring Curl",     bestEq:"bw",
+    bbZh:"槓鈴直腿硬舉",            bbEn:"BB Stiff-leg Deadlift",
+    dbZh:"啞鈴單腳 RDL",            dbEn:"Single-leg DB RDL",
+    caZh:"纜繩直腿後抬（低位）",    caEn:"Low-cable Straight-leg Kickback",
+    mcZh:"臥式腿彎舉機",            mcEn:"Lying Leg Curl Machine",
+    bwZh:"北歐腿彎舉",              bwEn:"Nordic Hamstring Curl",
+    kbZh:"壺鈴單腳 RDL",            kbEn:"KB Single-leg RDL",
+    bdZh:"彈力帶俯臥腿彎舉",            bdEn:"Band Prone Leg Curl" },
+
+  { g:"後大腿 Hamstrings", mZh:"臀大肌", mEn:"Gluteus Maximus",
+    bestZh:"槓鈴臀推",              bestEn:"BB Hip Thrust",             bestEq:"bb",
+    bbZh:"槓鈴臀推",                bbEn:"BB Hip Thrust",
+    dbZh:"啞鈴臀推",                dbEn:"DB Hip Thrust",
+    caZh:"纜繩臀推／後踢腿（低位）", caEn:"Low-cable Hip Thrust / Kickback",
+    mcZh:"臀推機",                  mcEn:"Hip Thrust Machine",
+    bwZh:"單腳臀橋",                bwEn:"Single-leg Glute Bridge",
+    kbZh:"壺鈴臀推",            kbEn:"KB Hip Thrust",
+    bdZh:"彈力帶臀推",            bdEn:"Band Hip Thrust" },
+
+  { g:"後大腿 Hamstrings", mZh:"臀中肌", mEn:"Gluteus Medius",
+    bestZh:"髖外展機",              bestEn:"Hip Abduction Machine",     bestEq:"mc",
+    bbZh:"槓鈴側弓步蹲",            bbEn:"BB Lateral Lunge",
+    dbZh:"啞鈴側臥抬腿",            dbEn:"DB Side-lying Hip Abduction",
+    caZh:"纜繩側抬腿（低位）",      caEn:"Low-cable Hip Abduction",
+    mcZh:"髖外展機",                mcEn:"Hip Abduction Machine",
+    bwZh:"側臥抬腿",                bwEn:"Side-lying Hip Abduction",
+    kbZh:"壺鈴側弓步蹲",            kbEn:"KB Lateral Lunge",
+    bdZh:"彈力帶螃蟹走路",            bdEn:"Band Lateral Walk" },
+
+  // ── 小腿 ──
+  { g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius",
+    bestZh:"站姿提踵機",            bestEn:"Standing Calf Raise Machine", bestEq:"mc",
+    bbZh:"槓鈴站姿提踵",            bbEn:"BB Standing Calf Raise",
+    dbZh:"單腳啞鈴提踵",            dbEn:"Single-leg DB Calf Raise",
+    caZh:"纜繩站姿提踵（低位）",    caEn:"Low-cable Standing Calf Raise",
+    mcZh:"站姿提踵機",              mcEn:"Standing Calf Raise Machine",
+    bwZh:"單腳站姿提踵",            bwEn:"Single-leg Calf Raise",
+    kbZh:"壺鈴站姿提踵",            kbEn:"KB Standing Calf Raise",
+    bdZh:"彈力帶站姿提踵",            bdEn:"Band Standing Calf Raise" },
+
+  { g:"小腿 Calves", mZh:"比目魚肌", mEn:"Soleus",
+    bestZh:"坐姿提踵機",            bestEn:"Seated Calf Raise Machine", bestEq:"mc",
+    bbZh:"槓鈴坐姿提踵",            bbEn:"BB Seated Calf Raise",
+    dbZh:"啞鈴坐姿提踵（膝彎曲）",  dbEn:"DB Seated Calf Raise",
+    caZh:"纜繩坐姿提踵（低位）",    caEn:"Low-cable Seated Calf Raise",
+    mcZh:"坐姿提踵機",              mcEn:"Seated Calf Raise Machine",
+    bwZh:"坐姿提踵（膝彎 90°）",    bwEn:"Seated Calf Raise (Knee 90°)",
+    kbZh:"壺鈴坐姿提踵",            kbEn:"KB Seated Calf Raise",
+    bdZh:"彈力帶坐姿提踵",            bdEn:"Band Seated Calf Raise" },
+
+  { g:"小腿 Calves", mZh:"脛骨前肌", mEn:"Tibialis Anterior",
+    bestZh:"Tib Bar 脛骨前肌訓練機", bestEn:"Tibialis Raise Machine (Tib Bar)", bestEq:"mc",
+    bbZh:"槓鈴靠牆勾腳踝",          bbEn:"BB-weighted Tibialis Raise",
+    dbZh:"啞鈴 Tibialis Raise",     dbEn:"DB Tibialis Raise",
+    caZh:"纜繩勾腳背（低位，坐姿）", caEn:"Low-cable Seated Dorsiflexion",
+    mcZh:"Tib Bar 脛骨前肌訓練機",  mcEn:"Tibialis Raise Machine (Tib Bar)",
+    bwZh:"站姿勾腳踝（靠牆）",      bwEn:"Wall Tibialis Raise",
+    kbZh:"",            kbEn:"",
+    bdZh:"彈力帶勾腳背",            bdEn:"Band Dorsiflexion" },
+
+  { g:"小腿 Calves", mZh:"腓骨肌群", mEn:"Fibularis Group",
+    bestZh:"纜繩外翻訓練（低位）",  bestEn:"Low-cable Eversion",        bestEq:"ca",
+    bbZh:"槓鈴站姿外翻提踵",        bbEn:"BB Eversion Calf Raise",
+    dbZh:"啞鈴單腳外翻提踵",        dbEn:"DB Single-leg Eversion Raise",
+    caZh:"纜繩外翻訓練（低位）",    caEn:"Low-cable Eversion",
+    mcZh:"踝關節外翻機",            mcEn:"Ankle Eversion Machine",
+    bwZh:"單腳平衡訓練（外翻）",    bwEn:"Single-leg Balance (Eversion)",
+    kbZh:"",            kbEn:"",
+    bdZh:"彈力帶外翻訓練",            bdEn:"Band Eversion" },
+
+  // ── 腹部 ──
+  { g:"腹部 Core", mZh:"腹直肌", mEn:"Rectus Abdominis",
+    bestZh:"纜繩捲腹（高位）",          bestEn:"Cable Crunch",               bestEq:"ca",
+    bbZh:"",                            bbEn:"",
+    dbZh:"",                            dbEn:"",
+    caZh:"纜繩捲腹（高位）",            caEn:"Cable Crunch",
+    mcZh:"腹部捲腹機",                  mcEn:"Ab Crunch Machine",
+    bwZh:"腹輪（Ab Wheel Rollout）",    bwEn:"Ab Wheel Rollout ★",
+    kbZh:"壺鈴土耳其起立",            kbEn:"KB Turkish Get-up",
+    bdZh:"彈力帶捲腹",            bdEn:"Band Crunch" },
+
+  { g:"腹部 Core", mZh:"腹外斜肌", mEn:"External Oblique",
+    bestZh:"纜繩伐木（高→低）",        bestEn:"Cable Woodchop (High–Low)",  bestEq:"ca",
+    bbZh:"槓鈴地雷管旋轉",              bbEn:"BB Landmine Rotation",
+    dbZh:"啞鈴側彎",                    dbEn:"DB Side Bend",
+    caZh:"纜繩伐木（高→低）",          caEn:"Cable Woodchop (High–Low)",
+    mcZh:"旋轉訓練機",                  mcEn:"Rotary Torso Machine",
+    bwZh:"自行車捲腹",                  bwEn:"Bicycle Crunch",
+    kbZh:"壺鈴風車式",            kbEn:"KB Windmill",
+    bdZh:"彈力帶伐木（高→低）",            bdEn:"Band Woodchop (High–Low)" },
+
+  { g:"腹部 Core", mZh:"腹內斜肌", mEn:"Internal Oblique",
+    bestZh:"纜繩 Pallof Press（中位）",  bestEn:"Cable Pallof Press",         bestEq:"ca",
+    bbZh:"槓鈴地雷管旋轉",              bbEn:"BB Landmine Rotation",
+    dbZh:"啞鈴俄式扭轉",                dbEn:"DB Russian Twist",
+    caZh:"纜繩 Pallof Press（中位）",    caEn:"Cable Pallof Press",
+    mcZh:"旋轉訓練機",                  mcEn:"Rotary Torso Machine",
+    bwZh:"側棒式加旋轉",                bwEn:"Side Plank with Rotation",
+    kbZh:"壺鈴土耳其起立",            kbEn:"KB Turkish Get-up",
+    bdZh:"彈力帶 Pallof Press",            bdEn:"Band Pallof Press" },
+
+  { g:"腹部 Core", mZh:"腹橫肌", mEn:"Transversus Abdominis",
+    bestZh:"死蟲式（Dead Bug）",         bestEn:"Dead Bug",                   bestEq:"bw",
+    bbZh:"",                            bbEn:"",
+    dbZh:"",                            dbEn:"",
+    caZh:"纜繩 Pallof Press（中位）",    caEn:"Cable Pallof Press",
+    mcZh:"",                            mcEn:"",
+    bwZh:"死蟲式（Dead Bug）",          bwEn:"Dead Bug ★",
+    kbZh:"壺鈴手提箱走路（單側）",            kbEn:"KB Suitcase Carry",
+    bdZh:"彈力帶 Pallof Press",            bdEn:"Band Pallof Press" },
+];
+
+const eqLabel = { bb:"槓鈴 BB", db:"啞鈴 DB", ca:"纜繩 Cable", mc:"機器 Machine", bw:"徒手 BW", kb:"壺鈴 KB", bd:"彈力帶 Band" };
+const eqClass = { bb:"eq-bb", db:"eq-db", ca:"eq-ca", mc:"eq-mc", bw:"eq-bw", kb:"eq-kb", bd:"eq-bd" };
+
+const groupKeys = [...new Set(data.map(d => d.g))];
+const allGroups = ["全部 All", ...groupKeys];
+let active = "全部 All";
+
+function render() {
+  const rows = active === "全部 All" ? data : data.filter(d => d.g === active);
+  const tbody = document.getElementById("tbody");
+  const empty = document.getElementById("empty");
+  if (!rows.length) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  let html = "";
+  rows.forEach(r => {
+    const p = palette[r.g];
+    const gParts = r.g.split(" ");
+    const glabel = `<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${gParts[0]}<br><span style="font-weight:400;font-size:10px">${gParts.slice(1).join(" ")}</span></span>`;
+    const cell = (zh, en) => zh ? `<div class="azh">${zh}</div><div class="aen">${en}</div>` : '';
+    html += `<tr>
+      <td>${glabel}</td>
+      <td><div class="mzh">${r.mZh}</div><div class="men">${r.mEn}</div></td>
+      <td class="best-cell">
+        <div class="best-azh">${r.bestZh}</div>
+        <div class="best-aen">${r.bestEn}</div>
+        <span class="eq-tag ${eqClass[r.bestEq]}" style="margin-top:3px">${eqLabel[r.bestEq]}</span>
+      </td>
+      <td>${cell(r.bbZh, r.bbEn)}</td>
+      <td>${cell(r.dbZh, r.dbEn)}</td>
+      <td>${cell(r.caZh, r.caEn)}</td>
+      <td>${cell(r.mcZh, r.mcEn)}</td>
+      <td>${cell(r.bwZh, r.bwEn)}</td>
+      <td>${cell(r.kbZh, r.kbEn)}</td>
+      <td>${cell(r.bdZh, r.bdEn)}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  allGroups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (g === active ? " active" : "");
+    const count = g === "全部 All" ? data.length : data.filter(d => d.g === g).length;
+    const label = g === "全部 All" ? "全部 All" : g.split(" ")[0] + " " + g.split(" ").slice(1).join(" ");
+    btn.innerHTML = label + `<span class="count">(${count})</span>`;
+    btn.onclick = () => {
+      active = g;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>

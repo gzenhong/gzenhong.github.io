@@ -1,0 +1,153 @@
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 12px 0; font-size: 13px; color: var(--color-text-primary); }
+.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.equip-label { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: #FAEEDA; color: #854F0B; border: 1px solid #EF9F27; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.filter-btn { padding: 4px 11px; border-radius: 20px; border: 1px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; font-size: 12px; transition: all .15s; }
+.filter-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th { background: var(--color-background-tertiary); padding: 7px 8px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--color-border-tertiary); position: sticky; top: 0; z-index: 1; color: var(--color-text-secondary); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--color-border-tertiary); }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td { padding: 6px 8px; vertical-align: top; line-height: 1.6; }
+.group-label { font-weight: 500; font-size: 11px; padding: 2px 7px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+.badge { font-size: 11px; padding: 2px 6px; border-radius: 10px; display: inline-block; background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+.zh { font-weight: 500; color: var(--color-text-primary); }
+.en { font-size: 11px; color: #A32D2D; }
+.move-primary .zh { font-weight: 500; color: var(--color-text-primary); }
+.move-secondary .zh { color: var(--color-text-secondary); }
+.count { font-size: 11px; color: var(--color-text-tertiary); margin-left: 5px; }
+#empty { display:none; text-align:center; padding:32px; color:var(--color-text-tertiary); font-size:13px; }
+.note { font-size:10px; color:var(--color-text-tertiary); font-style:italic; }
+</style>
+
+<div class="wrap">
+  <div class="top-row">
+    <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">器材 Equipment：</span>
+    <span class="equip-label">🔔 壺鈴 Kettlebell</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:68px">部位<br><span style="font-weight:400;font-size:11px">Body Part</span></th>
+          <th style="width:105px">主要肌肉<br><span style="font-weight:400;font-size:11px">Prime Mover</span></th>
+          <th style="width:105px">次要肌肉<br><span style="font-weight:400;font-size:11px">Secondary</span></th>
+          <th>主要動作<br><span style="font-weight:400;font-size:11px">Primary Exercise</span></th>
+          <th>次要動作<br><span style="font-weight:400;font-size:11px">Secondary Exercise</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:10px;padding:8px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">壺鈴特點：底部重心偏移產生額外不穩定性，強化握力與核心穩定。特別適合爆發力、全身協調與後側鏈訓練。<br>Kettlebells feature an offset center of gravity that challenges grip and core stability. Ideal for power, coordination, and posterior chain training.</span>
+  </div>
+</div>
+
+<script>
+const palette = {
+  "胸部 Chest":   { bg:"#E6F1FB", border:"#378ADD", text:"#185FA5" },
+  "背部 Back":    { bg:"#EAF3DE", border:"#639922", text:"#3B6D11" },
+  "肩膀 Shoulder":{ bg:"#FAEEDA", border:"#EF9F27", text:"#854F0B" },
+  "三頭 Triceps": { bg:"#FBEAF0", border:"#D4537E", text:"#993556" },
+  "二頭 Biceps":  { bg:"#E1F5EE", border:"#1D9E75", text:"#0F6E56" },
+  "前手臂 Forearm":{ bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+  "前大腿 Quads": { bg:"#EEEDFE", border:"#7F77DD", text:"#534AB7" },
+  "後大腿 Hamstrings":{ bg:"#F1EFE8", border:"#888780", text:"#5F5E5A" },
+  "小腿 Calves":  { bg:"#FCEBEB", border:"#E24B4A", text:"#A32D2D" },
+  "腹部 Core":    { bg:"#FAECE7", border:"#D85A30", text:"#993C1D" },
+};
+
+const data = [
+  // 胸部
+  { g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)", sZh:"前三角肌", sEn:"Anterior Deltoid", pZh:"壺鈴上斜地板臥推", pEn:"KB Incline Floor Press", xZh:"壺鈴上斜飛鳥", xEn:"KB Incline Fly" },
+  { g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)", sZh:"肱三頭肌", sEn:"Triceps Brachii", pZh:"壺鈴地板臥推", pEn:"KB Floor Press", xZh:"雙壺鈴地板飛鳥", xEn:"Double KB Floor Fly" },
+  { g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)", sZh:"前三角肌", sEn:"Anterior Deltoid", pZh:"壺鈴仰臥過頭拉", pEn:"KB Pullover", xZh:"壺鈴下斜伏地挺身（負重）", xEn:"KB-weighted Decline Push-up" },
+  // 背部
+  { g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi", sZh:"大圓肌", sEn:"Teres Major", pZh:"單臂壺鈴划船", pEn:"Single-arm KB Row", xZh:"壺鈴俯身划船", xEn:"KB Bent-over Row" },
+  { g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid/Lower)", sZh:"菱形肌", sEn:"Rhomboids", pZh:"壺鈴俯身划船（寬肘）", pEn:"KB Bent-over Row (Wide Elbow)", xZh:"壺鈴高拉", xEn:"KB High Pull" },
+  { g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)", sZh:"提肩胛肌", sEn:"Levator Scapulae", pZh:"壺鈴聳肩", pEn:"KB Shrug", xZh:"壺鈴直立划船", xEn:"KB Upright Row" },
+  { g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"壺鈴擺盪", pEn:"KB Swing", xZh:"壺鈴單腳硬舉", xEn:"KB Single-leg Deadlift" },
+  // 肩膀
+  { g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid", sZh:"肱三頭肌", sEn:"Triceps Brachii", pZh:"壺鈴肩推", pEn:"KB Overhead Press", xZh:"壺鈴底朝上肩推", xEn:"KB Bottoms-up Press" },
+  { g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid", sZh:"斜方肌上部", sEn:"Upper Trapezius", pZh:"壺鈴側平舉", pEn:"KB Lateral Raise", xZh:"壺鈴繞頭（Halo）", xEn:"KB Halo" },
+  { g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid", sZh:"菱形肌", sEn:"Rhomboids", pZh:"壺鈴俯身反飛鳥", pEn:"KB Bent-over Reverse Fly", xZh:"壺鈴高拉（外旋）", xEn:"KB High Pull (External Rot.)" },
+  { g:"肩膀 Shoulder", mZh:"旋轉肌群", mEn:"Rotator Cuff", sZh:"三角肌", sEn:"Deltoid", pZh:"壺鈴底朝上肩推", pEn:"KB Bottoms-up Press", xZh:"壺鈴繞頭（Halo）", xEn:"KB Halo" },
+  // 三頭
+  { g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head", sZh:"後三角肌", sEn:"Posterior Deltoid", pZh:"壺鈴過頭三頭伸展", pEn:"KB Overhead Triceps Extension", xZh:"單臂壺鈴過頭伸展", xEn:"Single-arm KB Overhead Extension" },
+  { g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head", sZh:"肱三頭肌長頭", sEn:"Triceps Long Head", pZh:"壺鈴仰臥三頭屈伸", pEn:"KB Skull Crusher", xZh:"壺鈴窄握地板臥推", xEn:"Close-grip KB Floor Press" },
+  // 二頭
+  { g:"二頭 Biceps", mZh:"肱二頭肌", mEn:"Biceps Brachii", sZh:"肱橈肌", sEn:"Brachioradialis", pZh:"壺鈴彎舉", pEn:"KB Curl", xZh:"壺鈴錘式彎舉", xEn:"KB Hammer Curl" },
+  { g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis", sZh:"肱二頭肌", sEn:"Biceps Brachii", pZh:"壺鈴底朝上彎舉", pEn:"KB Bottoms-up Curl", xZh:"壺鈴反握彎舉", xEn:"KB Reverse Curl" },
+  // 前手臂
+  { g:"前手臂 Forearm", mZh:"握力肌群", mEn:"Grip Muscles", sZh:"指屈肌", sEn:"Finger Flexors", pZh:"壺鈴底朝上持握", pEn:"KB Bottoms-up Hold", xZh:"壺鈴農夫走路", xEn:"KB Farmer's Walk" },
+  { g:"前手臂 Forearm", mZh:"腕屈肌群", mEn:"Wrist Flexors", sZh:"指屈肌", sEn:"Finger Flexors", pZh:"壺鈴腕彎舉", pEn:"KB Wrist Curl", xZh:"壺鈴底朝上行走", xEn:"KB Bottoms-up Walk" },
+  // 前大腿
+  { g:"前大腿 Quads", mZh:"股四頭肌", mEn:"Quadriceps", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"壺鈴高腳杯深蹲", pEn:"KB Goblet Squat", xZh:"壺鈴保加利亞蹲", xEn:"KB Bulgarian Split Squat" },
+  { g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris", sZh:"髂腰肌", sEn:"Iliopsoas", pZh:"雙壺鈴前蹲", pEn:"Double KB Front Squat", xZh:"壺鈴弓步蹲", xEn:"KB Lunge" },
+  { g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas", sZh:"股直肌", sEn:"Rectus Femoris", pZh:"壺鈴登階", pEn:"KB Step-up", xZh:"壺鈴行走弓步", xEn:"KB Walking Lunge" },
+  // 後大腿
+  { g:"後大腿 Hamstrings", mZh:"股二頭肌", mEn:"Biceps Femoris", sZh:"臀大肌", sEn:"Gluteus Maximus", pZh:"壺鈴擺盪", pEn:"KB Swing", xZh:"壺鈴單腳 RDL", xEn:"KB Single-leg RDL" },
+  { g:"後大腿 Hamstrings", mZh:"臀大肌", mEn:"Gluteus Maximus", sZh:"大腿後側群", sEn:"Hamstring Group", pZh:"壺鈴臀推", pEn:"KB Hip Thrust", xZh:"壺鈴擺盪（髖鉸鏈）", xEn:"KB Swing (Hip Hinge)" },
+  { g:"後大腿 Hamstrings", mZh:"臀中肌", mEn:"Gluteus Medius", sZh:"臀小肌", sEn:"Gluteus Minimus", pZh:"壺鈴側弓步蹲", pEn:"KB Lateral Lunge", xZh:"壺鈴單腳硬舉", xEn:"KB Single-leg Deadlift" },
+  // 小腿
+  { g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius", sZh:"比目魚肌", sEn:"Soleus", pZh:"壺鈴站姿提踵", pEn:"KB Standing Calf Raise", xZh:"壺鈴單腳提踵", xEn:"KB Single-leg Calf Raise" },
+  { g:"小腿 Calves", mZh:"比目魚肌", mEn:"Soleus", sZh:"腓腸肌", sEn:"Gastrocnemius", pZh:"壺鈴坐姿提踵", pEn:"KB Seated Calf Raise", xZh:"壺鈴深蹲提踵", xEn:"KB Squat Calf Raise" },
+  // 腹部
+  { g:"腹部 Core", mZh:"腹直肌", mEn:"Rectus Abdominis", sZh:"髂腰肌", sEn:"Iliopsoas", pZh:"壺鈴負重捲腹", pEn:"KB Weighted Crunch", xZh:"壺鈴土耳其起立", xEn:"KB Turkish Get-up" },
+  { g:"腹部 Core", mZh:"腹外斜肌", mEn:"External Oblique", sZh:"腹內斜肌", sEn:"Internal Oblique", pZh:"壺鈴風車式", pEn:"KB Windmill", xZh:"壺鈴側彎", xEn:"KB Side Bend" },
+  { g:"腹部 Core", mZh:"腹內斜肌", mEn:"Internal Oblique", sZh:"腹外斜肌", sEn:"External Oblique", pZh:"壺鈴土耳其起立", pEn:"KB Turkish Get-up", xZh:"壺鈴繞腿傳遞", xEn:"KB Around-the-leg Pass" },
+  { g:"腹部 Core", mZh:"腹橫肌", mEn:"Transversus Abdominis", sZh:"多裂肌", sEn:"Multifidus", pZh:"壺鈴手提箱走路（單側）", pEn:"KB Suitcase Carry", xZh:"壺鈴底朝上過頭行走", xEn:"KB Bottoms-up Overhead Walk" },
+];
+
+const groupKeys = [...new Set(data.map(d => d.g))];
+const allGroups = ["全部 All", ...groupKeys];
+let active = "全部 All";
+
+function render() {
+  const rows = active === "全部 All" ? data : data.filter(d => d.g === active);
+  const tbody = document.getElementById("tbody");
+  const empty = document.getElementById("empty");
+  if (!rows.length) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  let html = "";
+  rows.forEach(r => {
+    const p = palette[r.g];
+    const label = `<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${r.g.split(" ")[0]}<br><span style="font-weight:400;font-size:10px">${r.g.split(" ").slice(1).join(" ")}</span></span>`;
+    html += `<tr>
+      <td>${label}</td>
+      <td><div class="zh">${r.mZh}</div><div class="en">${r.mEn}</div></td>
+      <td><div class="zh badge">${r.sZh}</div><div class="en" style="margin-top:2px">${r.sEn}</div></td>
+      <td class="move-primary"><div class="zh">${r.pZh}</div><div class="en">${r.pEn}</div></td>
+      <td class="move-secondary"><div class="zh">${r.xZh}</div><div class="en">${r.xEn}</div></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  allGroups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (g === active ? " active" : "");
+    const count = g === "全部 All" ? data.length : data.filter(d => d.g === g).length;
+    const label = g === "全部 All" ? "全部 All" : g.split(" ")[0] + " " + g.split(" ").slice(1).join(" ");
+    btn.innerHTML = label + `<span class="count">(${count})</span>`;
+    btn.onclick = () => {
+      active = g;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>
