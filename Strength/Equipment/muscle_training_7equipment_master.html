@@ -1,0 +1,588 @@
+
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; }
+.wrap { padding: 10px 0; font-size: 12px; color: var(--color-text-primary); }
+.legend { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; align-items:center; }
+.legend-label { font-size:11px; color:var(--color-text-secondary); }
+.eq-tag { font-size:10px; padding:1px 7px; border-radius:10px; display:inline-block; border:1px solid; white-space:nowrap; }
+.eq-best { background:#EEEDFE; color:#534AB7; border-color:#7F77DD; font-weight:600; }
+.eq-bb  { background:#FAEEDA; color:#854F0B; border-color:#EF9F27; }
+.eq-db  { background:#E6F1FB; color:#185FA5; border-color:#378ADD; }
+.eq-kb  { background:#FBEAF0; color:#993556; border-color:#D4537E; }
+.eq-ca  { background:#EAF3DE; color:#3B6D11; border-color:#639922; }
+.eq-mc  { background:#FCEBEB; color:#A32D2D; border-color:#E24B4A; }
+.eq-bd  { background:#F1EFE8; color:#5F5E5A; border-color:#888780; }
+.eq-bw  { background:#E6F1FB; color:#0C447C; border-color:#185FA5; }
+.filter-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.filter-btn { padding:3px 9px; border-radius:20px; border:1px solid var(--color-border-secondary); background:var(--color-background-secondary); color:var(--color-text-secondary); cursor:pointer; font-size:11px; transition:all .15s; }
+.filter-btn.active { background:var(--color-background-info); color:var(--color-text-info); border-color:var(--color-border-info); font-weight:500; }
+.tbl-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:11px; min-width:1200px; }
+thead tr:first-child th { background:var(--color-background-tertiary); padding:5px 6px; text-align:center; font-weight:600; border-bottom:1px solid var(--color-border-secondary); position:sticky; top:0; z-index:3; color:var(--color-text-secondary); white-space:nowrap; }
+thead tr:first-child th.hd-best { background:#EEEDFE; color:#534AB7; }
+thead tr:first-child th.hd-bb  { background:#FAEEDA; color:#854F0B; }
+thead tr:first-child th.hd-db  { background:#E6F1FB; color:#185FA5; }
+thead tr:first-child th.hd-kb  { background:#FBEAF0; color:#993556; }
+thead tr:first-child th.hd-ca  { background:#EAF3DE; color:#3B6D11; }
+thead tr:first-child th.hd-mc  { background:#FCEBEB; color:#A32D2D; }
+thead tr:first-child th.hd-bd  { background:#F1EFE8; color:#5F5E5A; }
+thead tr:first-child th.hd-bw  { background:#E6F1FB; color:#0C447C; }
+tbody tr { border-bottom:1px solid var(--color-border-tertiary); }
+tbody tr:hover { background:var(--color-background-secondary); }
+tbody td { padding:5px 6px; vertical-align:top; line-height:1.5; }
+td.best-cell { background:rgba(127,119,221,0.06); }
+.group-label { font-weight:500; font-size:10px; padding:2px 5px; border-radius:4px; display:inline-block; white-space:nowrap; }
+.mzh { font-weight:600; font-size:11px; color:var(--color-text-primary); }
+.men { font-size:10px; color:var(--color-text-tertiary); }
+.move-list { margin:0; padding:0; list-style:none; }
+.move-list li { padding:1px 0; border-bottom:1px dashed var(--color-border-tertiary); display:flex; align-items:flex-start; gap:2px; }
+.move-list li:last-child { border-bottom:none; }
+.mrank { display:inline-block; font-size:9px; font-weight:600; min-width:14px; height:14px; border-radius:3px; text-align:center; line-height:14px; background:var(--color-background-tertiary); color:var(--color-text-tertiary); flex-shrink:0; margin-top:1px; }
+.mrank-1 { background:#534AB7; color:#fff; }
+.mzh-s { font-size:11px; color:var(--color-text-primary); }
+.men-s { font-size:10px; color:var(--color-text-tertiary); display:block; }
+.best-mzh { font-weight:700; font-size:11px; color:#534AB7; }
+.best-men  { font-size:10px; color:#7F77DD; display:block; }
+.count { font-size:10px; color:var(--color-text-tertiary); margin-left:3px; }
+#empty { display:none; text-align:center; padding:24px; color:var(--color-text-tertiary); }
+.note { font-size:10px; color:var(--color-text-tertiary); font-style:italic; }
+</style>
+
+<div class="wrap">
+  <div class="legend">
+    <span class="legend-label">器材：</span>
+    <span class="eq-tag eq-best">★ 最佳</span>
+    <span class="eq-tag eq-bb">BB 槓鈴</span>
+    <span class="eq-tag eq-db">DB 啞鈴</span>
+    <span class="eq-tag eq-kb">KB 壺鈴</span>
+    <span class="eq-tag eq-ca">Cable 纜繩</span>
+    <span class="eq-tag eq-mc">Machine 機器</span>
+    <span class="eq-tag eq-bd">Band 彈力帶</span>
+    <span class="eq-tag eq-bw">BW 徒手</span>
+    <span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px">深紫序號=最優 · 淺色=替代</span>
+  </div>
+  <div class="filter-row" id="filters"></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:52px;text-align:left">部位</th>
+          <th style="width:82px;text-align:left">肌肉<br><span style="font-weight:400;font-size:10px">Muscle</span></th>
+          <th class="hd-best" style="width:118px">★ 最佳動作<br><span style="font-weight:400;font-size:10px">Best Exercise</span></th>
+          <th class="hd-bb"  style="width:118px">BB 槓鈴</th>
+          <th class="hd-db"  style="width:118px">DB 啞鈴</th>
+          <th class="hd-kb"  style="width:118px">KB 壺鈴</th>
+          <th class="hd-ca"  style="width:118px">Cable 纜繩</th>
+          <th class="hd-mc"  style="width:118px">Machine 機器</th>
+          <th class="hd-bd"  style="width:118px">Band 彈力帶</th>
+          <th class="hd-bw"  style="width:118px">BW 徒手</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div id="empty">無符合條件的資料</div>
+  <div style="margin-top:8px;padding:6px 10px;border-radius:6px;border:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)">
+    <span class="note">每欄 3 個動作，#1 最優選，#2–3 替代選項。最佳動作為跨 7 種器材綜合最優。★ 需單槓 / 雙槓輔助。<br>3 exercises per column: #1 top pick, #2–3 alternatives. Best = cross-equipment overall winner. ★ requires pull-up bar or parallel bars.</span>
+  </div>
+</div>
+
+<script>
+const P = {
+  "胸部 Chest":       {bg:"#E6F1FB",border:"#378ADD",text:"#185FA5"},
+  "背部 Back":        {bg:"#EAF3DE",border:"#639922",text:"#3B6D11"},
+  "肩膀 Shoulder":    {bg:"#FAEEDA",border:"#EF9F27",text:"#854F0B"},
+  "三頭 Triceps":     {bg:"#FBEAF0",border:"#D4537E",text:"#993556"},
+  "二頭 Biceps":      {bg:"#E1F5EE",border:"#1D9E75",text:"#0F6E56"},
+  "前手臂 Forearm":   {bg:"#FAECE7",border:"#D85A30",text:"#993C1D"},
+  "臀部 Glutes":      {bg:"#EEEDFE",border:"#7F77DD",text:"#534AB7"},
+  "前大腿 Quads":     {bg:"#F1EFE8",border:"#888780",text:"#5F5E5A"},
+  "後大腿 Hamstrings":{bg:"#FCEBEB",border:"#E24B4A",text:"#A32D2D"},
+  "小腿 Calves":      {bg:"#E1F5EE",border:"#1D9E75",text:"#0F6E56"},
+};
+
+// m:[zh,en], best:[zh,en,eq], bb/db/kb/ca/mc/bd/bw: [[zh,en],...]
+const D = [
+  // ══ 胸部 ══
+  {g:"胸部 Chest", mZh:"胸大肌上束", mEn:"Pec Major (Upper)",
+   best:["上斜啞鈴飛鳥","Incline DB Fly","db"],
+   bb:[["上斜槓鈴臥推","Incline BB Bench Press"],["上斜槓鈴窄握臥推","Incline Close-grip BB Press"],["槓鈴仰臥過頭拉","BB Pullover"]],
+   db:[["上斜啞鈴飛鳥","Incline DB Fly"],["上斜啞鈴臥推","Incline DB Bench Press"],["上斜啞鈴夾胸推","Incline DB Squeeze Press"]],
+   kb:[["壺鈴上斜臥推","KB Incline Bench Press"],["壺鈴上斜飛鳥","KB Incline Fly"],["壺鈴底朝上上斜推","KB Bottoms-up Incline Press"]],
+   ca:[["纜繩夾胸（低→高）","Low-cable Crossover (Low–High)"],["纜繩上斜夾胸（低位）","Low-cable Incline Fly"],["纜繩單臂上斜夾胸","Single-arm Low-cable Incline Fly"]],
+   mc:[["上斜胸推機","Incline Chest Press Machine"],["蝴蝶夾胸機（高位）","Pec Deck (High)"],["史密斯機上斜臥推","Smith Machine Incline Press"]],
+   bd:[["彈力帶上斜臥推","Band Incline Press"],["彈力帶上斜飛鳥","Band Incline Fly"],["彈力帶上斜夾胸","Band Incline Crossover"]],
+   bw:[["上斜伏地挺身","Incline Push-up"],["Pike 伏地挺身","Pike Push-up"],["弓箭步伏地挺身（斜面）","Archer Incline Push-up"]]},
+
+  {g:"胸部 Chest", mZh:"胸大肌中束", mEn:"Pec Major (Middle)",
+   best:["平板槓鈴臥推","Flat BB Bench Press","bb"],
+   bb:[["平板槓鈴臥推","Flat BB Bench Press"],["槓鈴寬握臥推","Wide-grip BB Bench Press"],["史密斯機平板臥推","Smith Machine Flat Press"]],
+   db:[["平板啞鈴臥推","Flat DB Bench Press"],["平板啞鈴飛鳥","Flat DB Fly"],["啞鈴夾胸推","DB Squeeze Press"]],
+   kb:[["壺鈴平板臥推","KB Flat Bench Press"],["壺鈴平板飛鳥","KB Flat Fly"],["壺鈴底朝上臥推","KB Bottoms-up Press"]],
+   ca:[["纜繩夾胸（中位）","Cable Crossover (Mid)"],["纜繩站姿胸推（中位）","Standing Cable Chest Press"],["纜繩單臂夾胸（中位）","Single-arm Cable Fly (Mid)"]],
+   mc:[["坐姿胸推機","Chest Press Machine"],["蝴蝶夾胸機（中位）","Pec Deck (Mid)"],["史密斯機平板臥推","Smith Machine Flat Press"]],
+   bd:[["彈力帶平板臥推","Band Flat Bench Press"],["彈力帶夾胸","Band Pec Fly"],["彈力帶站姿胸推","Band Standing Chest Press"]],
+   bw:[["標準伏地挺身","Standard Push-up"],["寬距伏地挺身","Wide Push-up"],["爆發伏地挺身","Explosive Push-up"]]},
+
+  {g:"胸部 Chest", mZh:"胸大肌下束", mEn:"Pec Major (Lower)",
+   best:["纜繩夾胸（高→低）","Cable Crossover (High–Low)","ca"],
+   bb:[["下斜槓鈴臥推","Decline BB Bench Press"],["雙槓撐體（前傾）","Forward-lean Dip"],["史密斯機下斜臥推","Smith Machine Decline Press"]],
+   db:[["下斜啞鈴飛鳥","Decline DB Fly"],["下斜啞鈴臥推","Decline DB Bench Press"],["啞鈴雙槓撐體","DB-weighted Dip"]],
+   kb:[["壺鈴下斜臥推","KB Decline Bench Press"],["壺鈴雙槓撐體","KB-weighted Dip"],["壺鈴下斜飛鳥","KB Decline Fly"]],
+   ca:[["纜繩夾胸（高→低）","Cable Crossover (High–Low)"],["纜繩下斜夾胸（高位）","High-cable Decline Fly"],["纜繩單臂高→低夾胸","Single-arm High-cable Fly"]],
+   mc:[["下斜胸推機","Decline Chest Press Machine"],["蝴蝶夾胸機（低位）","Pec Deck (Low)"],["輔助雙槓撐體機","Assisted Dip Machine"]],
+   bd:[["彈力帶下斜夾胸（高位錨點）","Band Decline Fly (High anchor)"],["彈力帶雙槓撐體","Band-assisted Dip"],["彈力帶高→低夾胸","Band High-to-Low Crossover"]],
+   bw:[["下斜伏地挺身","Decline Push-up"],["雙槓撐體（前傾）","Forward-lean Dip ★"],["爆發下斜伏地挺身","Explosive Decline Push-up"]]},
+
+  {g:"胸部 Chest", mZh:"胸小肌 / 前鋸肌", mEn:"Pec Minor / Serratus Ant.",
+   best:["纜繩前推（肩胛前引）","Cable Serratus Punch","ca"],
+   bb:[["槓鈴仰臥過頭拉","BB Pullover"],["槓鈴前推（肩胛前引）","BB Serratus Press"],["下斜槓鈴臥推","Decline BB Bench Press"]],
+   db:[["啞鈴仰臥過頭拉","DB Pullover"],["啞鈴前推（肩胛前引）","DB Serratus Punch"],["上斜啞鈴飛鳥（前引）","Incline DB Fly + Protraction"]],
+   kb:[["壺鈴仰臥過頭拉","KB Pullover"],["壺鈴前推（肩胛前引）","KB Serratus Punch"],["壺鈴底朝上前推","KB Bottoms-up Serratus Press"]],
+   ca:[["纜繩前推（肩胛前引）","Cable Serratus Punch"],["纜繩直臂下壓（高位）","High-cable Straight-arm Pulldown"],["纜繩單臂前推","Single-arm Cable Punch"]],
+   mc:[["坐姿胸推機（肩胛前引）","Chest Press + Protraction"],["蝴蝶夾胸機（前引）","Pec Deck + Protraction"],["輔助雙槓撐體機（前傾）","Assisted Dip Machine (Lean)"]],
+   bd:[["彈力帶肩胛前引推","Band Serratus Punch"],["彈力帶直臂下壓","Band Straight-arm Pulldown"],["彈力帶前推","Band Forward Punch"]],
+   bw:[["伏地挺身加肩胛前引","Push-up Plus"],["下斜伏地挺身（前引）","Decline Push-up Plus"],["側向伏地挺身（前引）","Lateral Push-up Plus"]]},
+
+  // ══ 背部 ══
+  {g:"背部 Back", mZh:"背闊肌", mEn:"Latissimus Dorsi",
+   best:["槓鈴俯身划船","BB Bent-over Row","bb"],
+   bb:[["槓鈴俯身划船","BB Bent-over Row"],["槓鈴反握俯身划船","BB Underhand Row"],["槓鈴直立划船（寬握）","Wide BB Upright Row"]],
+   db:[["單臂啞鈴划船","Single-arm DB Row"],["啞鈴俯身划船","Bent-over DB Row"],["啞鈴直臂下壓","DB Straight-arm Pulldown"]],
+   kb:[["壺鈴單臂划船","KB Single-arm Row"],["壺鈴俯身划船","KB Bent-over Row"],["壺鈴硬舉（窄握）","KB Deadlift (Narrow)"]],
+   ca:[["纜繩高位下拉（寬握）","Wide-grip Cable Pulldown"],["纜繩坐姿划船（低位）","Low Seated Cable Row"],["纜繩直臂下壓（高位）","High-cable Straight-arm Pulldown"]],
+   mc:[["高位下拉機（寬握）","Lat Pulldown Machine (Wide)"],["坐姿划船機","Seated Row Machine"],["史密斯機俯身划船","Smith Machine Bent-over Row"]],
+   bd:[["彈力帶高位下拉","Band Lat Pulldown"],["彈力帶直臂下壓","Band Straight-arm Pulldown"],["彈力帶坐姿划船","Band Seated Row"]],
+   bw:[["引體向上（寬握）","Wide-grip Pull-up ★"],["反握引體向上","Chin-up ★"],["桌邊划船","Australian Row"]]},
+
+  {g:"背部 Back", mZh:"斜方肌中下段", mEn:"Trapezius (Mid / Lower)",
+   best:["纜繩坐姿划船","Seated Cable Row","ca"],
+   bb:[["槓鈴俯身划船","BB Bent-over Row"],["槓鈴俯身寬握划船","Wide-grip BB Row"],["槓鈴直立划船（寬握）","Wide BB Upright Row"]],
+   db:[["俯身啞鈴划船","Bent-over DB Row"],["俯臥啞鈴 Y/T/W 舉","Prone DB Y/T/W Raise"],["啞鈴俯身反飛鳥","Bent-over DB Reverse Fly"]],
+   kb:[["壺鈴俯身划船","KB Bent-over Row"],["壺鈴俯臥 T/Y 舉","KB Prone T/Y Raise"],["壺鈴搖擺（Swing）","KB Swing"]],
+   ca:[["纜繩坐姿划船","Seated Cable Row"],["纜繩臉拉（Face Pull）","Cable Face Pull"],["纜繩俯身反飛鳥（高位）","High-cable Reverse Fly"]],
+   mc:[["坐姿划船機","Seated Row Machine"],["後三角飛鳥機","Rear Delt Fly Machine"],["高位下拉機（中握）","Lat Pulldown Machine (Mid)"]],
+   bd:[["彈力帶坐姿划船","Band Seated Row"],["彈力帶臉拉","Band Face Pull"],["彈力帶俯身反飛鳥","Band Bent-over Reverse Fly"]],
+   bw:[["俯臥 Y/T/W 舉","Prone Y/T/W Raise"],["桌邊划船","Australian Row"],["俯臥 T 字舉","Prone T Raise"]]},
+
+  {g:"背部 Back", mZh:"斜方肌上段", mEn:"Trapezius (Upper)",
+   best:["槓鈴聳肩","BB Shrug","bb"],
+   bb:[["槓鈴聳肩","BB Shrug"],["槓鈴直立划船","BB Upright Row"],["史密斯機聳肩","Smith Machine Shrug"]],
+   db:[["啞鈴聳肩","DB Shrug"],["啞鈴直立划船","DB Upright Row"],["啞鈴單肩聳肩","Single-arm DB Shrug"]],
+   kb:[["壺鈴聳肩","KB Shrug"],["壺鈴直立划船","KB Upright Row"],["壺鈴高拉（High Pull）","KB High Pull"]],
+   ca:[["纜繩聳肩（低位）","Low-cable Shrug"],["纜繩直立划船（低位）","Low-cable Upright Row"],["纜繩單臂聳肩","Single-arm Cable Shrug"]],
+   mc:[["聳肩機","Shrug Machine"],["史密斯機聳肩","Smith Machine Shrug"],["坐姿划船機（聳肩）","Seated Row Machine (Shrug)"]],
+   bd:[["彈力帶聳肩","Band Shrug"],["彈力帶直立划船","Band Upright Row"],["彈力帶單臂聳肩","Single-arm Band Shrug"]],
+   bw:[["肩胛聳肩（懸吊）","Scapular Shrug Dead Hang ★"],["肩胛上提引體向上","Scapular Pull-up ★"],["頸部側屈等長","Isometric Neck Lateral Flexion"]]},
+
+  {g:"背部 Back", mZh:"菱形肌", mEn:"Rhomboids",
+   best:["纜繩臉拉（Face Pull）","Cable Face Pull","ca"],
+   bb:[["槓鈴窄握俯身划船","Close-grip BB Row"],["槓鈴反握划船","BB Underhand Row"],["槓鈴俯身划船（高肘）","BB Row High Elbow"]],
+   db:[["俯臥啞鈴 Y/T/W 舉","Prone DB Y/T/W Raise"],["啞鈴俯身反飛鳥","Bent-over DB Reverse Fly"],["單臂啞鈴划船（高肘）","Single-arm DB Row (High Elbow)"]],
+   kb:[["壺鈴俯臥 T/Y 舉","KB Prone T/Y Raise"],["壺鈴俯身反飛鳥","KB Bent-over Reverse Fly"],["壺鈴單臂划船（高肘）","KB Single-arm Row (High Elbow)"]],
+   ca:[["纜繩臉拉（Face Pull）","Cable Face Pull"],["纜繩坐姿窄握划船","Close-grip Seated Cable Row"],["纜繩俯身反飛鳥（高位）","High-cable Reverse Fly"]],
+   mc:[["後三角飛鳥機","Rear Delt Fly Machine"],["坐姿划船機（窄握）","Seated Row Machine (Narrow)"],["史密斯機俯身划船（窄握）","Smith Machine Close Row"]],
+   bd:[["彈力帶臉拉","Band Face Pull"],["彈力帶俯身反飛鳥","Band Bent-over Reverse Fly"],["彈力帶坐姿窄握划船","Band Close Seated Row"]],
+   bw:[["俯臥 T 字舉","Prone T Raise"],["桌邊划船（窄握）","Narrow Australian Row"],["俯臥 W 字舉","Prone W Raise"]]},
+
+  {g:"背部 Back", mZh:"豎脊肌", mEn:"Erector Spinae",
+   best:["槓鈴硬舉","BB Deadlift","bb"],
+   bb:[["槓鈴硬舉","BB Deadlift"],["槓鈴早安式","BB Good Morning"],["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift"]],
+   db:[["啞鈴羅馬尼亞硬舉","DB Romanian Deadlift"],["啞鈴早安式","DB Good Morning"],["啞鈴直腿硬舉","DB Stiff-leg Deadlift"]],
+   kb:[["壺鈴硬舉","KB Deadlift"],["壺鈴搖擺（Swing）","KB Swing"],["壺鈴早安式","KB Good Morning"]],
+   ca:[["纜繩早安式（低位）","Low-cable Good Morning"],["纜繩直立早安式","Low-cable Standing GM"],["纜繩俯身划船（低位）","Low-cable Bent-over Row"]],
+   mc:[["背伸展機","Back Extension Machine"],["史密斯機早安式","Smith Machine Good Morning"],["史密斯機羅馬尼亞硬舉","Smith Machine RDL"]],
+   bd:[["彈力帶早安式","Band Good Morning"],["彈力帶羅馬尼亞硬舉","Band Romanian Deadlift"],["彈力帶直立划船","Band Upright Row"]],
+   bw:[["超人式背伸展","Superman Hold"],["Bird-dog","Bird-dog"],["北歐背伸展","Nordic Back Extension ★"]]},
+
+  {g:"背部 Back", mZh:"大圓肌", mEn:"Teres Major",
+   best:["單臂啞鈴划船","Single-arm DB Row","db"],
+   bb:[["槓鈴俯身划船（窄握）","Narrow-grip BB Row"],["槓鈴直立划船（窄握）","Narrow BB Upright Row"],["槓鈴反握俯身划船","BB Underhand Row"]],
+   db:[["單臂啞鈴划船","Single-arm DB Row"],["啞鈴直臂下壓","DB Straight-arm Pulldown"],["啞鈴俯身划船","Bent-over DB Row"]],
+   kb:[["壺鈴單臂划船","KB Single-arm Row"],["壺鈴直臂下壓","KB Straight-arm Pulldown"],["壺鈴底朝上划船","KB Bottoms-up Row"]],
+   ca:[["纜繩窄握下拉（高位）","Close-grip Cable Pulldown"],["纜繩單臂划船（低位）","Single-arm Low Cable Row"],["纜繩直臂下壓（高位）","High-cable Straight-arm Pulldown"]],
+   mc:[["高位下拉機（窄握）","Lat Pulldown Machine (Narrow)"],["坐姿划船機（寬握）","Seated Row Machine (Wide)"],["史密斯機俯身划船","Smith Machine Row"]],
+   bd:[["彈力帶高位下拉（窄握）","Band Lat Pulldown (Narrow)"],["彈力帶直臂下壓","Band Straight-arm Pulldown"],["彈力帶單臂划船","Band Single-arm Row"]],
+   bw:[["窄握引體向上","Narrow-grip Pull-up ★"],["桌邊划船（窄握）","Narrow Australian Row"],["反握引體向上","Chin-up ★"]]},
+
+  // ══ 肩膀 ══
+  {g:"肩膀 Shoulder", mZh:"三角肌前束", mEn:"Anterior Deltoid",
+   best:["啞鈴肩推","DB Overhead Press","db"],
+   bb:[["槓鈴軍式推舉","BB Military Press"],["槓鈴前平舉","BB Front Raise"],["史密斯機肩推","Smith Machine Shoulder Press"]],
+   db:[["啞鈴肩推","DB Overhead Press"],["啞鈴前平舉","DB Front Raise"],["啞鈴交替肩推","Alternating DB Press"]],
+   kb:[["壺鈴肩推（單臂）","KB Single-arm Press"],["壺鈴底朝上肩推","KB Bottoms-up Press"],["壺鈴交替肩推","KB Alternating Press"]],
+   ca:[["纜繩前平舉（低位）","Low-cable Front Raise"],["纜繩站姿肩推（低位）","Low-cable Standing Press"],["纜繩單臂前平舉","Single-arm Cable Front Raise"]],
+   mc:[["坐姿肩推機","Shoulder Press Machine"],["史密斯機肩推","Smith Machine Shoulder Press"],["蝴蝶夾胸機（前束版）","Pec Deck (Anterior)"]],
+   bd:[["彈力帶肩推","Band Overhead Press"],["彈力帶前平舉","Band Front Raise"],["彈力帶交替肩推","Band Alternating Press"]],
+   bw:[["Pike 伏地挺身","Pike Push-up"],["靠牆倒立伏地挺身","Wall Handstand Push-up ★"],["寬距伏地挺身","Wide Push-up"]]},
+
+  {g:"肩膀 Shoulder", mZh:"三角肌側束", mEn:"Lateral Deltoid",
+   best:["纜繩側平舉（低位）","Low-cable Lateral Raise","ca"],
+   bb:[["槓鈴直立划船（寬握）","Wide-grip BB Upright Row"],["槓鈴側平舉","BB Lateral Raise"],["史密斯機直立划船","Smith Machine Upright Row"]],
+   db:[["啞鈴側平舉","DB Lateral Raise"],["俯身啞鈴側平舉（45°）","Leaning DB Lateral Raise"],["啞鈴單臂側平舉","Single-arm DB Lateral Raise"]],
+   kb:[["壺鈴直立划船","KB Upright Row"],["壺鈴側平舉","KB Lateral Raise"],["壺鈴底朝上側平舉","KB Bottoms-up Lateral Raise"]],
+   ca:[["纜繩側平舉（低位）","Low-cable Lateral Raise"],["纜繩交叉側平舉","Cross-cable Lateral Raise"],["纜繩單臂側平舉","Single-arm Cable Lateral Raise"]],
+   mc:[["側平舉機","Lateral Raise Machine"],["坐姿肩推機（寬握）","Shoulder Press Machine (Wide)"],["史密斯機直立划船","Smith Machine Upright Row"]],
+   bd:[["彈力帶側平舉","Band Lateral Raise"],["彈力帶交叉側平舉","Band Cross Lateral Raise"],["彈力帶單臂側平舉","Band Single-arm Lateral Raise"]],
+   bw:[["靠牆倒立伏地挺身","Wall Handstand Push-up ★"],["側臥側平舉（徒手）","Side-lying Lateral Raise (BW)"],["Pike 伏地挺身","Pike Push-up"]]},
+
+  {g:"肩膀 Shoulder", mZh:"三角肌後束", mEn:"Posterior Deltoid",
+   best:["纜繩臉拉（Face Pull）","Cable Face Pull","ca"],
+   bb:[["槓鈴俯身划船（高肘）","BB Row (High Elbow)"],["槓鈴直立划船（窄握）","Narrow BB Upright Row"],["史密斯機俯身划船","Smith Machine Bent-over Row"]],
+   db:[["俯身啞鈴反飛鳥","Bent-over DB Reverse Fly"],["啞鈴單臂後束划船","DB Rear Delt Row"],["側臥啞鈴後束舉","Side-lying DB Rear Raise"]],
+   kb:[["壺鈴俯身反飛鳥","KB Bent-over Reverse Fly"],["壺鈴單臂後束划船","KB Rear Delt Row"],["壺鈴底朝上後束舉","KB Bottoms-up Rear Raise"]],
+   ca:[["纜繩臉拉（Face Pull）","Cable Face Pull"],["纜繩後束反飛鳥（高位）","High-cable Rear Delt Fly"],["纜繩單臂後束飛鳥","Single-arm Cable Rear Fly"]],
+   mc:[["後三角飛鳥機","Rear Delt Fly Machine"],["坐姿划船機（高肘）","Seated Row Machine (High Elbow)"],["史密斯機俯身划船","Smith Machine Row"]],
+   bd:[["彈力帶臉拉","Band Face Pull"],["彈力帶俯身反飛鳥","Band Bent-over Reverse Fly"],["彈力帶後束飛鳥","Band Rear Delt Fly"]],
+   bw:[["俯臥反飛鳥","Prone Reverse Fly (BW)"],["桌邊划船（高肘）","Australian Row (High Elbow)"],["俯臥 W 字舉","Prone W Raise"]]},
+
+  {g:"肩膀 Shoulder", mZh:"棘上肌", mEn:"Supraspinatus",
+   best:["纜繩空罐式舉（低位）","Low-cable Empty Can Raise","ca"],
+   bb:[["槓鈴直立划船（極寬握）","Extra Wide BB Upright Row"],["槓鈴前平舉（拇指朝上）","BB Front Raise (Thumb Up)"],["槓鈴側平舉（控制）","BB Lateral Raise (Controlled)"]],
+   db:[["啞鈴側平舉（拇指朝上）","DB Lateral Raise (Thumb Up)"],["啞鈴空罐式舉","DB Empty Can Raise"],["啞鈴單臂側平舉","Single-arm DB Lateral Raise"]],
+   kb:[["壺鈴空罐式舉","KB Empty Can Raise"],["壺鈴底朝上側平舉","KB Bottoms-up Lateral Raise"],["壺鈴直立划船（寬握）","KB Wide Upright Row"]],
+   ca:[["纜繩空罐式舉（低位）","Low-cable Empty Can Raise"],["纜繩側平舉（拇指朝上）","Cable Lateral Raise (Thumb Up)"],["纜繩前平舉（拇指朝上）","Cable Front Raise (Thumb Up)"]],
+   mc:[["側平舉機（拇指朝上）","Lateral Raise Machine (Thumb Up)"],["後三角飛鳥機（外旋）","Rear Delt Machine (ER variation)"],["坐姿肩推機","Shoulder Press Machine"]],
+   bd:[["彈力帶空罐式舉","Band Empty Can Raise"],["彈力帶側平舉（拇指朝上）","Band Lateral Raise (Thumb Up)"],["彈力帶前平舉（拇指朝上）","Band Front Raise (Thumb Up)"]],
+   bw:[["側臥外展舉臂","Side-lying Arm Abduction"],["俯臥空罐式舉（徒手）","Prone Empty Can Raise (BW)"],["站姿側平舉（控制）","Controlled Lateral Raise (BW)"]]},
+
+  {g:"肩膀 Shoulder", mZh:"棘下肌 / 小圓肌", mEn:"Infraspinatus / Teres Minor",
+   best:["纜繩外旋（中位）","Cable External Rotation (Mid)","ca"],
+   bb:[["槓鈴俯身外旋","BB Prone External Rotation"],["槓鈴頸後推（控制）","BB Behind-neck Press (Controlled)"],["槓鈴俯身划船（寬握）","Wide BB Row (ER focus)"]],
+   db:[["側臥啞鈴外旋","DB Side-lying External Rotation"],["啞鈴俯身外旋","DB Bent-over External Rotation"],["啞鈴 90° 外旋","DB 90° External Rotation"]],
+   kb:[["壺鈴側臥外旋","KB Side-lying External Rotation"],["壺鈴底朝上外旋","KB Bottoms-up External Rotation"],["壺鈴俯身外旋","KB Bent-over External Rotation"]],
+   ca:[["纜繩外旋（中位）","Cable External Rotation (Mid)"],["纜繩外旋（低位）","Cable External Rotation (Low)"],["纜繩臉拉（寬握）","Wide-grip Cable Face Pull"]],
+   mc:[["旋轉肌外旋機","External Rotation Machine"],["後三角飛鳥機","Rear Delt Fly Machine"],["坐姿划船機（外旋）","Seated Row Machine (ER focus)"]],
+   bd:[["彈力帶外旋（中位）","Band External Rotation (Mid)"],["彈力帶外旋（低位）","Band External Rotation (Low)"],["彈力帶臉拉","Band Face Pull"]],
+   bw:[["側臥外旋（徒手）","Side-lying External Rotation (BW)"],["俯臥 W 字舉","Prone W Raise"],["俯臥 Y 字舉","Prone Y Raise"]]},
+
+  {g:"肩膀 Shoulder", mZh:"肩胛下肌", mEn:"Subscapularis",
+   best:["纜繩內旋（中位）","Cable Internal Rotation (Mid)","ca"],
+   bb:[["槓鈴臥推（內旋發力）","BB Bench Press (IR focus)"],["槓鈴窄握臥推","Close-grip BB Bench Press"],["史密斯機窄握臥推","Smith Machine Close-grip Press"]],
+   db:[["啞鈴側臥內旋","DB Side-lying Internal Rotation"],["啞鈴俯身內旋","DB Bent-over Internal Rotation"],["啞鈴窄握臥推","Close-grip DB Press"]],
+   kb:[["壺鈴側臥內旋","KB Side-lying Internal Rotation"],["壺鈴底朝上內旋","KB Bottoms-up Internal Rotation"],["壺鈴窄握臥推","KB Close-grip Press"]],
+   ca:[["纜繩內旋（中位）","Cable Internal Rotation (Mid)"],["纜繩內旋（低位）","Cable Internal Rotation (Low)"],["纜繩單臂內旋","Single-arm Cable Internal Rotation"]],
+   mc:[["旋轉肌內旋機","Internal Rotation Machine"],["坐姿胸推機（內旋）","Chest Press Machine (IR focus)"],["史密斯機窄握臥推","Smith Machine Close-grip Press"]],
+   bd:[["彈力帶內旋（中位）","Band Internal Rotation (Mid)"],["彈力帶內旋（低位）","Band Internal Rotation (Low)"],["彈力帶單臂內旋","Single-arm Band Internal Rotation"]],
+   bw:[["側臥內旋（徒手）","Side-lying Internal Rotation (BW)"],["窄距伏地挺身","Close-grip Push-up"],["伏地挺身（內旋發力）","Push-up (IR Emphasis)"]]},
+
+  // ══ 三頭 ══
+  {g:"三頭 Triceps", mZh:"肱三頭肌長頭", mEn:"Triceps Long Head",
+   best:["纜繩過頭三頭伸展（低位）","Low-cable Overhead Triceps Ext.","ca"],
+   bb:[["槓鈴過頭三頭伸展","BB Overhead Triceps Extension"],["槓鈴仰臥頸後推","BB Behind-head Skull Crusher"],["槓鈴仰臥三頭屈伸","BB Skull Crusher"]],
+   db:[["啞鈴過頭三頭伸展","Overhead DB Triceps Extension"],["單臂過頭啞鈴伸展","Single-arm Overhead DB Extension"],["上斜啞鈴三頭屈伸","Incline DB Skull Crusher"]],
+   kb:[["壺鈴過頭三頭伸展","KB Overhead Triceps Extension"],["壺鈴單臂過頭伸展","KB Single-arm Overhead Extension"],["壺鈴底朝上過頭伸展","KB Bottoms-up Overhead Extension"]],
+   ca:[["纜繩過頭三頭伸展（低位）","Low-cable Overhead Triceps Ext."],["纜繩繩索過頭伸展","Rope Overhead Cable Extension"],["纜繩單臂過頭伸展（低位）","Single-arm Overhead Cable Ext."]],
+   mc:[["過頭三頭伸展機","Overhead Triceps Extension Machine"],["坐姿三頭下壓機（高位）","Triceps Pushdown Machine"],["輔助雙槓撐體機","Assisted Dip Machine"]],
+   bd:[["彈力帶過頭三頭伸展","Band Overhead Triceps Extension"],["彈力帶單臂過頭伸展","Band Single-arm Overhead Ext."],["彈力帶三頭下壓（高位錨點）","Band Triceps Pushdown (High anchor)"]],
+   bw:[["雙槓撐體","Parallel Bar Dip ★"],["窄距伏地挺身（前傾）","Close-grip Push-up (Forward lean)"],["椅邊撐體（身體向前）","Bench Dip (Forward lean)"]]},
+
+  {g:"三頭 Triceps", mZh:"肱三頭肌外側頭", mEn:"Triceps Lateral Head",
+   best:["纜繩繩索下壓（高位）","Cable Rope Pushdown","ca"],
+   bb:[["槓鈴仰臥三頭屈伸","BB Skull Crusher"],["槓鈴窄握臥推","Close-grip BB Bench Press"],["史密斯機窄握臥推","Smith Machine Close-grip Press"]],
+   db:[["啞鈴仰臥三頭屈伸","DB Skull Crusher"],["啞鈴踢腿式伸展","DB Kickback"],["啞鈴窄握臥推","Close-grip DB Press"]],
+   kb:[["壺鈴三頭屈伸","KB Skull Crusher"],["壺鈴踢腿式伸展","KB Kickback"],["壺鈴底朝上三頭屈伸","KB Bottoms-up Skull Crusher"]],
+   ca:[["纜繩繩索下壓（高位）","Cable Rope Pushdown"],["纜繩直桿下壓（高位）","Cable Straight-bar Pushdown"],["纜繩單臂下壓（高位）","Single-arm Cable Pushdown"]],
+   mc:[["坐姿三頭下壓機","Triceps Pushdown Machine"],["史密斯機窄握臥推","Smith Machine Close-grip Press"],["輔助雙槓撐體機","Assisted Dip Machine"]],
+   bd:[["彈力帶三頭下壓（高位錨點）","Band Triceps Pushdown (High anchor)"],["彈力帶單臂下壓","Band Single-arm Pushdown"],["彈力帶仰臥三頭屈伸","Band Skull Crusher"]],
+   bw:[["窄距伏地挺身","Close-grip Push-up"],["鑽石伏地挺身","Diamond Push-up"],["雙槓撐體","Parallel Bar Dip ★"]]},
+
+  {g:"三頭 Triceps", mZh:"肱三頭肌內側頭", mEn:"Triceps Medial Head",
+   best:["纜繩反握下壓（高位）","Cable Reverse-grip Pushdown","ca"],
+   bb:[["槓鈴窄握臥推","Close-grip BB Bench Press"],["槓鈴反握仰臥推","BB Reverse-grip Bench Press"],["槓鈴仰臥三頭屈伸","BB Skull Crusher"]],
+   db:[["啞鈴踢腿式伸展","DB Kickback"],["啞鈴俯臥三頭伸展","Prone DB Triceps Extension"],["啞鈴反握仰臥推","DB Reverse-grip Press"]],
+   kb:[["壺鈴踢腿式伸展","KB Kickback"],["壺鈴底朝上反握推","KB Bottoms-up Reverse Press"],["壺鈴俯臥三頭伸展","KB Prone Triceps Extension"]],
+   ca:[["纜繩反握下壓（高位）","Cable Reverse-grip Pushdown"],["纜繩單臂反握下壓","Single-arm Reverse Cable Pushdown"],["纜繩直桿反握下壓","Straight-bar Reverse Pushdown"]],
+   mc:[["坐姿三頭下壓機（反握）","Triceps Machine (Reverse grip)"],["輔助雙槓撐體機","Assisted Dip Machine"],["史密斯機窄握臥推","Smith Machine Close-grip Press"]],
+   bd:[["彈力帶反握下壓（高位錨點）","Band Reverse-grip Pushdown"],["彈力帶單臂反握下壓","Band Single-arm Reverse Pushdown"],["彈力帶椅邊撐體","Band Bench Dip"]],
+   bw:[["反向撐體（椅邊）","Bench Triceps Dip"],["鑽石伏地挺身","Diamond Push-up"],["窄距伏地挺身","Close-grip Push-up"]]},
+
+  // ══ 二頭 ══
+  {g:"二頭 Biceps", mZh:"肱二頭肌長頭", mEn:"Biceps Long Head",
+   best:["纜繩高位彎舉","High-cable Curl","ca"],
+   bb:[["站姿槓鈴彎舉（窄握）","BB Curl (Narrow grip)"],["傳教士椅槓鈴彎舉（窄握）","BB Preacher Curl (Narrow)"],["槓鈴上斜臥彎舉","BB Incline Curl"]],
+   db:[["上斜啞鈴彎舉","Incline DB Curl"],["站姿啞鈴彎舉（外旋）","DB Curl (Supinated)"],["集中彎舉","DB Concentration Curl"]],
+   kb:[["壺鈴彎舉（窄握）","KB Curl (Narrow grip)"],["壺鈴上斜彎舉","KB Incline Curl"],["壺鈴底朝上彎舉","KB Bottoms-up Curl"]],
+   ca:[["纜繩高位彎舉","High-cable Curl"],["纜繩單臂高位彎舉","Single-arm High-cable Curl"],["纜繩低位彎舉（窄握）","Low-cable Curl (Narrow)"]],
+   mc:[["坐姿二頭彎舉機（窄握）","Biceps Curl Machine (Narrow)"],["傳教士椅二頭機","Preacher Curl Machine"],["史密斯機傳教士彎舉","Smith Machine Preacher Curl"]],
+   bd:[["彈力帶彎舉（窄握）","Band Curl (Narrow grip)"],["彈力帶高位彎舉","Band High-position Curl"],["彈力帶單臂彎舉","Band Single-arm Curl"]],
+   bw:[["反握引體向上","Chin-up ★"],["單臂反握引體向上（輔助）","Assisted Single-arm Chin-up ★"],["桌邊反握划船","Underhand Australian Row"]]},
+
+  {g:"二頭 Biceps", mZh:"肱二頭肌短頭", mEn:"Biceps Short Head",
+   best:["槓鈴彎舉（寬握）","Wide-grip BB Curl","bb"],
+   bb:[["站姿槓鈴彎舉（寬握）","Wide-grip BB Curl"],["傳教士椅槓鈴彎舉（寬握）","BB Preacher Curl (Wide)"],["槓鈴直立彎舉","BB Standing Curl"]],
+   db:[["集中彎舉","DB Concentration Curl"],["啞鈴寬握彎舉","Wide-grip DB Curl"],["坐姿啞鈴彎舉（外旋）","Seated DB Curl (Supinated)"]],
+   kb:[["壺鈴彎舉（寬握）","KB Curl (Wide grip)"],["壺鈴集中彎舉","KB Concentration Curl"],["壺鈴坐姿彎舉","KB Seated Curl"]],
+   ca:[["纜繩彎舉（低位，寬握）","Low-cable Curl (Wide grip)"],["纜繩傳教士彎舉（低位）","Low-cable Preacher Curl"],["纜繩單臂寬握彎舉","Single-arm Wide Cable Curl"]],
+   mc:[["坐姿二頭彎舉機（寬握）","Biceps Curl Machine (Wide)"],["傳教士椅二頭機（寬握）","Preacher Curl Machine (Wide)"],["坐姿二頭彎舉機","Seated Biceps Curl Machine"]],
+   bd:[["彈力帶彎舉（寬握）","Band Curl (Wide grip)"],["彈力帶集中彎舉","Band Concentration Curl"],["彈力帶坐姿彎舉","Band Seated Curl"]],
+   bw:[["寬握引體向上","Wide-grip Chin-up ★"],["桌邊反握划船（寬握）","Wide Underhand Australian Row"],["對握引體向上","Neutral-grip Pull-up ★"]]},
+
+  {g:"二頭 Biceps", mZh:"肱肌", mEn:"Brachialis",
+   best:["啞鈴錘式彎舉","DB Hammer Curl","db"],
+   bb:[["槓鈴反握彎舉","BB Reverse Curl"],["槓鈴窄握反握彎舉","Narrow BB Reverse Curl"],["傳教士椅反握彎舉","BB Preacher Reverse Curl"]],
+   db:[["啞鈴錘式彎舉","DB Hammer Curl"],["交替啞鈴錘式彎舉","Alternating DB Hammer Curl"],["上斜啞鈴錘式彎舉","Incline DB Hammer Curl"]],
+   kb:[["壺鈴錘式彎舉","KB Hammer Curl"],["壺鈴底朝上彎舉","KB Bottoms-up Curl"],["壺鈴單臂錘式彎舉","KB Single-arm Hammer Curl"]],
+   ca:[["纜繩錘式彎舉（低位）","Low-cable Hammer Curl"],["纜繩反握彎舉（低位）","Low-cable Reverse Curl"],["纜繩單臂錘式彎舉","Single-arm Cable Hammer Curl"]],
+   mc:[["坐姿二頭彎舉機（反握）","Biceps Curl Machine (Reverse)"],["傳教士椅二頭機（反握）","Preacher Curl Machine (Reverse)"],["坐姿二頭彎舉機","Seated Biceps Curl Machine"]],
+   bd:[["彈力帶錘式彎舉","Band Hammer Curl"],["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶單臂錘式彎舉","Band Single-arm Hammer Curl"]],
+   bw:[["對握引體向上","Neutral-grip Pull-up ★"],["桌邊對握划船","Neutral-grip Australian Row"],["毛巾引體向上","Towel Pull-up ★"]]},
+
+  // ══ 前手臂 ══
+  {g:"前手臂 Forearm", mZh:"腕屈肌群", mEn:"Wrist Flexors",
+   best:["啞鈴腕部彎舉","DB Wrist Curl (Palms Up)","db"],
+   bb:[["槓鈴腕部彎舉（正握）","BB Wrist Curl (Palms Up)"],["槓鈴握持靜態訓練","BB Static Hold"],["槓鈴硬舉（無助力帶）","BB Deadlift (No Straps)"]],
+   db:[["啞鈴腕部彎舉","DB Wrist Curl (Palms Up)"],["單臂啞鈴腕彎舉","Single-arm DB Wrist Curl"],["啞鈴農夫走路","DB Farmer's Walk"]],
+   kb:[["壺鈴腕部彎舉","KB Wrist Curl"],["壺鈴農夫走路","KB Farmer's Walk"],["壺鈴底朝上握持靜態","KB Bottoms-up Static Hold"]],
+   ca:[["纜繩腕部彎舉（低位）","Low-cable Wrist Curl"],["纜繩單臂腕彎舉","Single-arm Cable Wrist Curl"],["纜繩握持靜態保持","Cable Static Hold"]],
+   mc:[["腕部彎舉機","Wrist Curl Machine"],["握力訓練機","Grip Strength Machine"],["前臂滾輪機","Forearm Roller Machine"]],
+   bd:[["彈力帶腕部彎舉","Band Wrist Curl"],["彈力帶握持靜態","Band Static Hold"],["彈力帶單臂腕彎舉","Band Single-arm Wrist Curl"]],
+   bw:[["指尖伏地挺身","Fingertip Push-up"],["懸吊靜態保持","Dead Hang ★"],["毛巾懸吊靜態保持","Towel Dead Hang ★"]]},
+
+  {g:"前手臂 Forearm", mZh:"腕伸肌群 / 肱橈肌", mEn:"Wrist Extensors / Brachioradialis",
+   best:["啞鈴錘式彎舉 / 反向腕伸展","DB Hammer Curl / Reverse Wrist Ext.","db"],
+   bb:[["槓鈴反握彎舉","BB Reverse Curl"],["槓鈴反握腕部伸展","BB Reverse Wrist Extension"],["槓鈴硬舉（無助力帶）","BB Deadlift (No Straps)"]],
+   db:[["啞鈴錘式彎舉","DB Hammer Curl"],["啞鈴反向腕部伸展","DB Reverse Wrist Extension"],["啞鈴反握彎舉","DB Reverse Curl"]],
+   kb:[["壺鈴錘式彎舉","KB Hammer Curl"],["壺鈴反握彎舉","KB Reverse Curl"],["壺鈴底朝上彎舉","KB Bottoms-up Curl"]],
+   ca:[["纜繩反握彎舉（低位）","Low-cable Reverse Curl"],["纜繩反握腕部伸展（低位）","Low-cable Reverse Wrist Extension"],["纜繩錘式彎舉（低位）","Low-cable Hammer Curl"]],
+   mc:[["坐姿二頭彎舉機（反握）","Biceps Curl Machine (Reverse)"],["腕部伸展機（反握）","Wrist Extension Machine (Reverse)"],["握力訓練機","Grip Strength Machine"]],
+   bd:[["彈力帶反握彎舉","Band Reverse Curl"],["彈力帶錘式彎舉","Band Hammer Curl"],["彈力帶反向腕伸展","Band Reverse Wrist Extension"]],
+   bw:[["對握引體向上","Neutral-grip Pull-up ★"],["手腕圓圈活動","Wrist Circle Mobility"],["反向伏地挺身（腕背伸）","Reverse Push-up (Wrist Extension)"]]},
+
+  // ══ 臀部 ══
+  {g:"臀部 Glutes", mZh:"臀大肌上部", mEn:"Gluteus Maximus (Upper)",
+   best:["槓鈴臀推","BB Hip Thrust","bb"],
+   bb:[["槓鈴臀推","BB Hip Thrust"],["槓鈴深蹲","BB Back Squat"],["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift"]],
+   db:[["啞鈴臀推","DB Hip Thrust"],["啞鈴深蹲","DB Goblet Squat"],["啞鈴保加利亞蹲","DB Bulgarian Split Squat"]],
+   kb:[["壺鈴搖擺（Swing）","KB Swing"],["壺鈴臀推","KB Hip Thrust"],["壺鈴深蹲","KB Goblet Squat"]],
+   ca:[["纜繩臀推（低位）","Low-cable Hip Thrust"],["纜繩後踢腿（低位）","Low-cable Glute Kickback"],["纜繩深蹲（低位）","Low-cable Squat"]],
+   mc:[["臀推機","Hip Thrust Machine"],["腿押機（高腳位）","Leg Press Machine (High foot)"],["史密斯機臀推","Smith Machine Hip Thrust"]],
+   bd:[["彈力帶臀推","Band Hip Thrust"],["彈力帶深蹲","Band Squat"],["彈力帶後踢腿","Band Glute Kickback"]],
+   bw:[["單腳臀橋","Single-leg Glute Bridge"],["深蹲跳","Squat Jump"],["步行弓步（徒手）","BW Walking Lunge"]]},
+
+  {g:"臀部 Glutes", mZh:"臀大肌下部", mEn:"Gluteus Maximus (Lower)",
+   best:["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift","bb"],
+   bb:[["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift"],["槓鈴相撲硬舉","BB Sumo Deadlift"],["槓鈴早安式","BB Good Morning"]],
+   db:[["啞鈴羅馬尼亞硬舉","DB Romanian Deadlift"],["啞鈴單腳 RDL","Single-leg DB RDL"],["啞鈴直腿硬舉","DB Stiff-leg Deadlift"]],
+   kb:[["壺鈴搖擺（Swing）","KB Swing"],["壺鈴硬舉","KB Deadlift"],["壺鈴單腳 RDL","KB Single-leg RDL"]],
+   ca:[["纜繩後踢腿（低位）","Low-cable Glute Kickback"],["纜繩 RDL（低位）","Low-cable RDL"],["纜繩單腳後踢腿","Single-leg Cable Kickback"]],
+   mc:[["臀部後踢機","Glute Kickback Machine"],["腿押機（高腳位）","Leg Press Machine (High foot)"],["背伸展機","Back Extension Machine"]],
+   bd:[["彈力帶後踢腿","Band Glute Kickback"],["彈力帶羅馬尼亞硬舉","Band Romanian Deadlift"],["彈力帶單腳後踢","Band Single-leg Kickback"]],
+   bw:[["單腳臀橋","Single-leg Glute Bridge"],["北歐腿彎舉","Nordic Hamstring Curl"],["單腳 RDL（徒手）","Single-leg RDL (BW)"]]},
+
+  {g:"臀部 Glutes", mZh:"臀中肌（前束）", mEn:"Gluteus Medius (Anterior)",
+   best:["纜繩側抬腿（低位）","Low-cable Hip Abduction","ca"],
+   bb:[["槓鈴側弓步蹲","BB Lateral Lunge"],["槓鈴寬距深蹲","BB Wide-stance Squat"],["槓鈴單腳臀推","BB Single-leg Hip Thrust"]],
+   db:[["啞鈴側弓步蹲","DB Lateral Lunge"],["啞鈴側臥抬腿","DB Side-lying Hip Abduction"],["啞鈴單腳臀橋","DB Single-leg Glute Bridge"]],
+   kb:[["壺鈴側弓步蹲","KB Lateral Lunge"],["壺鈴單腳 RDL","KB Single-leg RDL"],["壺鈴搖擺（單臂）","KB Single-arm Swing"]],
+   ca:[["纜繩側抬腿（低位）","Low-cable Hip Abduction"],["纜繩站姿側踢腿（低位）","Low-cable Standing Side Kick"],["纜繩單腳外展","Single-leg Cable Abduction"]],
+   mc:[["髖外展機","Hip Abduction Machine"],["臀部後踢機（外展）","Glute Kickback Machine (Abduction)"],["腿押機（寬距）","Leg Press Machine (Wide)"]],
+   bd:[["彈力帶側走","Band Lateral Walk"],["彈力帶側抬腿","Band Side Leg Raise"],["彈力帶深蹲側走","Band Squat Walk"]],
+   bw:[["側臥抬腿","Side-lying Hip Abduction"],["側向跨步蹲（徒手）","BW Lateral Step-up"],["消防栓式（Fire Hydrant）","Fire Hydrant"]]},
+
+  {g:"臀部 Glutes", mZh:"臀中肌（後束）", mEn:"Gluteus Medius (Posterior)",
+   best:["髖外展機","Hip Abduction Machine","mc"],
+   bb:[["槓鈴單腳臀推","BB Single-leg Hip Thrust"],["槓鈴弓步蹲（後退）","BB Reverse Lunge"],["槓鈴側弓步蹲","BB Lateral Lunge"]],
+   db:[["啞鈴側臥外旋抬腿","DB Side-lying External Rotation Raise"],["啞鈴單腳臀橋","DB Single-leg Glute Bridge"],["啞鈴弓步蹲（後退）","DB Reverse Lunge"]],
+   kb:[["壺鈴單腳臀推","KB Single-leg Hip Thrust"],["壺鈴弓步蹲（後退）","KB Reverse Lunge"],["壺鈴搖擺（單臂）","KB Single-arm Swing"]],
+   ca:[["纜繩後踢腿（低位，外旋）","Low-cable Kickback (External Rotation)"],["纜繩側抬腿（低位）","Low-cable Hip Abduction"],["纜繩單腳外展（後束）","Cable Hip Abduction (Posterior)"]],
+   mc:[["髖外展機","Hip Abduction Machine"],["臀推機（單腳）","Hip Thrust Machine (Single-leg)"],["腿押機（寬距）","Leg Press Machine (Wide)"]],
+   bd:[["彈力帶消防栓式","Band Fire Hydrant"],["彈力帶側走（臀中肌後束）","Band Lateral Walk (Posterior GM)"],["彈力帶俯臥外旋","Band Prone External Rotation"]],
+   bw:[["消防栓式（Fire Hydrant）","Fire Hydrant"],["側臥外旋抬腿","Side-lying ER Raise"],["單腳橋式（外旋）","Single-leg Bridge (ER focus)"]]},
+
+  {g:"臀部 Glutes", mZh:"臀小肌", mEn:"Gluteus Minimus",
+   best:["纜繩側抬腿（低位）","Low-cable Hip Abduction","ca"],
+   bb:[["槓鈴側弓步蹲","BB Lateral Lunge"],["槓鈴寬距深蹲","BB Wide-stance Squat"],["槓鈴弓步蹲（後退）","BB Reverse Lunge"]],
+   db:[["啞鈴側臥抬腿","DB Side-lying Hip Abduction"],["啞鈴側弓步蹲","DB Lateral Lunge"],["啞鈴單腳臀橋","DB Single-leg Glute Bridge"]],
+   kb:[["壺鈴側弓步蹲","KB Lateral Lunge"],["壺鈴單腳 RDL","KB Single-leg RDL"],["壺鈴深蹲（寬距）","KB Wide-stance Squat"]],
+   ca:[["纜繩側抬腿（低位）","Low-cable Hip Abduction"],["纜繩站姿側踢腿（低位）","Low-cable Standing Side Kick"],["纜繩單腳外展","Single-leg Cable Abduction"]],
+   mc:[["髖外展機","Hip Abduction Machine"],["腿押機（寬距）","Leg Press Machine (Wide)"],["臀部後踢機","Glute Kickback Machine"]],
+   bd:[["彈力帶側走","Band Lateral Walk"],["彈力帶側抬腿","Band Side Leg Raise"],["彈力帶深蹲側走","Band Squat Walk"]],
+   bw:[["側臥抬腿","Side-lying Hip Abduction"],["消防栓式（Fire Hydrant）","Fire Hydrant"],["側向跨步蹲（徒手）","BW Lateral Step-up"]]},
+
+  {g:"臀部 Glutes", mZh:"梨狀肌 / 深層外旋肌", mEn:"Piriformis / Deep External Rotators",
+   best:["纜繩外旋（低位）","Cable External Rotation (Low)","ca"],
+   bb:[["槓鈴相撲深蹲","BB Sumo Squat"],["槓鈴相撲硬舉","BB Sumo Deadlift"],["槓鈴弓步蹲（外旋）","BB Lunge (ER focus)"]],
+   db:[["側臥啞鈴外旋","DB Side-lying External Rotation"],["啞鈴相撲深蹲","DB Sumo Squat"],["啞鈴俯臥外旋","DB Prone External Rotation"]],
+   kb:[["壺鈴相撲深蹲","KB Sumo Squat"],["壺鈴相撲硬舉","KB Sumo Deadlift"],["壺鈴底朝上外旋","KB Bottoms-up External Rotation"]],
+   ca:[["纜繩外旋（低位）","Cable External Rotation (Low)"],["纜繩後踢腿（外旋）","Cable Kickback (External Rotation)"],["纜繩相撲深蹲（低位）","Low-cable Sumo Squat"]],
+   mc:[["旋轉肌外旋機（髖）","Hip External Rotation Machine"],["髖外展機","Hip Abduction Machine"],["腿押機（寬距）","Leg Press Machine (Wide)"]],
+   bd:[["彈力帶消防栓式","Band Fire Hydrant"],["彈力帶外旋（髖）","Band Hip External Rotation"],["彈力帶相撲深蹲","Band Sumo Squat"]],
+   bw:[["消防栓式（Fire Hydrant）","Fire Hydrant"],["鴿式牽拉（Pigeon Stretch）","Pigeon Stretch (Activation)"],["仰臥 Figure-4 激活","Supine Figure-4 Activation"]]},
+
+  // ══ 前大腿 ══
+  {g:"前大腿 Quads", mZh:"股直肌", mEn:"Rectus Femoris",
+   best:["槓鈴後蹲（高槓）","BB High-bar Back Squat","bb"],
+   bb:[["槓鈴後蹲（高槓）","BB High-bar Back Squat"],["槓鈴前蹲","BB Front Squat"],["槓鈴弓步蹲","BB Forward Lunge"]],
+   db:[["啞鈴保加利亞蹲","DB Bulgarian Split Squat"],["啞鈴前弓步蹲","DB Forward Lunge"],["啞鈴行走弓步","DB Walking Lunge"]],
+   kb:[["壺鈴深蹲（Goblet）","KB Goblet Squat"],["壺鈴保加利亞蹲","KB Bulgarian Split Squat"],["壺鈴弓步蹲","KB Forward Lunge"]],
+   ca:[["纜繩保加利亞蹲（低位）","Low-cable Bulgarian Split Squat"],["纜繩前弓步蹲（低位）","Low-cable Forward Lunge"],["纜繩腿伸展（低位）","Low-cable Leg Extension"]],
+   mc:[["腿伸展機","Leg Extension Machine"],["哈克蹲機","Hack Squat Machine"],["史密斯機保加利亞蹲","Smith Machine Bulgarian Split Squat"]],
+   bd:[["彈力帶深蹲","Band Squat"],["彈力帶弓步蹲","Band Forward Lunge"],["彈力帶保加利亞蹲","Band Bulgarian Split Squat"]],
+   bw:[["保加利亞分腿蹲（徒手）","BW Bulgarian Split Squat"],["弓步蹲（徒手）","BW Forward Lunge"],["跳躍深蹲","Jump Squat"]]},
+
+  {g:"前大腿 Quads", mZh:"股外側肌", mEn:"Vastus Lateralis",
+   best:["腿押機（窄距）","Leg Press Machine (Narrow)","mc"],
+   bb:[["槓鈴窄距深蹲","BB Narrow-stance Squat"],["槓鈴箱蹲","BB Box Squat"],["槓鈴後蹲","BB Back Squat"]],
+   db:[["啞鈴窄距深蹲","DB Narrow-stance Squat"],["啞鈴側弓步蹲","DB Lateral Lunge"],["啞鈴保加利亞蹲","DB Bulgarian Split Squat"]],
+   kb:[["壺鈴窄距深蹲","KB Narrow-stance Squat"],["壺鈴深蹲（Goblet）","KB Goblet Squat"],["壺鈴側弓步蹲","KB Lateral Lunge"]],
+   ca:[["纜繩腿伸展（低位）","Low-cable Leg Extension"],["纜繩窄距深蹲（低位）","Low-cable Narrow Squat"],["纜繩側弓步蹲（低位）","Low-cable Lateral Lunge"]],
+   mc:[["腿押機（窄距）","Leg Press Machine (Narrow)"],["腿伸展機","Leg Extension Machine"],["哈克蹲機","Hack Squat Machine"]],
+   bd:[["彈力帶窄距深蹲","Band Narrow-stance Squat"],["彈力帶側弓步蹲","Band Lateral Lunge"],["彈力帶弓步蹲","Band Forward Lunge"]],
+   bw:[["徒手窄距深蹲","Narrow-stance Squat (BW)"],["Cossack Squat","Cossack Squat"],["側弓步蹲（徒手）","BW Lateral Lunge"]]},
+
+  {g:"前大腿 Quads", mZh:"股內側肌", mEn:"Vastus Medialis",
+   best:["哈克蹲機","Hack Squat Machine","mc"],
+   bb:[["槓鈴相撲深蹲","BB Sumo Squat"],["槓鈴前蹲（寬距）","BB Wide-stance Front Squat"],["槓鈴步行弓步","BB Walking Lunge"]],
+   db:[["啞鈴寬距深蹲（相撲）","DB Sumo Squat"],["啞鈴保加利亞蹲（深度）","DB Bulgarian Split Squat (Deep)"],["啞鈴單腳蹲（輔助）","Assisted DB Pistol Squat"]],
+   kb:[["壺鈴相撲深蹲","KB Sumo Squat"],["壺鈴深蹲（Goblet 寬距）","KB Goblet Squat (Wide)"],["壺鈴保加利亞蹲","KB Bulgarian Split Squat"]],
+   ca:[["纜繩相撲深蹲（低位）","Low-cable Sumo Squat"],["纜繩窄距深蹲（低位）","Low-cable Narrow Squat"],["纜繩單腳蹲（低位）","Low-cable Single-leg Squat"]],
+   mc:[["哈克蹲機","Hack Squat Machine"],["腿押機（寬距）","Leg Press Machine (Wide)"],["腿伸展機","Leg Extension Machine"]],
+   bd:[["彈力帶相撲深蹲","Band Sumo Squat"],["彈力帶窄距深蹲","Band Narrow Squat"],["彈力帶單腳蹲","Band Single-leg Squat"]],
+   bw:[["相撲深蹲（徒手）","BW Sumo Squat"],["單腳蹲（輔助）","Assisted Pistol Squat"],["Cossack Squat","Cossack Squat"]]},
+
+  {g:"前大腿 Quads", mZh:"髂腰肌", mEn:"Iliopsoas",
+   best:["懸吊抬膝（單槓）","Hanging Knee Raise","bw"],
+   bb:[["槓鈴登階","BB Step-up"],["槓鈴行走弓步","BB Walking Lunge"],["槓鈴前蹲","BB Front Squat"]],
+   db:[["啞鈴登階","DB Step-up"],["啞鈴行走弓步","DB Walking Lunge"],["啞鈴前弓步蹲","DB Forward Lunge"]],
+   kb:[["壺鈴登階","KB Step-up"],["壺鈴行走弓步","KB Walking Lunge"],["壺鈴深蹲（Goblet）","KB Goblet Squat"]],
+   ca:[["纜繩站姿抬膝（低位）","Low-cable Standing Knee Raise"],["纜繩登階（低位）","Low-cable Step-up"],["纜繩弓步蹲（低位）","Low-cable Forward Lunge"]],
+   mc:[["坐姿抬膝機","Seated Knee Raise Machine"],["腿押機（高腳位）","Leg Press Machine (High foot)"],["史密斯機登階","Smith Machine Step-up"]],
+   bd:[["彈力帶站姿抬膝","Band Standing Knee Raise"],["彈力帶弓步蹲","Band Forward Lunge"],["彈力帶登階","Band Step-up"]],
+   bw:[["懸吊抬膝（單槓）","Hanging Knee Raise ★"],["登山者式","Mountain Climber"],["仰臥抬腿","Lying Leg Raise"]]},
+
+  // ══ 後大腿 ══
+  {g:"後大腿 Hamstrings", mZh:"股二頭肌長頭", mEn:"Biceps Femoris (Long Head)",
+   best:["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift","bb"],
+   bb:[["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift"],["槓鈴直腿硬舉","BB Stiff-leg Deadlift"],["槓鈴早安式","BB Good Morning"]],
+   db:[["啞鈴羅馬尼亞硬舉","DB Romanian Deadlift"],["啞鈴單腳 RDL","Single-leg DB RDL"],["啞鈴直腿硬舉","DB Stiff-leg Deadlift"]],
+   kb:[["壺鈴 RDL","KB Romanian Deadlift"],["壺鈴單腳 RDL","KB Single-leg RDL"],["壺鈴搖擺（Swing）","KB Swing"]],
+   ca:[["纜繩單腳 RDL（低位）","Low-cable Single-leg RDL"],["纜繩站姿腿後勾（低位）","Low-cable Standing Leg Curl"],["纜繩 RDL（低位）","Low-cable RDL"]],
+   mc:[["臥式腿彎舉機","Lying Leg Curl Machine"],["坐式腿彎舉機","Seated Leg Curl Machine"],["背伸展機","Back Extension Machine"]],
+   bd:[["彈力帶羅馬尼亞硬舉","Band Romanian Deadlift"],["彈力帶單腳 RDL","Band Single-leg RDL"],["彈力帶腿後勾","Band Leg Curl"]],
+   bw:[["北歐腿彎舉","Nordic Hamstring Curl"],["單腳橋式","Single-leg Glute Bridge"],["單腳 RDL（徒手）","Single-leg RDL (BW)"]]},
+
+  {g:"後大腿 Hamstrings", mZh:"股二頭肌短頭", mEn:"Biceps Femoris (Short Head)",
+   best:["坐式腿彎舉機","Seated Leg Curl Machine","mc"],
+   bb:[["槓鈴北歐腿彎舉（輔助）","BB-assisted Nordic Curl"],["槓鈴直腿硬舉","BB Stiff-leg Deadlift"],["槓鈴早安式","BB Good Morning"]],
+   db:[["俯臥啞鈴腿彎舉","Prone DB Leg Curl"],["啞鈴直腿硬舉","DB Stiff-leg Deadlift"],["啞鈴單腳 RDL","Single-leg DB RDL"]],
+   kb:[["壺鈴北歐腿彎舉（輔助）","KB-assisted Nordic Curl"],["壺鈴直腿硬舉","KB Stiff-leg Deadlift"],["壺鈴搖擺","KB Swing"]],
+   ca:[["纜繩站姿腿後勾（低位）","Low-cable Standing Leg Curl"],["纜繩俯臥腿後勾（低位）","Low-cable Prone Leg Curl"],["纜繩單腳腿後勾","Single-leg Cable Leg Curl"]],
+   mc:[["坐式腿彎舉機","Seated Leg Curl Machine"],["臥式腿彎舉機","Lying Leg Curl Machine"],["站姿腿彎舉機","Standing Leg Curl Machine"]],
+   bd:[["彈力帶腿後勾（站姿）","Band Standing Leg Curl"],["彈力帶俯臥腿後勾","Band Prone Leg Curl"],["彈力帶單腳腿後勾","Band Single-leg Curl"]],
+   bw:[["滑盤腿彎舉","Slider Leg Curl"],["橋式腿彎舉","Supine Hip Ext. Leg Curl"],["北歐腿彎舉","Nordic Hamstring Curl"]]},
+
+  {g:"後大腿 Hamstrings", mZh:"半腱肌 / 半膜肌", mEn:"Semitend. / Semimembranosus",
+   best:["北歐腿彎舉","Nordic Hamstring Curl","bw"],
+   bb:[["槓鈴直腿硬舉","BB Stiff-leg Deadlift"],["槓鈴羅馬尼亞硬舉","BB Romanian Deadlift"],["槓鈴早安式","BB Good Morning"]],
+   db:[["啞鈴單腳 RDL","Single-leg DB RDL"],["啞鈴直腿硬舉","DB Stiff-leg Deadlift"],["啞鈴羅馬尼亞硬舉","DB Romanian Deadlift"]],
+   kb:[["壺鈴單腳 RDL","KB Single-leg RDL"],["壺鈴直腿硬舉","KB Stiff-leg Deadlift"],["壺鈴搖擺（Swing）","KB Swing"]],
+   ca:[["纜繩直腿後抬（低位）","Low-cable Straight-leg Kickback"],["纜繩俯臥腿後勾（低位）","Low-cable Prone Leg Curl"],["纜繩單腳 RDL（低位）","Low-cable Single-leg RDL"]],
+   mc:[["臥式腿彎舉機","Lying Leg Curl Machine"],["坐式腿彎舉機","Seated Leg Curl Machine"],["背伸展機","Back Extension Machine"]],
+   bd:[["彈力帶腿後勾","Band Leg Curl"],["彈力帶單腳 RDL","Band Single-leg RDL"],["彈力帶俯臥腿後勾","Band Prone Leg Curl"]],
+   bw:[["北歐腿彎舉","Nordic Hamstring Curl"],["單腳橋式","Single-leg Glute Bridge"],["滑盤腿彎舉","Slider Leg Curl"]]},
+
+  // ══ 小腿 ══
+  {g:"小腿 Calves", mZh:"腓腸肌", mEn:"Gastrocnemius",
+   best:["站姿提踵機","Standing Calf Raise Machine","mc"],
+   bb:[["槓鈴站姿提踵","BB Standing Calf Raise"],["槓鈴單腳提踵","BB Single-leg Calf Raise"],["槓鈴箱上提踵（增加 ROM）","BB Calf Raise on Box"]],
+   db:[["單腳啞鈴提踵","Single-leg DB Calf Raise"],["啞鈴站姿提踵（增加 ROM）","DB Calf Raise on Step"],["啞鈴行走（腳尖著地）","DB Toe Walk"]],
+   kb:[["壺鈴單腳提踵","KB Single-leg Calf Raise"],["壺鈴站姿提踵","KB Standing Calf Raise"],["壺鈴農夫走路（腳尖著地）","KB Toe Walk Farmer's Walk"]],
+   ca:[["纜繩站姿提踵（低位）","Low-cable Standing Calf Raise"],["纜繩單腳提踵（低位）","Low-cable Single-leg Calf Raise"],["纜繩腿押機提踵","Cable Leg Press Calf Raise"]],
+   mc:[["站姿提踵機","Standing Calf Raise Machine"],["腿押機提踵","Leg Press Calf Raise"],["史密斯機站姿提踵","Smith Machine Calf Raise"]],
+   bd:[["彈力帶站姿提踵","Band Standing Calf Raise"],["彈力帶單腳提踵","Band Single-leg Calf Raise"],["彈力帶跳躍提踵","Band Jump Calf Raise"]],
+   bw:[["單腳站姿提踵","Single-leg Calf Raise"],["跳繩","Jump Rope"],["箱上單腳提踵","Single-leg Box Calf Raise"]]},
+
+  {g:"小腿 Calves", mZh:"比目魚肌", mEn:"Soleus",
+   best:["坐姿提踵機","Seated Calf Raise Machine","mc"],
+   bb:[["槓鈴坐姿提踵（膝彎曲）","BB Seated Calf Raise"],["槓鈴膝彎曲站姿提踵","BB Bent-knee Calf Raise"],["史密斯機坐姿提踵","Smith Machine Seated Calf Raise"]],
+   db:[["啞鈴坐姿提踵（膝彎 90°）","DB Seated Calf Raise (Knee 90°)"],["啞鈴單腳坐姿提踵","DB Single-leg Seated Calf Raise"],["啞鈴膝彎曲站姿提踵","DB Bent-knee Calf Raise"]],
+   kb:[["壺鈴坐姿提踵（膝彎 90°）","KB Seated Calf Raise (Knee 90°)"],["壺鈴單腳坐姿提踵","KB Single-leg Seated Calf Raise"],["壺鈴膝彎曲站姿提踵","KB Bent-knee Calf Raise"]],
+   ca:[["纜繩坐姿提踵（低位）","Low-cable Seated Calf Raise"],["纜繩膝彎曲提踵","Cable Bent-knee Calf Raise"],["纜繩單腳坐姿提踵","Single-leg Low-cable Calf Raise"]],
+   mc:[["坐姿提踵機","Seated Calf Raise Machine"],["腿押機提踵（膝彎曲）","Leg Press Calf Raise (Bent knee)"],["坐姿腿押機提踵","Seated Leg Press Calf Raise"]],
+   bd:[["彈力帶坐姿提踵","Band Seated Calf Raise"],["彈力帶單腳坐姿提踵","Band Single-leg Seated Calf Raise"],["彈力帶膝彎曲站姿提踵","Band Bent-knee Calf Raise"]],
+   bw:[["坐姿提踵（膝彎 90°）","Seated Calf Raise (Knee 90°)"],["坐姿單腳提踵","Single-leg Seated Calf Raise"],["靠牆坐姿提踵","Wall-seated Calf Raise"]]},
+
+  {g:"小腿 Calves", mZh:"脛骨前肌", mEn:"Tibialis Anterior",
+   best:["Tib Bar 脛骨前肌訓練機","Tibialis Raise Machine (Tib Bar)","mc"],
+   bb:[["槓鈴靠牆勾腳踝","BB-weighted Wall Tibialis Raise"],["槓鈴早安式（脛骨張力）","BB Good Morning (Tibial tension)"],["槓鈴腳跟行走","BB Heel Walk"]],
+   db:[["啞鈴靠牆勾腳踝","DB Wall Tibialis Raise"],["啞鈴腳跟行走","DB Heel Walk"],["啞鈴坐姿勾腳踝","DB Seated Dorsiflexion"]],
+   kb:[["壺鈴靠牆勾腳踝","KB Wall Tibialis Raise"],["壺鈴腳跟行走","KB Heel Walk"],["壺鈴坐姿勾腳踝","KB Seated Dorsiflexion"]],
+   ca:[["纜繩勾腳背（低位，坐姿）","Low-cable Seated Dorsiflexion"],["纜繩站姿勾腳踝（低位）","Low-cable Standing Tibialis Raise"],["纜繩單腳勾腳踝","Single-leg Cable Dorsiflexion"]],
+   mc:[["Tib Bar 脛骨前肌訓練機","Tibialis Raise Machine (Tib Bar)"],["坐姿勾腳踝機","Seated Dorsiflexion Machine"],["史密斯機靠牆勾腳踝","Smith Machine Tibialis Raise"]],
+   bd:[["彈力帶勾腳踝","Band Dorsiflexion"],["彈力帶單腳勾腳踝","Band Single-leg Dorsiflexion"],["彈力帶腳跟行走","Band Heel Walk"]],
+   bw:[["站姿勾腳踝（靠牆）","Wall Tibialis Raise"],["腳跟行走","Heel Walk"],["坐姿腳背勾起（徒手）","Seated Dorsiflexion (BW)"]]},
+
+  {g:"小腿 Calves", mZh:"腓骨肌群", mEn:"Fibularis (Peroneal) Group",
+   best:["纜繩外翻訓練（低位）","Low-cable Eversion","ca"],
+   bb:[["槓鈴站姿外翻提踵","BB Eversion Calf Raise"],["槓鈴單腳提踵（腳尖朝內）","BB Calf Raise (Toes In)"],["槓鈴農夫走路（外翻）","BB Farmer's Walk (Eversion)"]],
+   db:[["啞鈴單腳外翻提踵","DB Single-leg Eversion Raise"],["啞鈴站姿提踵（腳尖朝內）","DB Calf Raise (Toes In)"],["啞鈴農夫走路","DB Farmer's Walk"]],
+   kb:[["壺鈴單腳外翻提踵","KB Single-leg Eversion Raise"],["壺鈴農夫走路（外翻）","KB Farmer's Walk (Eversion)"],["壺鈴站姿提踵（腳尖朝內）","KB Calf Raise (Toes In)"]],
+   ca:[["纜繩外翻訓練（低位）","Low-cable Eversion"],["纜繩單腳外翻提踵","Single-leg Cable Eversion Raise"],["纜繩踝關節外翻","Cable Ankle Eversion"]],
+   mc:[["踝關節外翻機","Ankle Eversion Machine"],["站姿提踵機（腳尖朝內）","Standing Calf Raise Machine (Toes In)"],["坐姿提踵機（腳尖朝內）","Seated Calf Raise Machine (Toes In)"]],
+   bd:[["彈力帶外翻（站姿）","Band Standing Eversion"],["彈力帶單腳外翻","Band Single-leg Eversion"],["彈力帶踝關節外翻","Band Ankle Eversion"]],
+   bw:[["單腳平衡訓練（外翻）","Single-leg Balance (Eversion)"],["側向跨步跳","Lateral Bound"],["平衡板訓練","Balance Board Training"]]},
+];
+
+const eqLabel={bb:"槓鈴 BB",db:"啞鈴 DB",kb:"壺鈴 KB",ca:"纜繩 Cable",mc:"機器 Machine",bd:"彈力帶 Band",bw:"徒手 BW"};
+const eqClass={bb:"eq-bb",db:"eq-db",kb:"eq-kb",ca:"eq-ca",mc:"eq-mc",bd:"eq-bd",bw:"eq-bw"};
+
+const groupKeys=[...new Set(D.map(d=>d.g))];
+const allGroups=["全部 All",...groupKeys];
+let active="全部 All";
+
+function makeList(moves,isBest){
+  return `<ul class="move-list">${moves.map(([zh,en],i)=>`
+    <li><span class="mrank${i===0?' mrank-1':''}">${i+1}</span>
+    <div><span class="${isBest?'best-mzh':'mzh-s'}">${zh}</span><span class="${isBest?'best-men':'men-s'}">${en}</span></div></li>`).join('')}</ul>`;
+}
+
+function render(){
+  const rows=active==="全部 All"?D:D.filter(d=>d.g===active);
+  const tbody=document.getElementById("tbody");
+  const empty=document.getElementById("empty");
+  if(!rows.length){tbody.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  let html="";
+  rows.forEach(r=>{
+    const p=P[r.g];
+    const gp=r.g.split(" ");
+    const gl=`<span class="group-label" style="background:${p.bg};color:${p.text};border:1px solid ${p.border}">${gp[0]}<br><span style="font-weight:400;font-size:9px">${gp.slice(1).join(" ")}</span></span>`;
+    html+=`<tr>
+      <td>${gl}</td>
+      <td><div class="mzh">${r.mZh}</div><div class="men">${r.mEn}</div></td>
+      <td class="best-cell">${makeList([[r.best[0],r.best[1]]],true)}<span class="eq-tag ${eqClass[r.best[2]]}" style="margin-top:3px">${eqLabel[r.best[2]]}</span></td>
+      <td>${makeList(r.bb,false)}</td>
+      <td>${makeList(r.db,false)}</td>
+      <td>${makeList(r.kb,false)}</td>
+      <td>${makeList(r.ca,false)}</td>
+      <td>${makeList(r.mc,false)}</td>
+      <td>${makeList(r.bd,false)}</td>
+      <td>${makeList(r.bw,false)}</td>
+    </tr>`;
+  });
+  tbody.innerHTML=html;
+}
+
+function buildFilters(){
+  const el=document.getElementById("filters");
+  allGroups.forEach(g=>{
+    const btn=document.createElement("button");
+    btn.className="filter-btn"+(g===active?" active":"");
+    const count=g==="全部 All"?D.length:D.filter(d=>d.g===g).length;
+    const label=g==="全部 All"?"全部 All":g.split(" ")[0]+" "+g.split(" ").slice(1).join(" ");
+    btn.innerHTML=label+`<span class="count">(${count})</span>`;
+    btn.onclick=()=>{
+      active=g;
+      document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>
