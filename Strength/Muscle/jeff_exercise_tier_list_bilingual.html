@@ -1,0 +1,371 @@
+
+<style>
+* { box-sizing: border-box; }
+.container { padding: 1rem 0; }
+.header { margin-bottom: 1.25rem; }
+.header h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+.tab { padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 20px; font-size: 13px; cursor: pointer; color: var(--color-text-secondary); background: transparent; transition: all .15s; }
+.tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+.panel { display: none; }
+.panel.active { display: block; }
+.tier-row { margin-bottom: 8px; }
+.tier-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.tier-label { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.tier-sp { background: #FAECE7; color: #993C1D; }
+.tier-s  { background: #FAEEDA; color: #854F0B; }
+.tier-a  { background: #EAF3DE; color: #3B6D11; }
+.tier-b  { background: #E6F1FB; color: #185FA5; }
+.tier-c  { background: #EEEDFE; color: #534AB7; }
+.tier-d  { background: #F1EFE8; color: #5F5E5A; }
+.tier-f  { background: #FCEBEB; color: #A32D2D; }
+@media (prefers-color-scheme: dark) {
+  .tier-sp { background: #4A1B0C; color: #F0997B; }
+  .tier-s  { background: #412402; color: #FAC775; }
+  .tier-a  { background: #173404; color: #C0DD97; }
+  .tier-b  { background: #042C53; color: #85B7EB; }
+  .tier-c  { background: #26215C; color: #AFA9EC; }
+  .tier-d  { background: #2C2C2A; color: #B4B2A9; }
+  .tier-f  { background: #501313; color: #F09595; }
+}
+.tags { display: flex; flex-wrap: wrap; gap: 5px; padding-left: 44px; }
+.ex-tag { display: inline-flex; flex-direction: column; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 7px; padding: 4px 9px; cursor: default; }
+.ex-tag.highlight { border-color: var(--color-border-info); background: var(--color-background-info); }
+.ex-zh { font-size: 12px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
+.ex-en { font-size: 11px; color: var(--color-text-secondary); line-height: 1.3; }
+.ex-tag.highlight .ex-zh { color: var(--color-text-info); }
+.ex-tag.highlight .ex-en { color: var(--color-text-info); opacity: 0.8; }
+.note { font-size: 12px; color: var(--color-text-tertiary); margin: 4px 0 0 44px; line-height: 1.5; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 8px 0; }
+.principles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.pill { font-size: 11px; padding: 3px 9px; border-radius: 12px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+</style>
+
+<div class="container">
+  <div class="header">
+    <h1>Jeff 7 大肌群訓練動作分級</h1>
+    <p>基於 3 項科學原則：伸展位高張力 · 關節友善 · 容易漸進超負荷</p>
+  </div>
+  <div class="principles">
+    <span class="pill">🔴 伸展位置具備高張力</span>
+    <span class="pill">🟢 關節感覺良好</span>
+    <span class="pill">🔵 易於漸進式超負荷</span>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="panels"></div>
+</div>
+
+<script>
+const data = [
+  {
+    id: "glutes", name: "臀部", en: "Glutes",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"跨步弓箭步", en:"Walking Lunges"}
+        ], note: "同時給予臀大肌深度伸展、高度張力，非常適合漸進式超負荷" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"Nautilus 臀推機（中臀）", en:"Nautilus Hip Thrust Machine"},
+          {zh:"機器髖外展（上臀）", en:"Machine Hip Abduction"},
+          {zh:"前腳墊高史密斯機弓箭步", en:"Elevated Smith Machine Lunge"},
+          {zh:"45° 背部伸展", en:"45° Back Extension"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"單腿啞鈴臀推", en:"Single-leg DB Hip Thrust"},
+          {zh:"槓鈴深蹲", en:"Barbell Squat"},
+          {zh:"史密斯機深蹲", en:"Smith Machine Squat"},
+          {zh:"保加利亞分腿蹲", en:"Bulgarian Split Squat"},
+          {zh:"繩索後踢", en:"Cable Kickback"},
+          {zh:"登階", en:"Step-ups"},
+          {zh:"史密斯弓箭步", en:"Smith Machine Lunge"},
+          {zh:"羅馬尼亞硬舉（下臀）", en:"Romanian Deadlift"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"槓鈴臀推", en:"Barbell Hip Thrust"},
+          {zh:"臀橋", en:"Glute Bridge"},
+          {zh:"繩索髖外展", en:"Cable Hip Abduction"},
+          {zh:"交叉弓箭步", en:"Crossover Lunge"},
+          {zh:"傳統硬舉", en:"Conventional Deadlift"},
+          {zh:"相撲硬舉", en:"Sumo Deadlift"},
+          {zh:"繩索滑輪後拉", en:"Cable Pull-through"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"青蛙泵", en:"Frog Pumps"},
+          {zh:"彈力帶側步走", en:"Band Lateral Walk"}
+        ]},
+      { tier: "D", label: "tier-d", items: [
+          {zh:"驢子踢腿", en:"Donkey Kicks"},
+          {zh:"消防栓式", en:"Fire Hydrants"},
+          {zh:"壺鈴擺盪", en:"Kettlebell Swing"}
+        ], note: "張力極低且難以超負荷" },
+    ]
+  },
+  {
+    id: "quads", name: "股四頭肌", en: "Quads",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"機器哈克深蹲", en:"Machine Hack Squat"}
+        ], note: "穩定性高，可達全關節活動度與極限負荷" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"槓鈴頸後深蹲", en:"High Bar Back Squat"},
+          {zh:"鐘擺深蹲", en:"Pendulum Squat"},
+          {zh:"史密斯機深蹲", en:"Smith Machine Squat"},
+          {zh:"保加利亞分腿蹲", en:"Bulgarian Split Squat"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"槓鈴頸前深蹲", en:"Front Squat"},
+          {zh:"低槓背蹲舉", en:"Low Bar Back Squat"},
+          {zh:"45° 腿推機", en:"45° Leg Press"},
+          {zh:"腿部伸展機", en:"Leg Extension Machine"},
+          {zh:"反向北歐捲", en:"Reverse Nordic Curl"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"弓箭步", en:"Lunge"},
+          {zh:"高腳杯深蹲", en:"Goblet Squat"},
+          {zh:"西斯深蹲", en:"Sissy Squat"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"水平腿推機", en:"Horizontal Leg Press"},
+          {zh:"硬舉", en:"Deadlift"},
+          {zh:"登階", en:"Step-ups"},
+          {zh:"單腿深蹲", en:"Pistol Squat"}
+        ]},
+      { tier: "F", label: "tier-f", items: [
+          {zh:"半圓平衡球深蹲", en:"Bosu Ball Squat"},
+          {zh:"深蹲結合推舉二合一", en:"Squat-to-Press Combo"},
+          {zh:"跳躍深蹲", en:"Jump Squat"}
+        ], note: "嚴重缺乏穩定性導致肌肉張力極低" },
+    ]
+  },
+  {
+    id: "triceps", name: "三頭肌", en: "Triceps",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"過頭滑輪三頭肌伸展（直槓）", en:"Overhead Cable Tricep Extension (Straight Bar)"}
+        ], note: "讓三頭肌長頭進入最理想的深度伸展與高張力狀態" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"仰臥三頭肌伸展（碎顱者）", en:"Lying Tricep Extension (Skull Crushers)"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"直槓滑輪下壓", en:"Straight Bar Cable Pushdown"},
+          {zh:"繩索過頭伸展", en:"Rope Overhead Extension"},
+          {zh:"武士刀三頭伸展", en:"Katana Extension"},
+          {zh:"單手啞鈴三頭伸展", en:"Single-arm DB Extension"},
+          {zh:"啞鈴碎顱者", en:"DB Skull Crushers"},
+          {zh:"史密斯機 JM Press", en:"Smith Machine JM Press"},
+          {zh:"滑輪三頭後踢", en:"Cable Tricep Kickback"},
+          {zh:"窄距臥推", en:"Close-grip Bench Press"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"繩索滑輪下壓", en:"Rope Cable Pushdown"},
+          {zh:"啞鈴法式推舉", en:"DB French Press"},
+          {zh:"槓鈴 JM Press", en:"Barbell JM Press"},
+          {zh:"窄距雙槓撐體", en:"Close-grip Dips"},
+          {zh:"機器雙槓撐體", en:"Machine Dips"},
+          {zh:"鑽石伏地挺身", en:"Diamond Push-up"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"啞鈴後踢", en:"Dumbbell Kickback"},
+          {zh:"反握滑輪下壓", en:"Reverse Grip Pushdown"},
+          {zh:"臥推椅雙槓撐體", en:"Bench Dips"},
+          {zh:"窄距伏地挺身", en:"Close-grip Push-up"}
+        ], note: "啞鈴後踢在肌肉伸展時阻力為零" },
+    ]
+  },
+  {
+    id: "back", name: "背部", en: "Back",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"靠胸划船", en:"Chest Supported Row"}
+        ], note: "極度穩定，能完美針對背闊肌與中背部提供超負荷張力" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"寬握/中立握滑輪下拉", en:"Wide/Neutral Grip Lat Pulldown"},
+          {zh:"單膝高跪姿單手滑輪下拉", en:"Half-kneeling Single-arm Pulldown"},
+          {zh:"梅道斯划船", en:"Meadows Row"},
+          {zh:"坐姿滑輪划船", en:"Seated Cable Row"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"寬握/中立握引體向上", en:"Wide/Neutral Grip Pull-up"},
+          {zh:"跨胸滑輪側拉", en:"Cross-body Cable Pulldown"},
+          {zh:"墊高潘德雷划船", en:"Elevated Pendlay Row"},
+          {zh:"單手啞鈴划船", en:"Single-arm DB Row"},
+          {zh:"Kroc 划船", en:"Kroc Row"},
+          {zh:"繩索面拉（坐/躺姿）", en:"Cable Face Pull (Seated/Lying)"},
+          {zh:"滑輪仰臥直臂上拉", en:"Cable Lat Prayer"},
+          {zh:"啞鈴仰臥直臂上拉", en:"DB Pullover"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"反握引體向上", en:"Chin-up"},
+          {zh:"標準槓鈴划船", en:"Barbell Row"},
+          {zh:"潘德雷划船", en:"Pendlay Row"},
+          {zh:"T 字槓划船", en:"T-bar Row"},
+          {zh:"站姿繩索面拉", en:"Standing Cable Face Pull"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"硬舉", en:"Deadlift"},
+          {zh:"耶茨划船", en:"Yates Row"},
+          {zh:"倒立划船", en:"Inverted Row"}
+        ]},
+      { tier: "F", label: "tier-f", items: [
+          {zh:"叛逆者划船", en:"Renegade Row"},
+          {zh:"膝上架上硬舉", en:"Rack Pull"},
+          {zh:"划船結合二頭彎舉二合一", en:"Row-to-Curl Combo"}
+        ], note: "核心不穩導致背部張力過低" },
+    ]
+  },
+  {
+    id: "biceps", name: "二頭肌", en: "Biceps",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"背對繩索貝氏彎舉", en:"Face-away Bayesian Cable Curl"}
+        ], note: "給予二頭肌長頭極大程度的伸展與持續張力" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"45° 斜板彎舉", en:"Preacher Curl"},
+          {zh:"機器斜板彎舉（著重下半程）", en:"Machine Preacher Curl"},
+          {zh:"槌式斜板彎舉", en:"Hammer Preacher Curl"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"EZ 槓彎舉", en:"EZ Bar Curl"},
+          {zh:"站姿/躺臥/上斜啞鈴彎舉", en:"Standing/Incline/Lying DB Curl"},
+          {zh:"改良式 21 響禮炮彎舉", en:"Modified 21s Curl"},
+          {zh:"標準滑輪彎舉", en:"Standard Cable Curl"},
+          {zh:"90° 變種貝氏彎舉", en:"90° Bayesian Curl Variation"},
+          {zh:"嚴格/借力彎舉", en:"Strict / Cheat Curl"},
+          {zh:"啞鈴槌式彎舉", en:"DB Hammer Curl"},
+          {zh:"反向佐特曼彎舉", en:"Reverse Zottman Curl"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"槓鈴彎舉", en:"Barbell Curl"},
+          {zh:"平板椅彎舉", en:"Seated DB Curl"},
+          {zh:"反握引體向上", en:"Chin-up"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"史考特彎舉", en:"Scott Curl"},
+          {zh:"拖拽彎舉", en:"Drag Curl"},
+          {zh:"蜘蛛彎舉", en:"Spider Curl"},
+          {zh:"傳統 21 響禮炮彎舉", en:"Traditional 21s Curl"}
+        ]},
+      { tier: "F", label: "tier-f", items: [
+          {zh:"服務生彎舉", en:"Waiter Curl"}
+        ], note: "手腕角度怪異且難以超負荷" },
+    ]
+  },
+  {
+    id: "chest", name: "胸肌", en: "Chest",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"機器胸推", en:"Machine Chest Press"}
+        ], note: "軌跡穩定、能安全推至力竭，且易於超負荷" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"坐姿滑輪飛鳥/夾胸", en:"Seated Cable PEC Fly"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"平板/上斜槓鈴臥推", en:"Flat/Incline Barbell Bench Press"},
+          {zh:"平板/上斜啞鈴臥推", en:"Flat/Incline DB Bench Press"},
+          {zh:"雙槓撐體", en:"Dips"},
+          {zh:"墊高伏地挺身", en:"Elevated Push-up"},
+          {zh:"啞鈴斷頭台臥推", en:"DB Guillotine Press"},
+          {zh:"史密斯機臥推（平板/上斜）", en:"Smith Machine Bench Press"},
+          {zh:"站姿滑輪夾胸", en:"Standing Cable Fly"},
+          {zh:"蝴蝶機夾胸", en:"Pec Deck Fly"},
+          {zh:"啞鈴飛鳥", en:"DB Fly"},
+          {zh:"單臂滑輪跨胸推", en:"Single-arm Cable Crossover"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"下斜槓鈴/啞鈴臥推", en:"Decline Barbell/DB Press"},
+          {zh:"彈力帶伏地挺身", en:"Banded Push-up"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"徒手伏地挺身", en:"Push-up"},
+          {zh:"地板推舉", en:"Floor Press"},
+          {zh:"啞鈴直臂上拉", en:"DB Pullover"},
+          {zh:"增強式伏地挺身", en:"Plyometric Push-up"}
+        ]},
+      { tier: "F", label: "tier-f", items: [
+          {zh:"槓片推", en:"Plate Press"},
+          {zh:"六角槓推", en:"Hex Press"},
+          {zh:"槓鈴斷頭台臥推（危險）", en:"Barbell Guillotine Press"},
+          {zh:"單臂啞鈴臥推", en:"Single-arm DB Press"},
+          {zh:"跨胸站姿啞鈴飛鳥", en:"Standing DB Crossover Fly"}
+        ], note: "缺乏伸展與超負荷空間" },
+    ]
+  },
+  {
+    id: "shoulders", name: "肩膀", en: "Shoulders",
+    tiers: [
+      { tier: "S+", label: "tier-sp", items: [
+          {zh:"滑輪側平舉", en:"Cable Lateral Raise"}
+        ], note: "在側三角肌拉長時維持最高張力且曲線平滑" },
+      { tier: "S", label: "tier-s", items: [
+          {zh:"滑輪 Y 字平舉", en:"Cable Y Raise"},
+          {zh:"背後袖套滑輪側平舉", en:"Behind-the-back Cable Lateral Raise"},
+          {zh:"反向蝴蝶機（側坐姿）", en:"Reverse Pec Deck (Side-seated)"},
+          {zh:"反向滑輪交叉側拉", en:"Reverse Cable Crossover"}
+        ]},
+      { tier: "A", label: "tier-a", items: [
+          {zh:"身體傾斜啞鈴側平舉", en:"Leaning DB Lateral Raise"},
+          {zh:"坐姿啞鈴肩推", en:"Seated DB Shoulder Press"},
+          {zh:"機器肩推（前三角）", en:"Machine Shoulder Press"},
+          {zh:"側躺啞鈴側平舉", en:"Lying DB Lateral Raise"},
+          {zh:"站姿機器側平舉", en:"Standing Machine Lateral Raise"},
+          {zh:"繩索面拉", en:"Cable Face Pull"}
+        ]},
+      { tier: "B", label: "tier-b", items: [
+          {zh:"站姿啞鈴側平舉", en:"Standing DB Lateral Raise"},
+          {zh:"身體遠離啞鈴側平舉", en:"Leaning-away DB Lateral Raise"},
+          {zh:"超大活動度側平舉", en:"Full ROM Lateral Raise"},
+          {zh:"槓鈴過頭肩推", en:"Barbell Overhead Press"},
+          {zh:"坐姿過頭肩推", en:"Seated Overhead Press"},
+          {zh:"坐姿機器側平舉", en:"Seated Machine Lateral Raise"},
+          {zh:"直立划船", en:"Upright Row"},
+          {zh:"俯身啞鈴反向飛鳥", en:"Bent-over DB Reverse Fly"}
+        ]},
+      { tier: "C", label: "tier-c", items: [
+          {zh:"彈力帶側平舉", en:"Band Lateral Raise"}
+        ]},
+      { tier: "不推薦", label: "tier-d", items: [
+          {zh:"前平舉", en:"Front Raise"}
+        ], note: "胸部推舉已給予前三角肌極大刺激，通常無需額外訓練" },
+    ]
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const panelsEl = document.getElementById('panels');
+
+data.forEach((muscle, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'tab' + (i === 0 ? ' active' : '');
+  tab.textContent = muscle.name + ' ' + muscle.en;
+  tab.onclick = () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + muscle.id).classList.add('active');
+  };
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel' + (i === 0 ? ' active' : '');
+  panel.id = 'panel-' + muscle.id;
+
+  let html = '';
+  muscle.tiers.forEach((row, ri) => {
+    if (ri > 0) html += '<hr class="divider">';
+    html += `<div class="tier-row">
+      <div class="tier-header">
+        <span class="tier-label ${row.label}">${row.tier}</span>
+      </div>
+      <div class="tags">`;
+    row.items.forEach(ex => {
+      const cls = row.tier === 'S+' ? 'ex-tag highlight' : 'ex-tag';
+      html += `<span class="${cls}"><span class="ex-zh">${ex.zh}</span><span class="ex-en">${ex.en}</span></span>`;
+    });
+    html += `</div>`;
+    if (row.note) html += `<div class="note">${row.note}</div>`;
+    html += `</div>`;
+  });
+  panel.innerHTML = html;
+  panelsEl.appendChild(panel);
+});
+</script>
