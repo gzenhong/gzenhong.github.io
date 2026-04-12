@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資分析導覽</title>
+  <meta name="description" content="個人投資分析報告彙整，包含歷史回撤分析、股票投資報酬、高股息退休組合等工具。">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #161921;
+      --surface2: #1e2230;
+      --border: #2a2f3e;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --accent: #f59e0b;
+      --accent2: #4a9fd8;
+      --accent3: #52c07a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif TC', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 56px 40px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 40px;
+    }
+
+    /* ── Grid ── */
+    main {
+      flex: 1;
+      padding: 48px 40px 64px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      margin-bottom: 28px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color, var(--accent));
+      border-radius: 12px 12px 0 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-color, var(--accent));
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--card-color, var(--accent));
+      background: color-mix(in srgb, var(--card-color, var(--accent)) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--card-color, var(--accent)) 30%, transparent);
+      border-radius: 4px;
+      padding: 3px 8px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .card h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.4;
+    }
+
+    .card p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .card-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--card-color, var(--accent));
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      transition: gap 0.2s ease;
+    }
+    .card:hover .card-arrow { gap: 10px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px 40px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 40px 20px 32px; }
+      main { padding: 36px 20px 48px; }
+      .divider { margin: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-eyebrow">Investment Analysis Hub</div>
+    <h1>投資分析報告</h1>
+    <p>Personal Finance · Portfolio Research · Data-Driven Insights</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <main>
+    <div class="section-label">分析工具</div>
+    <div class="card-grid">
+
+      <!-- Card 1: MDD -->
+      <a class="card" href="mdd.html" style="--card-color: #f59e0b;">
+        <div class="card-icon">📉</div>
+        <div class="card-tag">Risk Analysis</div>
+        <h2>歷史回撤分析</h2>
+        <p>視覺化追蹤股票從高點下跌的幅度，深入了解最大回撤（MDD）與現價距高點跌幅，評估持倉風險。</p>
+        <div class="card-arrow">開啟報告 →</div>
+      </a>
+
+      <!-- Card 2: 0050 x 2330 -->
+      <a class="card" href="stock_report_0050_2330_Claude.html" style="--card-color: #4a9fd8;">
+        <div class="card-icon">📊</div>
+        <div class="card-tag">Return Analysis</div>
+        <h2>股票投資報酬分析<br>0050 × 2330</h2>
+        <p>比較台灣 ETF（0050）與台積電（2330）在不同時期的投資報酬表現，協助做出更好的資產配置決策。</p>
+        <div class="card-arrow">開啟報告 →</div>
+      </a>
+
+      <!-- Card 3: 高股息退休 -->
+      <a class="card" href="高股息retirement_portfolio_analysis.html" style="--card-color: #52c07a;">
+        <div class="card-icon">🏦</div>
+        <div class="card-tag">Retirement Portfolio</div>
+        <h2>高股息退休<br>組合分析</h2>
+        <p>針對退休規劃設計的高股息投資組合分析，評估股息收益、殖利率與長期持有的現金流能力。</p>
+        <div class="card-arrow">開啟報告 →</div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 Investment Analysis · gzenhong.github.io
+  </footer>
+
+</body>
+</html>
