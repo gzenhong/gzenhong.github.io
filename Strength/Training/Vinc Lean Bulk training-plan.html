@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>增肌訓練與飲食計畫</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --card: #1a1d27;
+  --card-hover: #22263a;
+  --accent: #4ecdc4;
+  --accent2: #ff6b6b;
+  --accent3: #ffd93d;
+  --accent4: #6c5ce7;
+  --text: #e8e8e8;
+  --text-dim: #8892a4;
+  --border: #2a2e3d;
+  --success: #00b894;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  padding: 20px;
+}
+
+.container { max-width: 900px; margin: 0 auto; }
+
+h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 30px 0 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.stat-card .label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; }
+.stat-card .value { font-size: 1.4rem; font-weight: 700; }
+.stat-card .unit { font-size: 0.75rem; color: var(--text-dim); }
+.stat-card.accent .value { color: var(--accent); }
+.stat-card.red .value { color: var(--accent2); }
+.stat-card.yellow .value { color: var(--accent3); }
+.stat-card.purple .value { color: var(--accent4); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  color: var(--text-dim);
+}
+
+.tab.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent4));
+  color: #fff;
+  font-weight: 700;
+}
+
+.tab:hover:not(.active) { background: var(--card-hover); color: var(--text); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Training Section */
+.day-card {
+  background: var(--card);
+  border-radius: 14px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.day-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.day-header:hover { background: var(--card-hover); }
+
+.day-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.day-title { font-weight: 700; font-size: 1.05rem; }
+.day-duration { font-size: 0.8rem; color: var(--text-dim); }
+.day-arrow { transition: transform 0.3s; font-size: 0.9rem; color: var(--text-dim); }
+.day-arrow.open { transform: rotate(180deg); }
+
+.day-body {
+  padding: 0 20px 20px;
+  display: none;
+}
+
+.day-body.open { display: block; }
+
+.exercise-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.exercise-table th {
+  text-align: left;
+  padding: 8px 6px;
+  color: var(--text-dim);
+  font-weight: 500;
+  font-size: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.exercise-table td {
+  padding: 10px 6px;
+  border-bottom: 1px solid rgba(42,46,61,0.5);
+}
+
+.exercise-table tr:last-child td { border-bottom: none; }
+
+.exercise-name { font-weight: 500; }
+.exercise-en { display: block; font-size: 0.7rem; color: var(--text-dim); font-style: italic; margin-top: 1px; }
+.muscle-targets { font-size: 0.7rem; line-height: 1.4; }
+.muscle-primary { color: var(--accent); }
+.muscle-secondary { color: var(--text-dim); }
+
+.tag-compound {
+  background: rgba(78,205,196,0.15);
+  color: var(--accent);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.tag-iso {
+  background: rgba(108,92,231,0.15);
+  color: var(--accent4);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.tag-unilateral {
+  background: rgba(255,107,107,0.15);
+  color: var(--accent2);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.note-box {
+  background: rgba(78,205,196,0.08);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* Nutrition Section */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.macro-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.macro-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.macro-card.protein::before { background: var(--accent2); }
+.macro-card.carbs::before { background: var(--accent3); }
+.macro-card.fat::before { background: var(--accent4); }
+.macro-card.cal::before { background: var(--accent); }
+
+.macro-label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 6px; }
+.macro-value { font-size: 1.8rem; font-weight: 900; }
+.macro-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+.meal-plan {
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.meal-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 70px;
+  padding: 14px 20px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.meal-row:last-child { border-bottom: none; }
+
+.meal-time {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.meal-content { color: var(--text-dim); }
+.meal-protein { text-align: right; color: var(--accent2); font-weight: 700; font-size: 0.8rem; }
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 28px 0 14px;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent);
+}
+
+/* Tips */
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.tip-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+
+.tip-card .tip-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.tip-card .tip-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+.tip-card .tip-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
+
+.week-overview {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.week-day {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 4px;
+  text-align: center;
+  border: 1px solid var(--border);
+  font-size: 0.7rem;
+}
+
+.week-day .wd-label { color: var(--text-dim); margin-bottom: 4px; }
+.week-day .wd-icon { font-size: 1.2rem; margin-bottom: 2px; }
+.week-day .wd-text { font-weight: 600; font-size: 0.65rem; }
+
+.week-day.rest { border-color: rgba(78,205,196,0.3); }
+.week-day.run { border-color: rgba(255,217,61,0.3); }
+.week-day.train { border-color: rgba(108,92,231,0.3); }
+
+@media (max-width: 600px) {
+  body { padding: 12px; }
+  h1 { font-size: 1.5rem; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .week-overview { grid-template-columns: repeat(4, 1fr); }
+  .meal-row { grid-template-columns: 80px 1fr 60px; padding: 10px 14px; }
+  .exercise-table { font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>增肌計畫 💪</h1>
+<p class="subtitle">174cm ／ 70.4kg ／ 11.7% → 目標 72kg ／ 12% ／ BMI < 24</p>
+
+<div class="stats-row">
+  <div class="stat-card accent">
+    <div class="label">每日熱量</div>
+    <div class="value">2,550</div>
+    <div class="unit">kcal</div>
+  </div>
+  <div class="stat-card red">
+    <div class="label">蛋白質</div>
+    <div class="value">150</div>
+    <div class="unit">g／天</div>
+  </div>
+  <div class="stat-card yellow">
+    <div class="label">碳水</div>
+    <div class="value">320</div>
+    <div class="unit">g／天</div>
+  </div>
+  <div class="stat-card purple">
+    <div class="label">脂肪</div>
+    <div class="value">65</div>
+    <div class="unit">g／天</div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('training')">訓練課表</div>
+  <div class="tab" onclick="switchTab('nutrition')">飲食規劃</div>
+  <div class="tab" onclick="switchTab('tips')">重要提醒</div>
+</div>
+
+<!-- ==================== 訓練 ==================== -->
+<div id="training" class="tab-content active">
+
+<p class="section-title">週計畫總覽</p>
+<div class="week-overview">
+  <div class="week-day train"><div class="wd-icon">🏋️</div><div class="wd-label">週一</div><div class="wd-text">推A（胸＋肩＋三頭）</div></div>
+  <div class="week-day train" style="border-color:rgba(255,107,107,0.3);"><div class="wd-icon">🦵</div><div class="wd-label">週二</div><div class="wd-text">腿A（股四＋臀＋腹）</div></div>
+  <div class="week-day train" style="border-color:rgba(78,205,196,0.3);"><div class="wd-icon">🏋️</div><div class="wd-label">週三</div><div class="wd-text">拉A（背＋二頭）</div></div>
+  <div class="week-day train"><div class="wd-icon">🏋️</div><div class="wd-label">週四</div><div class="wd-text">推B（胸＋肩＋三頭）</div></div>
+  <div class="week-day train" style="border-color:rgba(255,107,107,0.3);"><div class="wd-icon">🦵</div><div class="wd-label">週五</div><div class="wd-text">腿B（後腿＋臀＋腹）</div></div>
+  <div class="week-day train" style="border-color:rgba(78,205,196,0.3);"><div class="wd-icon">🏋️</div><div class="wd-label">週六</div><div class="wd-text">拉B（背＋二頭）</div></div>
+  <div class="week-day run"><div class="wd-icon">🏃</div><div class="wd-label">週日</div><div class="wd-text">跑步機間歇</div></div>
+</div>
+
+<div class="note-box" style="margin-bottom:20px;">
+  <strong>核心改變：</strong>從原本每天 30 分鐘改為每次 45～55 分鐘。採用推→腿→拉連續兩輪，每個肌群一週練 2 次，訓練量翻倍。週日跑步機間歇 20 分鐘。跑完隔天接推（上肢），確保腿部充分恢復。左腿單邊訓練以左側為基準設定重量。
+</div>
+
+<!-- Day 1: 推A -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週一：推 A（胸＋前三角＋三頭）</span><span class="day-tag" style="background:rgba(108,92,231,0.2);color:var(--accent4);">45-50 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">槓鈴臥推</span><span class="exercise-en">Barbell Bench Press</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 胸大肌</span><br><span class="muscle-secondary">○ 前三角、三頭肌</span></td><td>4 × 6-8</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">上斜啞鈴臥推</span><span class="exercise-en">Incline Dumbbell Press</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 上胸、前三角</span><br><span class="muscle-secondary">○ 三頭肌</span></td><td>3 × 8-10</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">站姿啞鈴肩推</span><span class="exercise-en">Standing Dumbbell OHP</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 前三角、中三角</span><br><span class="muscle-secondary">○ 三頭肌、上斜方</span></td><td>3 × 8-10</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">繩索夾胸 / 蝴蝶機</span><span class="exercise-en">Cable Fly / Pec Deck</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 胸大肌（內側）</span><br><span class="muscle-secondary">○ 前三角</span></td><td>3 × 12-15</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">繩索三頭下壓</span><span class="exercise-en">Cable Tricep Pushdown</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 三頭肌（外側頭）</span></td><td>3 × 12-15</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">側平舉</span><span class="exercise-en">Lateral Raise</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 中三角</span><br><span class="muscle-secondary">○ 上斜方肌</span></td><td>3 × 15-20</td><td>9</td></tr>
+    </table>
+    <div class="note-box">推 A 以大重量為主。臥推每週嘗試加 1.25-2.5kg。</div>
+  </div>
+</div>
+
+<!-- Day 2: 腿A -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週二：腿 A（股四＋臀＋腹）</span><span class="day-tag" style="background:rgba(255,107,107,0.2);color:var(--accent2);">50-55 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">槓鈴深蹲</span><span class="exercise-en">Barbell Back Squat ／ 可替換：Hack Squat、Belt Squat、Smith Squat</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 股四頭、臀大肌</span><br><span class="muscle-secondary">○ 豎脊肌、核心</span></td><td>4 × 6-8</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">保加利亞分腿蹲（左腳先）</span><span class="exercise-en">Bulgarian Split Squat</span><span class="tag-unilateral">單邊</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 股四頭、臀大肌</span><br><span class="muscle-secondary">○ 臀中肌、核心</span></td><td>3 × 8-10 /邊</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">腿推機</span><span class="exercise-en">Leg Press</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 股四頭、臀大肌</span><br><span class="muscle-secondary">○ 腿後肌群</span></td><td>3 × 10-12</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">腿伸屈機</span><span class="exercise-en">Leg Extension</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 股四頭（股直肌）</span></td><td>3 × 12-15</td><td>9</td></tr>
+      <tr><td><span class="exercise-name">臀推</span><span class="exercise-en">Hip Thrust</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 臀大肌</span><br><span class="muscle-secondary">○ 腿後肌群、核心</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">懸吊抬腿</span><span class="exercise-en">Hanging Leg Raise</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 下腹（腹直肌下段）</span><br><span class="muscle-secondary">○ 髂腰肌、前臂（握力）</span></td><td>3 × 12-15</td><td>8-9</td></tr>
+    </table>
+    <div class="note-box">⚠️ 保加利亞分腿蹲以左腿為基準設定重量，左腿可多做 1 組（4組 vs 右腿 3組）。深蹲每週嘗試加 2.5kg。懸吊抬腿順便練握力。</div>
+  </div>
+</div>
+
+<!-- Day 3: 拉A -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週三：拉 A（背＋二頭＋前臂）</span><span class="day-tag" style="background:rgba(78,205,196,0.2);color:var(--accent);">45-50 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">引體向上 / 滑輪下拉</span><span class="exercise-en">Pull-up / Lat Pulldown</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 闊背肌、大圓肌</span><br><span class="muscle-secondary">○ 二頭肌、前臂屈肌、菱形肌</span></td><td>4 × 6-10</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">槓鈴划船</span><span class="exercise-en">Barbell Row</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 闊背肌、菱形肌、中斜方</span><br><span class="muscle-secondary">○ 後三角、二頭肌、豎脊肌</span></td><td>3 × 8-10</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">單臂啞鈴划船</span><span class="exercise-en">Single-Arm Dumbbell Row</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 闊背肌、菱形肌</span><br><span class="muscle-secondary">○ 後三角、二頭肌、核心</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">Face Pull</span><span class="exercise-en">Cable Face Pull</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 後三角、外旋肌群</span><br><span class="muscle-secondary">○ 中斜方、菱形肌</span></td><td>3 × 15-20</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">啞鈴彎舉</span><span class="exercise-en">Dumbbell Bicep Curl</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 二頭肌（短頭、長頭）</span><br><span class="muscle-secondary">○ 肱肌、前臂屈肌</span></td><td>3 × 10-12</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">錘式彎舉</span><span class="exercise-en">Hammer Curl</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 肱橈肌、肱肌</span><br><span class="muscle-secondary">○ 二頭肌、前臂伸肌</span></td><td>3 × 12-15</td><td>9</td></tr>
+    </table>
+    <div class="note-box">拉 A 以大重量為主。引體向上做不到 6 下可用滑輪下拉替代。錘式彎舉同時練到肱橈肌（前臂最大肌肉）。</div>
+  </div>
+</div>
+
+<!-- Day 4: 推B -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週四：推 B（胸＋肩＋三頭）</span><span class="day-tag" style="background:rgba(108,92,231,0.2);color:var(--accent4);">45-50 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">啞鈴臥推（平板或微上斜）</span><span class="exercise-en">Dumbbell Bench Press</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 胸大肌</span><br><span class="muscle-secondary">○ 前三角、三頭肌</span></td><td>3 × 8-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">機械式胸推 / 雙槓撐體</span><span class="exercise-en">Machine Chest Press / Dips</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 胸大肌（下部）</span><br><span class="muscle-secondary">○ 前三角、三頭肌</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">阿諾推舉 / 機械肩推</span><span class="exercise-en">Arnold Press / Machine OHP</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 前三角、中三角</span><br><span class="muscle-secondary">○ 三頭肌、上斜方</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">側平舉</span><span class="exercise-en">Lateral Raise</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 中三角</span><br><span class="muscle-secondary">○ 上斜方肌</span></td><td>4 × 15-20</td><td>9</td></tr>
+      <tr><td><span class="exercise-name">三頭過頭伸展</span><span class="exercise-en">Overhead Tricep Extension</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 三頭肌（長頭）</span></td><td>3 × 12-15</td><td>8-9</td></tr>
+    </table>
+    <div class="note-box">推 B 以中等重量、高次數為主，跟推 A 形成互補。動作選擇與推 A 不同來增加刺激多樣性。</div>
+  </div>
+</div>
+
+<!-- Day 5: 腿B -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週五：腿 B（後腿＋臀＋小腿＋腹）</span><span class="day-tag" style="background:rgba(255,107,107,0.2);color:var(--accent2);">50-55 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">羅馬尼亞硬舉</span><span class="exercise-en">Romanian Deadlift (RDL) ／ 可替換：傳統硬舉、相撲硬舉</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 腿後肌群、臀大肌</span><br><span class="muscle-secondary">○ 豎脊肌、前臂（握力）</span></td><td>4 × 8-10</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">單腳 RDL（左腳先）</span><span class="exercise-en">Single-Leg RDL</span><span class="tag-unilateral">單邊</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 腿後肌群、臀大肌</span><br><span class="muscle-secondary">○ 臀中肌、核心</span></td><td>3 × 10-12 /邊</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">俯臥腿彎舉</span><span class="exercise-en">Lying Leg Curl</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 腿後肌群</span><br><span class="muscle-secondary">○ 腓腸肌</span></td><td>3 × 10-12</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">臀推</span><span class="exercise-en">Hip Thrust</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 臀大肌</span><br><span class="muscle-secondary">○ 腿後肌群、核心</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">站姿提踵</span><span class="exercise-en">Standing Calf Raise</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 腓腸肌</span><br><span class="muscle-secondary">○ 比目魚肌</span></td><td>4 × 15-20</td><td>9</td></tr>
+      <tr><td><span class="exercise-name">繩索捲腹</span><span class="exercise-en">Cable Crunch</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 上腹（腹直肌上段）</span><br><span class="muscle-secondary">○ 腹斜肌</span></td><td>3 × 15-20</td><td>8-9</td></tr>
+    </table>
+    <div class="note-box">⚠️ 單腳 RDL 以左腿為基準。傳統硬舉或相撲硬舉可替換 RDL 做為週期變化。繩索捲腹搭配腿 A 的懸吊抬腿，上下腹都覆蓋到。</div>
+  </div>
+</div>
+
+<!-- Day 6: 拉B -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週六：拉 B（背＋二頭＋前臂）</span><span class="day-tag" style="background:rgba(78,205,196,0.2);color:var(--accent);">45-50 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>動作</th><th>目標肌群</th><th>組 × 次</th><th>RPE</th></tr>
+      <tr><td><span class="exercise-name">坐姿繩索划船（窄握）</span><span class="exercise-en">Seated Cable Row (Close Grip)</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 菱形肌、中斜方、闊背肌</span><br><span class="muscle-secondary">○ 後三角、二頭肌</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">滑輪下拉（寬握）</span><span class="exercise-en">Wide-Grip Lat Pulldown</span><span class="tag-compound">複合</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 闊背肌、大圓肌</span><br><span class="muscle-secondary">○ 二頭肌、前臂屈肌</span></td><td>3 × 10-12</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">繩索 Face Pull</span><span class="exercise-en">Cable Face Pull</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 後三角、外旋肌群</span><br><span class="muscle-secondary">○ 中斜方、菱形肌</span></td><td>3 × 15-20</td><td>8</td></tr>
+      <tr><td><span class="exercise-name">反向飛鳥 / 蝴蝶機反向</span><span class="exercise-en">Reverse Fly / Reverse Pec Deck</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 後三角</span><br><span class="muscle-secondary">○ 菱形肌、中斜方</span></td><td>3 × 12-15</td><td>8-9</td></tr>
+      <tr><td><span class="exercise-name">斜板彎舉</span><span class="exercise-en">Incline Dumbbell Curl</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 二頭肌（長頭）</span><br><span class="muscle-secondary">○ 肱肌、前臂屈肌</span></td><td>3 × 10-12</td><td>9</td></tr>
+      <tr><td><span class="exercise-name">反握腕彎舉</span><span class="exercise-en">Reverse Wrist Curl</span><span class="tag-iso">孤立</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 前臂伸肌群</span><br><span class="muscle-secondary">○ 肱橈肌</span></td><td>2 × 15-20</td><td>8</td></tr>
+    </table>
+    <div class="note-box">拉 B 以中等重量為主。反握腕彎舉補強前臂伸肌（拉 A 的錘式彎舉已練肱橈肌）。</div>
+  </div>
+</div>
+
+<!-- Day 7: 跑步 -->
+<div class="day-card">
+  <div class="day-header" onclick="toggleDay(this)">
+    <div><span class="day-title">週日：跑步機間歇</span><span class="day-tag" style="background:rgba(255,217,61,0.2);color:var(--accent3);">20 min</span></div>
+    <div class="day-arrow">▼</div>
+  </div>
+  <div class="day-body">
+    <table class="exercise-table">
+      <tr><th>內容</th><th>目標肌群</th><th>設定</th><th>說明</th></tr>
+      <tr><td><span class="exercise-name">跑步機間歇</span><span class="exercise-en">Treadmill Interval</span></td><td class="muscle-targets"><span class="muscle-primary">⬤ 心肺、股四頭</span><br><span class="muscle-secondary">○ 臀大肌、小腿</span></td><td>10.5 km/hr</td><td>跑 1 min ／ 休 1 min × 10 輪</td></tr>
+      <tr><td><span class="exercise-name">坡度漸進</span><span class="exercise-en">Incline Progression</span></td><td class="muscle-targets"><span class="muscle-secondary">坡度↑ 加強臀部、後腿鏈</span></td><td>1% → 10%</td><td>每輪或每 2 輪遞增坡度</td></tr>
+    </table>
+    <div class="note-box">20 分鐘間歇對增肌期的心肺維持非常夠用，不會過度消耗恢復資源。坡度遞增可以額外刺激臀部和後腿鏈。跑完補碳水＋蛋白質。</div>
+  </div>
+</div>
+
+</div>
+
+<!-- ==================== 飲食 ==================== -->
+<div id="nutrition" class="tab-content">
+
+<p class="section-title">每日巨量營養素</p>
+
+<div class="macro-grid">
+  <div class="macro-card cal">
+    <div class="macro-label">每日總熱量</div>
+    <div class="macro-value" style="color:var(--accent);">2,550</div>
+    <div class="macro-sub">TDEE 2350 + 200 盈餘</div>
+  </div>
+  <div class="macro-card protein">
+    <div class="macro-label">蛋白質</div>
+    <div class="macro-value" style="color:var(--accent2);">150g</div>
+    <div class="macro-sub">2.1 g/kg ∙ 600 kcal ∙ 24%</div>
+  </div>
+  <div class="macro-card carbs">
+    <div class="macro-label">碳水化合物</div>
+    <div class="macro-value" style="color:var(--accent3);">320g</div>
+    <div class="macro-sub">4.5 g/kg ∙ 1280 kcal ∙ 50%</div>
+  </div>
+  <div class="macro-card fat">
+    <div class="macro-label">脂肪</div>
+    <div class="macro-value" style="color:var(--accent4);">65g</div>
+    <div class="macro-sub">0.9 g/kg ∙ 585 kcal ∙ 23%</div>
+  </div>
+</div>
+
+<div class="note-box" style="margin-bottom:20px;">
+  <strong>碳水循環（選用）：</strong>訓練日碳水 350g ／ 休息日碳水 250g，總週熱量不變。訓練日多吃的碳水集中在練前練後。
+</div>
+
+<p class="section-title">一日飲食範例（訓練日）</p>
+
+<div class="meal-plan">
+  <div class="meal-row">
+    <div class="meal-time">☀️ 早餐<br><span style="color:var(--text-dim);font-weight:400;font-size:0.7rem;">7:00</span></div>
+    <div class="meal-content">全蛋 3 顆 + 吐司 2 片 + 牛奶 300ml + 香蕉 1 根</div>
+    <div class="meal-protein">~38g</div>
+  </div>
+  <div class="meal-row">
+    <div class="meal-time">🥪 午餐<br><span style="color:var(--text-dim);font-weight:400;font-size:0.7rem;">12:00</span></div>
+    <div class="meal-content">雞胸肉 150g + 白飯 1.5 碗 + 燙青菜 + 豆腐半塊</div>
+    <div class="meal-protein">~45g</div>
+  </div>
+  <div class="meal-row" style="background:rgba(78,205,196,0.05);">
+    <div class="meal-time">🏋️ 練前<br><span style="color:var(--text-dim);font-weight:400;font-size:0.7rem;">16:00</span></div>
+    <div class="meal-content">地瓜 1 條（中）+ 茶葉蛋 1 顆</div>
+    <div class="meal-protein">~10g</div>
+  </div>
+  <div class="meal-row" style="background:rgba(255,107,107,0.05);">
+    <div class="meal-time">💪 練後<br><span style="color:var(--text-dim);font-weight:400;font-size:0.7rem;">18:00</span></div>
+    <div class="meal-content">乳清蛋白 1 份 + 飯糰 或 麵包</div>
+    <div class="meal-protein">~28g</div>
+  </div>
+  <div class="meal-row">
+    <div class="meal-time">🌙 晚餐<br><span style="color:var(--text-dim);font-weight:400;font-size:0.7rem;">19:30</span></div>
+    <div class="meal-content">魚肉 或 瘦豬肉 150g + 白飯 1 碗 + 配菜 + 味噌湯</div>
+    <div class="meal-protein">~35g</div>
+  </div>
+</div>
+
+<div class="note-box">
+  <strong>蛋白質來源參考（每 100g 蛋白質含量）：</strong><br>
+  雞胸肉 31g ∙ 鮭魚 25g ∙ 瘦牛肉 26g ∙ 全蛋 13g（1顆約7g）∙ 豆腐 8g ∙ 牛奶 3.4g（300ml≈10g）∙ 乳清蛋白 1份≈25g
+</div>
+
+<p class="section-title">休息日調整</p>
+<div class="note-box">
+  休息日少吃練前練後那兩餐的碳水（省掉地瓜和飯糰），蛋白質不變。可以把碳水換成多一點蔬菜和好的脂肪（酪梨、堅果）。總熱量降到約 2300-2400 kcal。
+</div>
+
+</div>
+
+<!-- ==================== 提醒 ==================== -->
+<div id="tips" class="tab-content">
+
+<p class="section-title">增肌關鍵提醒</p>
+
+<div class="tip-grid">
+  <div class="tip-card">
+    <div class="tip-icon">⏱️</div>
+    <div class="tip-title">訓練時間拉長到 45-55 分鐘</div>
+    <div class="tip-desc">你目前 30 分鐘太短，訓練量不夠是肌肉不長大的主因。每個目標肌群每週至少 10-16 組有效訓練組。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">📈</div>
+    <div class="tip-title">漸進式超負荷</div>
+    <div class="tip-desc">每週嘗試增加重量（上肢 +1.25kg、下肢 +2.5kg）或多做 1-2 下。記錄訓練日誌追蹤進步。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🦵</div>
+    <div class="tip-title">修正左右腿差異</div>
+    <div class="tip-desc">左腿少右腿 0.66kg。所有單邊動作以左腿為基準設定重量，右腿跟著做同樣重量，不額外加重。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🥩</div>
+    <div class="tip-title">蛋白質分散攝取</div>
+    <div class="tip-desc">每餐 30-40g，一天 4-5 次。肌肉蛋白合成每次進食後維持約 3-5 小時，分散吃比集中吃有效。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">😴</div>
+    <div class="tip-title">睡眠 7-8 小時</div>
+    <div class="tip-desc">睡眠不足會降低生長激素和睪固酮分泌，直接影響增肌效率。這是最容易被忽略的變數。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">⚖️</div>
+    <div class="tip-title">監控指標</div>
+    <div class="tip-desc">每週量一次體重（固定時間）、每月量一次腰圍。體重緩慢上升 + 腰圍不變 = 方向正確。每 2-3 個月測一次 InBody。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🏃</div>
+    <div class="tip-title">跑步與增肌平衡</div>
+    <div class="tip-desc">增肌期維持每週 1 次輕鬆跑就好，不追配速。跑完務必補碳水＋蛋白質。賽前 8 週再加量。</div>
+  </div>
+  <div class="tip-card">
+    <div class="tip-icon">🔄</div>
+    <div class="tip-title">Mini Cut 時機</div>
+    <div class="tip-desc">如果體重超過 73kg 或體脂超過 13%，做 2-4 週 mini cut（TDEE -500kcal），然後回到增肌。</div>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function switchTab(tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleDay(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.day-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

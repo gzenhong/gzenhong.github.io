@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeff Nippard PPL — 肌肉動作索引</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f0f0f;--s1:#181818;--s2:#222;--s3:#2a2a2a;
+  --border:#2e2e2e;--text:#e4e4e4;--muted:#888;--dim:#555;
+  --legs:#22A55B;--push:#E07020;--pull:#3A9BDC;
+  --info-bg:rgba(58,155,220,.12);--info-text:#3A9BDC;--info-border:rgba(58,155,220,.35);
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',system-ui,sans-serif;font-size:13px;line-height:1.5;min-height:100vh;}
+
+/* ── HEADER ── */
+.header{padding:28px 28px 20px;border-bottom:1px solid var(--border);}
+.header h1{font-size:22px;font-weight:500;letter-spacing:1px;margin-bottom:4px;}
+.header p{font-size:12px;color:var(--muted);}
+
+/* ── FILTER PANEL ── */
+.filters{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;}
+.filter-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.filter-label{font-size:11px;color:var(--muted);min-width:46px;letter-spacing:.5px;}
+.pill{padding:5px 13px;border:1px solid var(--border);border-radius:20px;background:transparent;
+  color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.pill:hover{color:var(--text);border-color:#555;}
+.pill.on-session{background:rgba(34,165,91,.12);color:var(--legs);border-color:rgba(34,165,91,.4);}
+.pill.session-L.on-session{background:rgba(34,165,91,.12);color:var(--legs);border-color:rgba(34,165,91,.4);}
+.pill.session-P.on-session{background:rgba(224,112,32,.12);color:var(--push);border-color:rgba(224,112,32,.4);}
+.pill.session-U.on-session{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);}
+.pill.on-mgroup{background:var(--s3);color:var(--text);border-color:#666;}
+.pill.hidden-pill{display:none;}
+.search-wrap{position:relative;margin-top:2px;}
+.search-box{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:8px;
+  background:var(--s1);color:var(--text);font-size:13px;outline:none;transition:border-color .15s;}
+.search-box:focus{border-color:#555;}
+.search-box::placeholder{color:var(--dim);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;pointer-events:none;}
+
+/* ── CONTENT ── */
+.content{padding:20px 28px 40px;}
+.group-section{margin-bottom:1.5rem;}
+.group-title{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.muscle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;}
+
+/* ── MUSCLE CARD ── */
+.muscle-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.muscle-hd{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;user-select:none;transition:background .1s;}
+.muscle-hd:hover{background:var(--s2);}
+.muscle-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.muscle-name{font-size:13px;font-weight:500;flex:1;}
+.ex-count{font-size:10px;color:var(--dim);margin-left:auto;margin-right:8px;white-space:nowrap;}
+.chevron{font-size:10px;color:var(--dim);transition:transform .2s;}
+.chevron.open{transform:rotate(90deg);}
+
+/* ── EX LIST ── */
+.ex-list{display:none;padding:0 13px 10px;}
+.ex-list.open{display:block;}
+.ex-row{display:flex;flex-wrap:wrap;align-items:flex-start;gap:5px;padding:8px 0;border-top:1px solid #1e1e1e;}
+.ex-name{font-size:12px;flex:1;min-width:130px;line-height:1.4;}
+.ex-zh{font-size:11px;color:var(--muted);display:block;margin-top:1px;}
+.role-badge{font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+.role-pri{background:rgba(58,155,220,.12);color:#3A9BDC;border:1px solid rgba(58,155,220,.25);}
+.role-sec{background:var(--s3);color:var(--muted);border:1px solid var(--border);}
+.loc-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;width:100%;}
+.loc-tag{font-size:10px;padding:1px 6px;border-radius:3px;border:1px solid;white-space:nowrap;}
+.loc-L{border-color:rgba(34,165,91,.4);color:#22A55B;background:rgba(34,165,91,.07);}
+.loc-P{border-color:rgba(224,112,32,.4);color:#E07020;background:rgba(224,112,32,.07);}
+.loc-U{border-color:rgba(58,155,220,.4);color:#3A9BDC;background:rgba(58,155,220,.07);}
+
+.empty{text-align:center;color:var(--dim);padding:3rem;font-size:13px;}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:12px 28px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:0;}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.ld{width:6px;height:6px;border-radius:50%;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Jeff Nippard PPL — 肌肉動作索引</h1>
+  <p>以肌肉為主：每個肌肉對應的訓練動作 &amp; 所在 Block / Week / Day</p>
+</div>
+
+<div class="legend">
+  <div class="li"><span class="ld" style="background:#22A55B"></span>腿部 (L)</div>
+  <div class="li"><span class="ld" style="background:#E07020"></span>推系 (P)</div>
+  <div class="li"><span class="ld" style="background:#3A9BDC"></span>拉系 (U)</div>
+  <div class="li" style="margin-left:12px;"><span style="font-size:10px;padding:1px 6px;border-radius:10px;background:rgba(58,155,220,.12);color:#3A9BDC;border:1px solid rgba(58,155,220,.25);">主要</span>&nbsp;主要肌群</div>
+  <div class="li"><span style="font-size:10px;padding:1px 6px;border-radius:10px;background:#2a2a2a;color:#888;border:1px solid #2e2e2e;">協同</span>&nbsp;協同肌群</div>
+</div>
+
+<div class="filters">
+  <div class="filter-row">
+    <span class="filter-label">訓練類</span>
+    <button class="pill session-all on-session" data-f="session" data-v="all" onclick="setFilter(this)">全部</button>
+    <button class="pill session-L" data-f="session" data-v="L" onclick="setFilter(this)">腿部</button>
+    <button class="pill session-P" data-f="session" data-v="P" onclick="setFilter(this)">推系</button>
+    <button class="pill session-U" data-f="session" data-v="U" onclick="setFilter(this)">拉系</button>
+  </div>
+  <div class="filter-row" id="mgroup-row">
+    <span class="filter-label">肌肉類</span>
+    <button class="pill on-mgroup" data-f="mgroup" data-v="all" onclick="setFilter(this)">全部</button>
+    <button class="pill" data-f="mgroup" data-v="chest"    data-sessions="P"     onclick="setFilter(this)">胸</button>
+    <button class="pill" data-f="mgroup" data-v="back"     data-sessions="U"     onclick="setFilter(this)">背</button>
+    <button class="pill" data-f="mgroup" data-v="shoulder" data-sessions="P,U"   onclick="setFilter(this)">肩</button>
+    <button class="pill" data-f="mgroup" data-v="bicep"    data-sessions="U"     onclick="setFilter(this)">二頭</button>
+    <button class="pill" data-f="mgroup" data-v="tricep"   data-sessions="P"     onclick="setFilter(this)">三頭</button>
+    <button class="pill" data-f="mgroup" data-v="forearm"  data-sessions="U"     onclick="setFilter(this)">前臂</button>
+    <button class="pill" data-f="mgroup" data-v="leg"      data-sessions="L"     onclick="setFilter(this)">腿</button>
+    <button class="pill" data-f="mgroup" data-v="core"     data-sessions="L,P"   onclick="setFilter(this)">核心</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">&#9906;</span>
+    <input class="search-box" type="text" id="searchInput" placeholder="搜尋肌肉或動作名稱…" oninput="doSearch(this.value)">
+  </div>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const GROUPS = [
+  {label:'胸部',                    mg:'chest',    muscles:['pec','pecup','peclo']},
+  {label:'背部',                    mg:'back',     muscles:['lat','rhom','teres']},
+  {label:'肩膀',                    mg:'shoulder', muscles:['adelt','mdelt','pdelt','infra','trapu','trapm','serratus','lev']},
+  {label:'手臂 — 二頭',            mg:'bicep',    muscles:['bi','bish','brac']},
+  {label:'手臂 — 三頭',            mg:'tricep',   muscles:['tri','trilong','trilat']},
+  {label:'前臂',                    mg:'forearm',  muscles:['brad']},
+  {label:'腿部 — 股四頭 & 臀部',  mg:'leg',      muscles:['quads','glutes','glmed','hipflex']},
+  {label:'腿部 — 腿後 & 小腿',    mg:'leg',      muscles:['hams','calves','soleus']},
+  {label:'核心 & 豎脊肌',          mg:'core',     muscles:['rectab','oblique','core','erector']},
+];
+
+const MG_INFO = {
+  quads:   {zh:'股四頭肌',cat:'L'},     hams:    {zh:'股二頭肌（腿後）',cat:'L'},
+  glutes:  {zh:'臀大肌',cat:'L'},       glmed:   {zh:'臀中肌',cat:'L'},
+  calves:  {zh:'腓腸肌',cat:'L'},       soleus:  {zh:'比目魚肌',cat:'L'},
+  erector: {zh:'豎脊肌',cat:'L'},       core:    {zh:'核心（複合）',cat:'L'},
+  hipflex: {zh:'髖屈肌',cat:'P'},
+  pec:     {zh:'胸大肌',cat:'P'},       pecup:   {zh:'胸大肌上束',cat:'P'},  peclo:{zh:'胸大肌下束',cat:'P'},
+  adelt:   {zh:'三角肌前束',cat:'P'},   mdelt:   {zh:'三角肌中束',cat:'P'},
+  tri:     {zh:'三頭肌（複合）',cat:'P'}, trilong:{zh:'三頭肌長頭',cat:'P'}, trilat:{zh:'三頭肌外側頭',cat:'P'},
+  oblique: {zh:'腹斜肌',cat:'P'},       rectab:  {zh:'腹直肌',cat:'P'},
+  lat:     {zh:'背闊肌',cat:'U'},       rhom:    {zh:'菱形肌',cat:'U'},
+  pdelt:   {zh:'後三角肌',cat:'U'},     trapu:   {zh:'上斜方肌',cat:'U'},  trapm:{zh:'中斜方肌',cat:'U'},
+  bi:      {zh:'肱二頭肌',cat:'U'},     bish:    {zh:'肱二頭肌短頭',cat:'U'},
+  brad:    {zh:'肱橈肌',cat:'U'},       brac:    {zh:'肱肌',cat:'U'},
+  infra:   {zh:'棘下肌',cat:'U'},       teres:   {zh:'大圓肌',cat:'U'},
+  lev:     {zh:'提肩胛肌',cat:'U'},     serratus:{zh:'前鋸肌',cat:'U'},
+};
+
+const EX = {
+  back_squat:    {en:'Back Squat',zh:'背蹲舉',pri:['quads'],sec:['glutes','hams','erector']},
+  deadlift:      {en:'Deadlift',zh:'硬舉',pri:['hams','glutes'],sec:['erector','quads','trapu']},
+  rdl:           {en:'Romanian Deadlift',zh:'羅馬尼亞硬舉',pri:['hams','glutes'],sec:['erector']},
+  hip_thrust:    {en:'Barbell Hip Thrust',zh:'槓鈴臀推',pri:['glutes'],sec:['hams','quads']},
+  walking_lunge: {en:'DB Walking Lunge',zh:'啞鈴行走弓步蹲',pri:['quads','glutes'],sec:['hams','calves']},
+  leg_ext:       {en:'Leg Extension',zh:'腿部伸展',pri:['quads'],sec:[]},
+  seated_curl:   {en:'Seated Leg Curl',zh:'坐姿腿彎舉',pri:['hams'],sec:['soleus']},
+  calf_raise_s:  {en:'Standing Calf Raise',zh:'站姿提踵',pri:['calves'],sec:['soleus']},
+  front_squat:   {en:'Front Squat',zh:'前蹲舉',pri:['quads'],sec:['glutes','core']},
+  cable_pt:      {en:'Cable Pull Through',zh:'繩索臀屈伸',pri:['glutes','hams'],sec:['erector']},
+  sl_leg_press:  {en:'Single-Leg Leg Press',zh:'單腿腿舉',pri:['quads','glutes'],sec:['hams']},
+  sl_leg_ext:    {en:'Single-Leg Leg Ext',zh:'單腿腿伸展',pri:['quads'],sec:[]},
+  swiss_curl:    {en:'Swiss Ball Single-Leg Curl',zh:'瑞士球單腿彎舉',pri:['hams'],sec:['glutes','core']},
+  tempo_squat:   {en:'Tempo Back Squat',zh:'慢速背蹲舉',pri:['quads'],sec:['glutes','erector']},
+  tempo_calf:    {en:'Tempo Standing Calf Raise',zh:'慢速站姿提踵',pri:['calves'],sec:['soleus']},
+  rdback_ext:    {en:'Round-Back 45° Hyperext',zh:'圓背啞鈴45°背伸',pri:['glutes','hams'],sec:['erector']},
+  sm_rev_lunge:  {en:'Smith Machine Reverse Lunge',zh:'史密斯後跨弓步蹲',pri:['quads','glutes'],sec:['hams']},
+  ee_leg_ext:    {en:'Enhanced Eccentric Leg Ext',zh:'強化離心腿伸展',pri:['quads'],sec:[]},
+  ee_leg_curl:   {en:'Enhanced Eccentric Leg Curl',zh:'強化離心俯臥腿彎舉',pri:['hams'],sec:[]},
+  lateral_band:  {en:'Lateral Band Walk',zh:'側向彈力帶行走',pri:['glmed'],sec:['glutes']},
+  goblet_squat:  {en:'Slow Eccentric Goblet Squat',zh:'慢速離心高腳杯深蹲',pri:['quads'],sec:['glutes']},
+  pause_thrust:  {en:'Pause Barbell Hip Thrust',zh:'暫停槓鈴臀推',pri:['glutes'],sec:['hams','quads']},
+  cable_calf:    {en:'Cable Rope Pullthrough (Glutes)',zh:'繩索臀屈伸（臀肌）',pri:['glutes'],sec:['hams']},
+  bench:         {en:'Barbell Bench Press',zh:'槓鈴臥推',pri:['pec'],sec:['adelt','tri']},
+  db_sh_press:   {en:'DB Seated Shoulder Press',zh:'啞鈴坐姿肩推',pri:['adelt','mdelt'],sec:['tri']},
+  weighted_dip:  {en:'Weighted Dip',zh:'加重雙槓撐體',pri:['peclo','tri'],sec:['adelt']},
+  lo_hi_cable_fly:{en:'Low-to-High Cable Flye',zh:'低拉高飛鳥夾胸',pri:['pecup'],sec:['adelt']},
+  skull_crusher: {en:'DB Isolateral Skull Crusher',zh:'啞鈴單側頭骨碾壓',pri:['trilong','trilat'],sec:[]},
+  db_lat_raise:  {en:'Dumbbell Lateral Raise',zh:'啞鈴側平舉',pri:['mdelt'],sec:['adelt','trap']},
+  ab_wheel:      {en:'Ab Wheel Rollout',zh:'腹輪前滾',pri:['rectab'],sec:['lat','adelt']},
+  cg_bench:      {en:'Close-Grip Bench Press',zh:'窄握臥推',pri:['tri'],sec:['pec','adelt']},
+  military:      {en:'Military Press',zh:'軍事推舉',pri:['adelt','mdelt'],sec:['tri','trapu']},
+  db_incline:    {en:'DB Incline Press',zh:'啞鈴上斜臥推',pri:['pecup'],sec:['adelt','tri']},
+  pec_deck:      {en:'Pec Deck',zh:'蝴蝶夾胸機',pri:['pec'],sec:['adelt']},
+  cable_lat:     {en:'Cable Lateral Raise',zh:'繩索側平舉',pri:['mdelt'],sec:['adelt','trap']},
+  cable_kickback:{en:'Cable Triceps Kickback',zh:'繩索三頭後踢',pri:['trilong','trilat'],sec:[]},
+  bicycle_crunch:{en:'Bicycle Crunch',zh:'腳踏車捲腹',pri:['oblique'],sec:['rectab','hipflex']},
+  arnold_press:  {en:'Arnold Press',zh:'阿諾德推舉',pri:['adelt','mdelt'],sec:['tri']},
+  cg_smith:      {en:'Close-Grip Smith Press',zh:'史密斯機窄握推舉',pri:['tri','pec'],sec:['adelt']},
+  floor_skull:   {en:'Barbell Floor Skull Crusher',zh:'槓鈴地板頭骨碾壓',pri:['tri'],sec:[]},
+  egypt_lat:     {en:'Egyptian Lateral Raise',zh:'埃及式側平舉',pri:['mdelt'],sec:['trap']},
+  rope_tri_ext:  {en:'Rope Overhead Triceps Ext',zh:'繩索過頭三頭伸展',pri:['trilong'],sec:['trilat']},
+  hang_leg:      {en:'Hanging Leg Raise',zh:'懸掛舉腿',pri:['rectab','hipflex'],sec:['oblique']},
+  plank:         {en:'Plank',zh:'棒式撐體',pri:['rectab'],sec:['oblique','glutes']},
+  mil_push_combo:{en:'Military/Push Press Complex',zh:'軍推／推舉複合動作',pri:['adelt','mdelt'],sec:['tri','trapu']},
+  triceps_vbar:  {en:'Triceps V-Bar Pressdown',zh:'三頭V槓下壓',pri:['tri'],sec:[]},
+  machine_lat:   {en:'Machine Lateral Raise',zh:'機器側平舉',pri:['mdelt'],sec:['adelt','trap']},
+  slow_dip:      {en:'Slow Eccentric Dip',zh:'慢速離心雙槓撐體',pri:['peclo','tri'],sec:['adelt']},
+  arm_lat_pull:  {en:'1-Arm Lat Pull In (Warmup)',zh:'單臂背闊下拉（暖身）',pri:['lat'],sec:['bi']},
+  pullup:        {en:'Pull-Up',zh:'引體向上',pri:['lat'],sec:['bi','rhom','pdelt']},
+  pendlay:       {en:'Pendlay Row',zh:'彭德雷划船',pri:['lat','rhom'],sec:['pdelt','bi','erector']},
+  machine_high_row:{en:'Machine High Row',zh:'機器高位划船',pri:['lat','teres'],sec:['rhom','pdelt']},
+  face_pull:     {en:'Seated Face Pull',zh:'坐姿臉部拉繩',pri:['pdelt','infra'],sec:['trapm','rhom']},
+  rev_ez_curl:   {en:'Reverse Grip EZ Bar Curl',zh:'反握EZ槓彎舉',pri:['brad'],sec:['bi']},
+  sup_ez_curl:   {en:'Supinated EZ Bar Curl',zh:'旋後EZ槓彎舉',pri:['bi'],sec:['brac','brad']},
+  preacher_curl: {en:'DB Preacher Curl',zh:'啞鈴牧師椅彎舉',pri:['bi'],sec:['brac']},
+  neutral_pulldown:{en:'Neutral Grip Pulldown',zh:'中立握下拉',pri:['lat'],sec:['bi','teres']},
+  cable_elbow_out:{en:'Cable Elbows-Out Row',zh:'繩索手肘外展划船',pri:['pdelt','rhom'],sec:['trapm']},
+  cable_row:     {en:'Cable Seated Row',zh:'繩索坐姿划船',pri:['lat','rhom'],sec:['pdelt','bi']},
+  kn_pullover:   {en:'Kneeling Straight-Arm Pullover',zh:'跪姿直臂繩索下拉',pri:['lat'],sec:['pec','teres']},
+  snatch_shrug:  {en:'Snatch Grip Barbell Shrug',zh:'寬握槓鈴聳肩',pri:['trapu'],sec:['trapm','lev']},
+  cable_rev_fly: {en:'Cable Reverse Flye',zh:'繩索反向飛鳥',pri:['pdelt'],sec:['rhom','infra']},
+  sa_cable_curl: {en:'Single-Arm Cable Curl',zh:'單臂繩索彎舉',pri:['bi'],sec:['brac']},
+  hammer_curl:   {en:'Hammer Curl',zh:'鎚式彎舉',pri:['brad'],sec:['bi','brac']},
+  sa_pulldown:   {en:'Single-Arm Pulldown',zh:'單臂下拉',pri:['lat'],sec:['bi','teres']},
+  seal_row:      {en:'Seal Row',zh:'印章划船',pri:['lat','rhom'],sec:['bi','pdelt']},
+  kn_pullover2:  {en:'Kneeling Straight-Arm Pullover',zh:'跪姿直臂繩索下拉',pri:['lat'],sec:['pec','teres']},
+  rev_pec_deck:  {en:'Reverse Pec Deck',zh:'反向夾胸機',pri:['pdelt'],sec:['rhom','infra']},
+  db_1arm_row:   {en:'DB One-Arm Row',zh:'啞鈴單臂划船',pri:['lat'],sec:['pdelt','rhom']},
+  chest_tbar:    {en:'Chest-Supported T-Bar Row',zh:'胸撐T槓划船',pri:['rhom','lat'],sec:['pdelt','bi']},
+  lo_hi_rev_fly: {en:'Low-to-High Reverse Flye',zh:'低拉高反向飛鳥',pri:['pdelt','infra'],sec:['trapu']},
+  rope_upright:  {en:'Rope Upright Row',zh:'繩索直立划船',pri:['trapu','mdelt'],sec:['serratus']},
+  db_sup_curl:   {en:'DB Supinated Curl',zh:'啞鈴旋後彎舉',pri:['bi'],sec:['brac']},
+  spider_curl:   {en:'Spider Curl',zh:'蜘蛛彎舉',pri:['bish'],sec:['brac']},
+  a1_db_pron:    {en:'DB Pronated Curl',zh:'啞鈴旋前彎舉',pri:['brad'],sec:['bi']},
+  a2_db_hammer:  {en:'DB Hammer Curl',zh:'啞鈴鎚式彎舉',pri:['brad'],sec:['bi','brac']},
+  a3_db_sup:     {en:'DB Supinated Curl (A3)',zh:'啞鈴旋後彎舉',pri:['bi'],sec:['brac']},
+};
+
+// B1: W1-8 同一套動作，只有強度遞進
+// B2: W1 減量（不同動作），W2-8 相同套路強度遞進
+const DAYS = [
+  {label:'B1 / W1-8 / Day 1', type:'L', ex:['back_squat','deadlift','hip_thrust','walking_lunge','leg_ext','seated_curl','calf_raise_s']},
+  {label:'B1 / W1-8 / Day 2', type:'P', ex:['bench','db_sh_press','weighted_dip','lo_hi_cable_fly','skull_crusher','db_lat_raise','ab_wheel']},
+  {label:'B1 / W1-8 / Day 3', type:'U', ex:['arm_lat_pull','pullup','pendlay','machine_high_row','face_pull','rev_ez_curl','sup_ez_curl','preacher_curl']},
+  {label:'B1 / W1-8 / Day 4', type:'L', ex:['deadlift','front_squat','cable_pt','sl_leg_press','sl_leg_ext','swiss_curl','calf_raise_s']},
+  {label:'B1 / W1-8 / Day 5', type:'P', ex:['cg_bench','military','db_incline','pec_deck','cable_lat','cable_kickback','bicycle_crunch']},
+  {label:'B1 / W1-8 / Day 6', type:'U', ex:['neutral_pulldown','cable_elbow_out','cable_row','kn_pullover','snatch_shrug','cable_rev_fly','sa_cable_curl','hammer_curl']},
+  {label:'B2 / W1 / Day 1',   type:'L', ex:['deadlift','tempo_squat','rdback_ext','sm_rev_lunge','ee_leg_ext','ee_leg_curl','lateral_band','tempo_calf']},
+  {label:'B2 / W1 / Day 2',   type:'P', ex:['bench','arnold_press','cg_smith','lo_hi_cable_fly','floor_skull','egypt_lat','rope_tri_ext','hang_leg']},
+  {label:'B2 / W1 / Day 3',   type:'U', ex:['arm_lat_pull','pullup','db_1arm_row','chest_tbar','lo_hi_rev_fly','rope_upright','db_sup_curl','spider_curl']},
+  {label:'B2 / W2-8 / Day 4', type:'L', ex:['back_squat','rdl','pause_thrust','goblet_squat','seated_curl','cable_calf','calf_raise_s']},
+  {label:'B2 / W2-8 / Day 5', type:'P', ex:['bench','mil_push_combo','slow_dip','triceps_vbar','machine_lat','plank']},
+  {label:'B2 / W2-8 / Day 6', type:'U', ex:['sa_pulldown','seal_row','kn_pullover2','rev_pec_deck','a1_db_pron','a2_db_hammer','a3_db_sup']},
+];
+
+// 計算每個 mgroup 出現在哪些 session type
+const MGROUP_SESSIONS = {};
+GROUPS.forEach(g => {
+  const sessions = new Set();
+  g.muscles.forEach(m => {
+    const info = MG_INFO[m]; if(!info) return;
+    // find exercises that hit this muscle
+    DAYS.forEach(dv => {
+      dv.ex.forEach(ek => {
+        const ex = EX[ek]; if(!ex) return;
+        if([...ex.pri,...ex.sec].includes(m)) sessions.add(dv.type);
+      });
+    });
+  });
+  if(!MGROUP_SESSIONS[g.mg]) MGROUP_SESSIONS[g.mg] = new Set();
+  sessions.forEach(s => MGROUP_SESSIONS[g.mg].add(s));
+});
+
+function buildMuscleMap(){
+  const map={};
+  DAYS.forEach(dv=>{
+    dv.ex.forEach(ek=>{
+      const ex=EX[ek]; if(!ex) return;
+      function add(m,role){
+        if(!map[m]) map[m]=[];
+        const found=map[m].find(e=>e.key===ek);
+        if(found){ if(!found.days.find(d=>d.label===dv.label)) found.days.push({label:dv.label,type:dv.type}); return; }
+        map[m].push({key:ek,en:ex.en,zh:ex.zh,role,days:[{label:dv.label,type:dv.type}]});
+      }
+      ex.pri.forEach(m=>add(m,'pri'));
+      ex.sec.forEach(m=>add(m,'sec'));
+    });
+  });
+  return map;
+}
+
+let fSession='all', fMgroup='all', searchQ='';
+const muscleMap=buildMuscleMap();
+
+function updateMgroupPills(){
+  document.querySelectorAll('[data-f="mgroup"]').forEach(btn=>{
+    const v = btn.dataset.v;
+    if(v==='all'){ btn.classList.remove('hidden-pill'); return; }
+    if(fSession==='all'){
+      btn.classList.remove('hidden-pill');
+    } else {
+      const sessions = MGROUP_SESSIONS[v];
+      if(sessions && sessions.has(fSession)){
+        btn.classList.remove('hidden-pill');
+      } else {
+        btn.classList.add('hidden-pill');
+        // reset mgroup if current selection is now hidden
+        if(fMgroup===v){ fMgroup='all'; document.querySelectorAll('[data-f="mgroup"]').forEach(b=>b.classList.remove('on-mgroup')); document.querySelector('[data-f="mgroup"][data-v="all"]').classList.add('on-mgroup'); }
+      }
+    }
+  });
+}
+
+function setFilter(btn){
+  const f=btn.dataset.f, v=btn.dataset.v;
+  if(f==='session'){
+    document.querySelectorAll('[data-f="session"]').forEach(b=>b.classList.remove('on-session'));
+    btn.classList.add('on-session');
+    fSession=v;
+    updateMgroupPills();
+  } else {
+    document.querySelectorAll('[data-f="mgroup"]').forEach(b=>b.classList.remove('on-mgroup'));
+    btn.classList.add('on-mgroup');
+    fMgroup=v;
+  }
+  render();
+}
+function doSearch(q){ searchQ=q.trim(); render(); }
+
+function render(){
+  const content=document.getElementById('content');
+  content.innerHTML='';
+  let totalVisible=0;
+
+  GROUPS.forEach(g=>{
+    if(fMgroup!=='all' && g.mg!==fMgroup) return;
+
+    const visibleMuscles=g.muscles.filter(m=>{
+      const info=MG_INFO[m]; if(!info) return false;
+      if(fSession!=='all' && info.cat!==fSession){
+        // still show if session-type exercises hit this muscle as sec
+        const anyHit = DAYS.filter(d=>fSession==='all'||d.type===fSession).some(dv=>
+          dv.ex.some(ek=>{ const ex=EX[ek]; return ex&&([...ex.pri,...ex.sec].includes(m)); })
+        );
+        if(!anyHit) return false;
+      }
+      const exList=muscleMap[m]||[]; if(!exList.length) return false;
+      if(searchQ){
+        const q=searchQ.toLowerCase();
+        const inM=info.zh.includes(q)||m.includes(q);
+        const inEx=exList.some(e=>e.en.toLowerCase().includes(q)||e.zh.includes(q));
+        if(!inM&&!inEx) return false;
+      }
+      return true;
+    });
+    if(!visibleMuscles.length) return;
+    totalVisible+=visibleMuscles.length;
+
+    const sec=document.createElement('div');
+    sec.className='group-section';
+    const safeId='g_'+g.label.replace(/[^a-z0-9]/gi,'_');
+    sec.innerHTML=`<div class="group-title">${g.label}</div><div class="muscle-grid" id="${safeId}"></div>`;
+    content.appendChild(sec);
+    const grid=sec.querySelector('.muscle-grid');
+
+    visibleMuscles.forEach(m=>{
+      const info=MG_INFO[m];
+      let exList=muscleMap[m]||[];
+      if(fSession!=='all'){
+        exList=exList.map(e=>({...e,days:e.days.filter(d=>d.type===fSession)})).filter(e=>e.days.length>0);
+      }
+      let filteredEx=exList;
+      if(searchQ){
+        const q=searchQ.toLowerCase();
+        filteredEx=exList.filter(e=>e.en.toLowerCase().includes(q)||e.zh.includes(q)||info.zh.includes(q));
+      }
+      if(!filteredEx.length) return;
+
+      const catColor=info.cat==='L'?'#22A55B':info.cat==='P'?'#E07020':'#3A9BDC';
+      const priC=filteredEx.filter(e=>e.role==='pri').length;
+      const secC=filteredEx.filter(e=>e.role==='sec').length;
+      const countStr=(priC?`主${priC} `:'')+(secC?`協${secC}`:'');
+
+      const card=document.createElement('div');
+      card.className='muscle-card';
+      const exHtml=filteredEx.map(e=>{
+        const sorted=[...e.days].sort((a,b)=>a.label.localeCompare(b.label));
+        const dayTags=sorted.map(d=>`<span class="loc-tag loc-${d.type}">${d.label}</span>`).join('');
+        const roleBadge=`<span class="role-badge ${e.role==='pri'?'role-pri':'role-sec'}">${e.role==='pri'?'主要':'協同'}</span>`;
+        return `<div class="ex-row">
+          <div class="ex-name">${e.en}<span class="ex-zh">${e.zh}</span></div>
+          ${roleBadge}
+          <div class="loc-tags">${dayTags}</div>
+        </div>`;
+      }).join('');
+
+      card.innerHTML=`<div class="muscle-hd" onclick="toggle(this)">
+        <span class="muscle-dot" style="background:${catColor}"></span>
+        <span class="muscle-name">${info.zh}</span>
+        <span class="ex-count">${countStr}</span>
+        <span class="chevron">&#9658;</span>
+      </div><div class="ex-list">${exHtml}</div>`;
+      grid.appendChild(card);
+    });
+  });
+
+  if(!totalVisible){
+    content.innerHTML='<div class="empty">找不到符合的結果</div>';
+  }
+}
+
+function toggle(hd){
+  const l=hd.nextElementSibling, c=hd.querySelector('.chevron');
+  l.classList.toggle('open'); c.classList.toggle('open');
+}
+
+render();
+</script>
+</body>
+</html>

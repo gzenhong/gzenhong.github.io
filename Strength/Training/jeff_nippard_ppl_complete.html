@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeff Nippard — Legs/Push/Pull 增肌訓練計畫</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --red:#C8102E;--black:#0A0A0A;--s1:#141414;--s2:#1C1C1C;--s3:#252525;
+  --border:#2E2E2E;--text:#E4E4E4;--muted:#888;--dim:#4A4A4A;
+  --legs:#22A55B;--push:#E07020;--pull:#3A9BDC;
+  --rpe:#F0A030;--accent:#FF4455;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:12px;line-height:1.5;}
+
+/* ── HEADER ── */
+.prog-header{background:var(--red);padding:36px 32px 28px;position:relative;overflow:hidden;}
+.prog-header::after{content:'LEGS/PUSH/PULL';position:absolute;bottom:-28px;right:12px;
+  font-family:'Bebas Neue',sans-serif;font-size:130px;color:rgba(0,0,0,.12);white-space:nowrap;pointer-events:none;}
+.h-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.65);margin-bottom:6px;}
+.h-title{font-family:'Bebas Neue',sans-serif;font-size:58px;line-height:.9;color:#fff;letter-spacing:2px;margin-bottom:4px;}
+.h-sub{font-family:'Bebas Neue',sans-serif;font-size:24px;color:rgba(255,255,255,.5);letter-spacing:4px;}
+.h-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+.badge{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);padding:5px 12px;
+  font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,.8);letter-spacing:1px;}
+
+/* ── BLOCK HEADER ── */
+.block-hd{padding:18px 28px;display:flex;align-items:center;gap:12px;background:var(--black);
+  border-bottom:2px solid var(--border);position:sticky;top:0;z-index:20;}
+.blk-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;padding:3px 10px;background:var(--red);color:#fff;}
+.blk-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+.blk-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-left:auto;}
+
+/* ── WEEK NAV ── */
+.week-nav{display:flex;overflow-x:auto;background:var(--s1);border-bottom:1px solid var(--border);
+  padding:0 20px;gap:0;scrollbar-width:none;}
+.week-nav::-webkit-scrollbar{display:none;}
+.wbtn{flex-shrink:0;padding:9px 16px;background:none;border:none;border-bottom:2px solid transparent;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.wbtn:hover{color:var(--text);}
+.wbtn.on{color:var(--red);border-bottom-color:var(--red);}
+
+/* ── WEEK PANE ── */
+.week-pane{display:none;}
+.week-pane.on{display:block;}
+
+/* ── SESSION ── */
+.session{padding:20px 28px 0;}
+.sess-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.day-lbl{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.sess-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;}
+.sess-name.L{color:var(--legs);}
+.sess-name.P{color:var(--push);}
+.sess-name.U{color:var(--pull);}
+.sess-zh{font-size:11px;color:var(--muted);font-weight:300;}
+.deload-tag{display:inline-block;border:1px solid rgba(255,165,0,.5);color:#FFA500;
+  font-size:9px;padding:1px 7px;font-family:'Space Mono',monospace;letter-spacing:1px;margin-left:4px;}
+.svol{margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;color:var(--dim);}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;margin-bottom:4px;}
+table{width:100%;border-collapse:collapse;min-width:600px;}
+thead th{background:var(--s3);padding:6px 9px;text-align:left;font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:1.2px;color:var(--dim);text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid #1A1A1A;transition:background .1s;}
+tbody tr:hover{background:var(--s2);}
+td{padding:9px 9px;vertical-align:top;}
+
+/* ── CELLS ── */
+.en{font-weight:500;font-size:12px;color:var(--text);display:block;margin-bottom:1px;}
+.zh{font-size:11px;color:var(--muted);font-weight:300;display:block;}
+.sc{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);white-space:nowrap;}
+.sc.rpe{color:var(--rpe);}
+.sc.rest{color:var(--muted);}
+.mc{min-width:150px;}
+.pm{display:inline-block;background:rgba(200,16,46,.15);border:1px solid rgba(200,16,46,.4);
+  color:#FF8090;font-size:9px;padding:1px 5px;margin:1px 2px 1px 0;border-radius:2px;
+  font-family:'Space Mono',monospace;white-space:nowrap;}
+.sm{display:inline-block;background:rgba(255,255,255,.04);border:1px solid #2C2C2C;
+  color:var(--muted);font-size:9px;padding:1px 5px;margin:1px 2px 1px 0;border-radius:2px;
+  font-family:'Space Mono',monospace;white-space:nowrap;}
+.ml{display:block;font-size:8px;color:var(--dim);font-family:'Space Mono',monospace;margin-bottom:2px;letter-spacing:.8px;}
+.nc{font-size:10.5px;color:var(--muted);max-width:180px;line-height:1.4;}
+
+/* ── TOTAL ROW ── */
+.trow{display:flex;justify-content:space-between;align-items:center;padding:7px 9px;
+  background:var(--s3);border:1px solid var(--border);margin-bottom:22px;
+  font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+.tvol{color:var(--red);font-weight:700;}
+
+/* ── BLOCK SWITCHER ── */
+.block-switcher{display:flex;gap:0;border-bottom:2px solid var(--border);background:var(--s1);}
+.bsbtn{flex:1;padding:14px 20px;background:none;border:none;border-bottom:3px solid transparent;
+  font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.bsbtn:hover{color:var(--text);background:var(--s2);}
+.bsbtn.on{color:#fff;border-bottom-color:var(--red);background:rgba(200,16,46,.08);}
+.bsbtn .btag{font-size:9px;font-family:'Space Mono',monospace;padding:2px 8px;background:var(--red);color:#fff;letter-spacing:1px;border-radius:1px;}
+.bsbtn.on .btag{background:var(--red);}
+.bsbtn:not(.on) .btag{background:var(--dim);}
+.block-body{display:none;}
+.block-body.on{display:block;}
+
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:16px;padding:14px 28px;border-top:1px solid var(--border);}
+.li{display:flex;align-items:center;gap:5px;font-size:9px;font-family:'Space Mono',monospace;color:var(--muted);}
+.ld{width:7px;height:7px;border-radius:50%;}
+.cr{margin-left:auto;font-size:9px;color:var(--dim);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="prog-header">
+  <div class="h-eyebrow">JEFF NIPPARD'S HYPERTROPHY PROGRAM</div>
+  <div class="h-title">LEGS/PUSH<br>/PULL</div>
+  <div class="h-sub">增肌訓練計畫</div>
+  <div class="h-meta">
+    <span class="badge">BLOCK 1 — 8週技術期</span>
+    <span class="badge">BLOCK 2 — 8週巔峰期</span>
+    <span class="badge">每週 6 訓練日</span>
+    <span class="badge">腿 / 推 / 拉 分化</span>
+  </div>
+</div>
+
+<!-- BLOCK SWITCHER -->
+<div class="block-switcher">
+  <button class="bsbtn on" id="bs1" onclick="switchBlock('b1')">
+    <span class="btag">BLOCK 1</span> 技術階段 · 8週
+  </button>
+  <button class="bsbtn" id="bs2" onclick="switchBlock('b2')">
+    <span class="btag">BLOCK 2</span> 巔峰階段 · 8週
+  </button>
+</div>
+
+<!-- BLOCK CONTAINERS (populated by JS after load) -->
+<div class="block-body on" id="b1body"></div>
+<div class="block-body" id="b2body"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA: All exercises with muscles
+// ─────────────────────────────────────────────
+const MG = {
+  // Legs
+  quads:   {p:'股四頭肌'},
+  hams:    {p:'股二頭肌'},
+  glutes:  {p:'臀大肌'},
+  glmed:   {p:'臀中肌'},
+  calves:  {p:'腓腸肌'},
+  soleus:  {p:'比目魚肌'},
+  erector: {p:'豎脊肌'},
+  core:    {p:'核心'},
+  hipflex: {p:'髖屈肌'},
+  // Push
+  pec:     {p:'胸大肌'},
+  pecup:   {p:'胸大肌上束'},
+  peclo:   {p:'胸大肌下束'},
+  adelt:   {p:'三角肌前束'},
+  mdelt:   {p:'三角肌中束'},
+  tri:     {p:'三頭肌'},
+  trilong: {p:'三頭肌長頭'},
+  trilat:  {p:'三頭肌外側頭'},
+  // Pull
+  lat:     {p:'背闊肌'},
+  rhom:    {p:'菱形肌'},
+  pdelt:   {p:'後三角肌'},
+  trap:    {p:'斜方肌'},
+  trapu:   {p:'上斜方肌'},
+  trapm:   {p:'中斜方肌'},
+  bi:      {p:'肱二頭肌'},
+  bish:    {p:'肱二頭肌短頭'},
+  brad:    {p:'肱橈肌'},
+  brac:    {p:'肱肌'},
+  infra:   {p:'棘下肌'},
+  teres:   {p:'大圓肌'},
+  lev:     {p:'提肩胛肌'},
+  serratus:{p:'前鋸肌'},
+  oblique: {p:'腹斜肌'},
+  rectab:  {p:'腹直肌'},
+};
+
+// Exercise library
+const EX = {
+  // ── LEGS ──
+  back_squat:      {en:'Back Squat',            zh:'背蹲舉',          pri:['quads'],         sec:['glutes','hams','erector'],          note:'坐後下蹲，腳尖外開15°，膝蓋向外推'},
+  deadlift:        {en:'Deadlift',              zh:'硬舉',            pri:['hams','glutes'], sec:['erector','quads','trapu'],          note:'背闊繃緊，胸挺高，拉緊後再離地'},
+  rdl:             {en:'Romanian Deadlift',     zh:'羅馬尼亞硬舉',    pri:['hams','glutes'], sec:['erector'],                          note:'脊椎保持中立，離心時前傾骨盆，避免臀部向後推'},
+  hip_thrust:      {en:'Barbell Hip Thrust',    zh:'槓鈴臀推',        pri:['glutes'],        sec:['hams','quads'],                     note:'下巴收，肋骨下壓，只動髖部，使用墊子保護'},
+  walking_lunge:   {en:'Dumbbell Walking Lunge',zh:'啞鈴行走弓步蹲', pri:['quads','glutes'],sec:['hams','calves'],                    note:'步距適中，從後腳的推力最小化'},
+  leg_ext:         {en:'A1: Leg Extension',     zh:'A1: 腿部伸展',    pri:['quads'],         sec:[],                                   note:'專注擠壓股四頭肌帶動重量'},
+  seated_curl:     {en:'A2: Seated Leg Curl',   zh:'A2: 坐姿腿彎舉', pri:['hams'],          sec:['soleus'],                           note:'專注擠壓腿後肌帶動重量'},
+  calf_raise_s:    {en:'Standing Calf Raise',   zh:'站姿提踵',        pri:['calves'],        sec:['soleus'],                           note:'踮到最高，底部充分伸展，不反彈'},
+  front_squat:     {en:'Front Squat',           zh:'前蹲舉',          pri:['quads'],         sec:['glutes','core'],                    note:'坐後下蹲，膝蓋外推，保持直立軀幹'},
+  cable_pt:        {en:'Cable Pull Through',    zh:'繩索臀屈伸',      pri:['glutes','hams'], sec:['erector'],                          note:'離心時前傾骨盆，向心時後傾'},
+  sl_leg_press:    {en:'Single-Leg Leg Press',  zh:'單腿腿舉',        pri:['quads','glutes'],sec:['hams'],                             note:'高腳位放置'},
+  sl_leg_ext:      {en:'Single-Leg Leg Extension',zh:'單腿腿伸展',   pri:['quads'],         sec:[],                                   note:'從較弱腿開始，專注擠壓股四頭肌'},
+  swiss_curl:      {en:'Swiss Ball Single-Leg Curl',zh:'瑞士球單腿彎舉',pri:['hams'],      sec:['glutes','core'],                    note:'從較弱腿開始，防止髖部碰地'},
+  tempo_squat:     {en:'Tempo Back Squat',      zh:'慢速背蹲舉',      pri:['quads'],         sec:['glutes','erector'],                 note:'2秒離心，腳尖外開15°，膝蓋外推'},
+  tempo_calf:      {en:'Tempo Standing Calf Raise',zh:'慢速站姿提踵', pri:['calves'],       sec:['soleus'],                           note:'2秒離心，踮到最高，底部充分伸展，不反彈'},
+  rdback_ext:      {en:'Round-Back DB 45° Hyperextension',zh:'圓背啞鈴45°背伸',pri:['glutes','hams'],sec:['erector'],            note:'上背圓弧，驅動髖部頂向墊子如臀推'},
+  sm_rev_lunge:    {en:'Smith Machine Reverse Lunge',zh:'史密斯機後跨弓步蹲',pri:['quads','glutes'],sec:['hams'],              note:'坐後，從較弱腿開始'},
+  ee_leg_ext:      {en:'Enhanced Eccentric Leg Extension',zh:'強化離心腿伸展',pri:['quads'],sec:[],                             note:'訓練夥伴在離心階段向下加壓'},
+  ee_leg_curl:     {en:'Enhanced Eccentric Lying Leg Curl',zh:'強化離心俯臥腿彎舉',pri:['hams'],sec:[],                        note:'訓練夥伴在離心階段向下加壓'},
+  lateral_band:    {en:'Lateral Band Walk',     zh:'側向彈力帶行走',  pri:['glmed'],         sec:['glutes'],                           note:'可用機器髖外展替代，膝蓋向外驅動'},
+  goblet_squat:    {en:'Slow Eccentric Goblet Squat',zh:'慢速離心高腳杯深蹲',pri:['quads'],sec:['glutes'],                      note:'3秒離心，坐後，膝蓋外推，軀幹直立'},
+  pause_thrust:    {en:'Pause Barbell Hip Thrust',zh:'暫停槓鈴臀推',   pri:['glutes'],       sec:['hams','quads'],                     note:'3秒暫停，下巴收，肋骨下壓，只動髖部'},
+  cable_calf:      {en:'Cable Rope Pullthrough',zh:'繩索臀屈伸（臀肌）',pri:['glutes'],    sec:['hams'],                             note:'專注擠壓臀肌帶動重量'},
+
+  // ── PUSH ──
+  bench:           {en:'Barbell Bench Press',   zh:'槓鈴臥推',        pri:['pec'],           sec:['adelt','tri'],                      note:'手肘45°夾緊，擠壓肩胛骨，穩固靠在椅上'},
+  db_sh_press:     {en:'DB Seated Shoulder Press',zh:'啞鈴坐姿肩推',  pri:['adelt','mdelt'], sec:['tri'],                              note:'啞鈴降至最低，軀幹保持直立'},
+  weighted_dip:    {en:'Weighted Dip',          zh:'加重雙槓撐體',    pri:['peclo','tri'],   sec:['adelt'],                            note:'手肘45°夾，軀幹前傾15°，肩胛骨收縮'},
+  lo_hi_cable_fly: {en:'Low to High Cable Flye',zh:'低拉高飛鳥夾胸', pri:['pecup'],         sec:['adelt'],                            note:'外旋起始，手肘向上向內，同時輕微內旋肩膀'},
+  skull_crusher:   {en:'DB Isolateral Skull Crusher',zh:'啞鈴單側頭骨碾壓',pri:['trilong','trilat'],sec:[],                    note:'手肘固定，啞鈴在頭頂上方，只彎曲肘關節'},
+  db_lat_raise:    {en:'Dumbbell Lateral Raise',zh:'啞鈴側平舉',      pri:['mdelt'],         sec:['adelt','trap'],                     note:'啞鈴略微傾斜使小指先向上'},
+  ab_wheel:        {en:'Ab Wheel Rollout',      zh:'腹輪前滾',        pri:['rectab'],        sec:['lat','adelt'],                      note:'骨盆後傾（夾緊臀部），無法維持姿勢時縮短範圍'},
+  cg_bench:        {en:'Close-Grip Bench Press',zh:'窄握臥推',        pri:['tri'],           sec:['pec','adelt'],                      note:'肩寬握距，手肘沿身體兩側'},
+  military:        {en:'Military Press',        zh:'軍事推舉',        pri:['adelt','mdelt'], sec:['tri','trapu'],                      note:'夾緊臀部，軀幹直立，頭讓開路徑，向上向後推'},
+  db_incline:      {en:'Dumbbell Incline Press',zh:'啞鈴上斜臥推',    pri:['pecup'],         sec:['adelt','tri'],                      note:'肩胛骨收縮下壓'},
+  pec_deck:        {en:'Pec Deck',              zh:'蝴蝶夾胸機',      pri:['pec'],           sec:['adelt'],                            note:'專注讓內側手肘合攏，不是手'},
+  cable_lat:       {en:'Cable Lateral Raise',   zh:'繩索側平舉',      pri:['mdelt'],         sec:['adelt','trap'],                     note:'專注擠壓側三角肌帶動重量'},
+  cable_kickback:  {en:'Cable Triceps Kickback',zh:'繩索三頭後踢',    pri:['trilong','trilat'],sec:[],                               note:'身體站直，手肘收在軀幹後方'},
+  bicycle_crunch:  {en:'Bicycle Crunch',        zh:'腳踏車捲腹',      pri:['oblique'],       sec:['rectab','hipflex'],                 note:'對側膝蓋碰手肘，專注脊椎屈曲'},
+  arnold_press:    {en:'Arnold Press',          zh:'阿諾德推舉',      pri:['adelt','mdelt'], sec:['tri'],                              note:'從內旋起始，推舉過程中逐漸外旋'},
+  cg_smith:        {en:'Close-Grip Smith Machine Press',zh:'史密斯機窄握推舉',pri:['tri','pec'],sec:['adelt'],                 note:'肩寬握距，手肘沿身體兩側'},
+  floor_skull:     {en:'Barbell Floor Skull Crusher',zh:'槓鈴地板頭骨碾壓',pri:['tri'],   sec:[],                                   note:'肩胛骨外展，手肘與頭部平齊，只彎曲肘關節'},
+  egypt_lat:       {en:'Egyptian Lateral Raise',zh:'埃及式側平舉',    pri:['mdelt'],         sec:['trap'],                             note:'身體側傾遠離繩索，專注擠壓側三角肌'},
+  rope_tri_ext:    {en:'Rope Overhead Triceps Extension',zh:'繩索過頭三頭伸展',pri:['trilong'],sec:['trilat'],                   note:'專注在動作底部伸展三頭肌'},
+  hang_leg:        {en:'Hanging Leg Raise',     zh:'懸掛舉腿',        pri:['rectab','hipflex'],sec:['oblique'],                      note:'專注脊椎屈曲'},
+  plank:           {en:'Plank',                 zh:'棒式撐體',        pri:['rectab'],        sec:['oblique','glutes'],                 note:'骨盆後傾'},
+  mil_push_combo:  {en:'Military Press / Push Press Complex',zh:'軍推／推舉複合動作',pri:['adelt','mdelt'],sec:['tri','trapu'],  note:'前4下軍推，後4下推舉（腿部驅動）'},
+  triceps_vbar:    {en:'Triceps V-Bar Pressdown',zh:'三頭V槓下壓',    pri:['tri'],           sec:[],                                   note:'專注擠壓三頭肌帶動重量'},
+  machine_lat:     {en:'Machine Lateral Raise', zh:'機器側平舉',      pri:['mdelt'],         sec:['adelt','trap'],                     note:'專注擠壓側三角肌帶動重量'},
+  slow_dip:        {en:'Slow Eccentric Dip',    zh:'慢速離心雙槓撐體',pri:['peclo','tri'],   sec:['adelt'],                            note:'3秒離心下降，手肘45°夾，軀幹前傾'},
+
+  // ── PULL ──
+  arm_lat_pull:    {en:'1 Arm Lat Pull In',     zh:'單臂背闊下拉（暖身）',pri:['lat'],     sec:['bi'],                               note:'輕量暖身，手肘向下向內，側向彎曲拉向腋下'},
+  pullup:          {en:'Pull-Up',               zh:'引體向上',        pri:['lat'],           sec:['bi','rhom','pdelt'],               note:'手肘向下向內，最小化擺盪'},
+  pendlay:         {en:'Pendlay Row',           zh:'彭德雷划船',      pri:['lat','rhom'],    sec:['pdelt','bi','erector'],             note:'肩胛收縮啟動，拉向下胸，軀幹保持不動'},
+  machine_high_row:{en:'Machine High Row',      zh:'機器高位划船',    pri:['lat','teres'],   sec:['rhom','pdelt'],                    note:'專注擠壓背闊肌'},
+  face_pull:       {en:'Seated Face Pull',      zh:'坐姿臉部拉繩',    pri:['pdelt','infra'], sec:['trapm','rhom'],                    note:'手肘向上向外，收縮肩胛骨'},
+  rev_ez_curl:     {en:'A1: Reverse Grip EZ Bar Curl',zh:'A1: 反握EZ槓彎舉',pri:['brad'],  sec:['bi'],                               note:'槓向外拱非向上，專注擠壓前臂'},
+  sup_ez_curl:     {en:'A2: Supinated EZ Bar Curl',zh:'A2: 旋後EZ槓彎舉',pri:['bi'],       sec:['brac','brad'],                     note:'槓向外拱非向上，專注擠壓肱二頭肌'},
+  preacher_curl:   {en:'Dumbbell Preacher Curl',zh:'啞鈴牧師椅彎舉',  pri:['bi'],            sec:['brac'],                             note:'專注擠壓肱二頭肌帶動重量'},
+  neutral_pulldown:{en:'Neutral Grip Pulldown', zh:'中立握下拉',      pri:['lat'],           sec:['bi','teres'],                       note:'手肘向下壓向身體兩側'},
+  cable_elbow_out: {en:'A1: Cable Seated Elbows Out Row',zh:'A1: 繩索坐姿手肘外展划船',pri:['pdelt','rhom'],sec:['trapm'],        note:'肩胛收縮，手肘向上向外拉'},
+  cable_row:       {en:'A2: Cable Seated Row',  zh:'A2: 繩索坐姿划船',pri:['lat','rhom'],   sec:['pdelt','bi'],                       note:'肩胛收縮，手肘向下向內拉'},
+  kn_pullover:     {en:'Kneeling Straight-Arm Cable Pullover',zh:'跪姿直臂繩索下拉',pri:['lat'],sec:['pec','teres'],            note:'軀幹45°前傾，專注向正下方拉而非向內'},
+  snatch_shrug:    {en:'Snatch Grip Barbell Shrug',zh:'寬握槓鈴聳肩', pri:['trapu'],        sec:['trapm','lev'],                      note:'1.5倍肩寬握距，控制重量向耳朵聳肩'},
+  cable_rev_fly:   {en:'Cable Reverse Flye',    zh:'繩索反向飛鳥',    pri:['pdelt'],         sec:['rhom','infra'],                    note:'專注向側方掃動重量'},
+  sa_cable_curl:   {en:'Single-Arm Cable Curl', zh:'單臂繩索彎舉',    pri:['bi'],            sec:['brac'],                             note:'站直，手肘保持在軀幹後方'},
+  hammer_curl:     {en:'Hammer Curl',           zh:'鎚式彎舉',        pri:['brad'],          sec:['bi','brac'],                        note:'專注擠壓肱二頭肌帶動重量'},
+  sa_pulldown:     {en:'Single-Arm Pulldown',   zh:'單臂下拉',        pri:['lat'],           sec:['bi','teres'],                       note:'從較弱側開始，伸展背闊肌至頂端，然後向下拉'},
+  seal_row:        {en:'Seal Row',              zh:'印章划船',        pri:['lat','rhom'],    sec:['bi','pdelt'],                       note:'可用啞鈴或槓鈴，夾緊臀部使軀幹穩定'},
+  kn_pullover2:    {en:'Kneeling Straight-Arm Cable Pullover',zh:'跪姿直臂繩索下拉',pri:['lat'],sec:['pec','teres'],            note:'軀幹45°前傾，向正下方拉不向內'},
+  rev_pec_deck:    {en:'Reverse Pec Deck',      zh:'反向夾胸機',      pri:['pdelt'],         sec:['rhom','infra'],                    note:'手臂向外側掃動，肩胛骨不收縮'},
+  db_1arm_row:     {en:'Dumbbell One-Arm Row',  zh:'啞鈴單臂划船',    pri:['lat'],           sec:['pdelt','rhom'],                    note:'非工作手支撐，雙臂向後拉'},
+  chest_tbar:      {en:'Chest-Supported T-Bar Row w/ Band',zh:'胸撐T槓划船（彈力帶）',pri:['rhom','lat'],sec:['pdelt','bi'],  note:'參見Science Applied YT系列影片'},
+  lo_hi_rev_fly:   {en:'Low-to-High Reverse Flye',zh:'低拉高反向飛鳥',pri:['pdelt','infra'],sec:['trapu'],                       note:'結合聳肩＋划船＋反向飛鳥：肩胛收縮+上旋，肱骨外展'},
+  rope_upright:    {en:'Rope Upright Row',      zh:'繩索直立划船',    pri:['trapu','mdelt'], sec:['serratus'],                        note:'專注在頂端擠壓上斜方肌，動作末端保持'},
+  db_sup_curl:     {en:'Dumbbell Supinated Curl',zh:'啞鈴旋後彎舉',   pri:['bi'],            sec:['brac'],                             note:'想著驅動小指朝向側三角肌方向'},
+  spider_curl:     {en:'Spider Curl',           zh:'蜘蛛彎舉',        pri:['bish'],          sec:['brac'],                             note:'胸部貼上斜椅，手肘略微前方彎舉'},
+  a1_db_pron:      {en:'A1: Dumbbell Pronated Curl',zh:'A1: 啞鈴旋前彎舉',pri:['brad'],    sec:['bi'],                               note:'槓向外拱非向上，專注前臂'},
+  a2_db_hammer:    {en:'A2: Dumbbell Hammer Curl',zh:'A2: 啞鈴鎚式彎舉',pri:['brad'],      sec:['bi','brac'],                        note:'槓向外拱非向上，專注前臂'},
+  a3_db_sup:       {en:'A3: Dumbbell Supinated Curl',zh:'A3: 啞鈴旋後彎舉',pri:['bi'],      sec:['brac'],                             note:'槓向外拱非向上，專注肱二頭肌'},
+};
+
+// ─────────────────────────────────────────────
+// PROGRAM DATA
+// ─────────────────────────────────────────────
+// Format: [exKey, sets, reps, intensity, rest]
+// intensity: string like '70%' or 'RPE 7' or '7'
+
+const B1 = {
+  w1:{
+    d1:{name:'LEGS #1',zh:'腿部訓練 第一日',type:'L',vol:20,ex:[
+      ['back_squat','4','5','70%','3-4min'],
+      ['deadlift','2','8','65%','3-4min'],
+      ['hip_thrust','3','10-12','RPE 6','2-3min'],
+      ['walking_lunge','2','20ea','RPE 7','1-2min'],
+      ['leg_ext','3','15','RPE 7','0min'],
+      ['seated_curl','3','15','RPE 7','1-2min'],
+      ['calf_raise_s','3','10','RPE 7','1-2min'],
+    ]},
+    d2:{name:'PUSH #1',zh:'推系訓練 第一日',type:'P',vol:21,ex:[
+      ['bench','3','4','75%','2-3min'],
+      ['db_sh_press','3','8-10','RPE 7','2-3min'],
+      ['weighted_dip','3','6-10','RPE 7','1-2min'],
+      ['lo_hi_cable_fly','3','12-15','RPE 8','1-2min'],
+      ['skull_crusher','3','12','RPE 8','1-2min'],
+      ['db_lat_raise','3','15','RPE 8','1-2min'],
+      ['ab_wheel','3','6','RPE 7','1-2min'],
+    ]},
+    d3:{name:'PULL #1',zh:'拉系訓練 第一日',type:'U',vol:22,ex:[
+      ['arm_lat_pull','2','15-20','RPE 5','1-2min'],
+      ['pullup','4','6-8','RPE 7','2-3min'],
+      ['pendlay','3','8-10','RPE 7','2-3min'],
+      ['machine_high_row','3','10-12','RPE 8','1-2min'],
+      ['face_pull','3','20','RPE 8','1-2min'],
+      ['rev_ez_curl','3','20','RPE 9','0min'],
+      ['sup_ez_curl','3','15','RPE 9','1-2min'],
+      ['preacher_curl','3','12','RPE 7','1-2min'],
+    ]},
+    d4:{name:'LEGS #2',zh:'腿部訓練 第二日',type:'L',vol:22,ex:[
+      ['deadlift','4','4','72.5%','3-4min'],
+      ['front_squat','3','6-8','60%','2-3min'],
+      ['cable_pt','3','20','RPE 8','1-2min'],
+      ['sl_leg_press','3','10-12','RPE 7','1-2min'],
+      ['sl_leg_ext','3','15','RPE 7','1-2min'],
+      ['swiss_curl','3','12','RPE 7','1-2min'],
+      ['calf_raise_s','3','15','RPE 7','1-2min'],
+    ]},
+    d5:{name:'PUSH #2',zh:'推系訓練 第二日',type:'P',vol:21,ex:[
+      ['cg_bench','3','6','70%','2-3min'],
+      ['military','3','5','80%','2-3min'],
+      ['db_incline','3','10-12','RPE 7','1-2min'],
+      ['pec_deck','3','15','RPE 7','1-2min'],
+      ['cable_lat','3','8','RPE 8','1-2min'],
+      ['cable_kickback','3','20','RPE 8','1-2min'],
+      ['bicycle_crunch','3','12','RPE 7','1-2min'],
+    ]},
+    d6:{name:'PULL #2',zh:'拉系訓練 第二日',type:'U',vol:24,ex:[
+      ['neutral_pulldown','3','10-12','RPE 8','2-3min'],
+      ['cable_elbow_out','3','10','RPE 8','0min'],
+      ['cable_row','3','10','RPE 8','2-3min'],
+      ['kn_pullover','3','15','RPE 7','1-2min'],
+      ['snatch_shrug','3','15','RPE 8','1-2min'],
+      ['cable_rev_fly','3','20','RPE 8','0min'],
+      ['sa_cable_curl','3','12','RPE 7','1-2min'],
+      ['hammer_curl','3','8','RPE 7','1-2min'],
+    ]},
+  },
+};
+
+// Weeks 2-8 for Block 1 — same exercises, intensity changes
+// [back_squat%, deadlift1%, deadlift2%, front_squat%, bench%, cg_bench%, military%]
+// plus RPE increments
+const B1_INTENSITY = {
+  w2:{bs:'75%',dl1:'65%',dl2:'77.5%',fs:'60%',bp:'80%',cgb:'72.5%',mil:'80%',rpe_offset:1},
+  w3:{bs:'77.5%',dl1:'70%',dl2:'80%',fs:'65%',bp:'82.5%',cgb:'75%',mil:'82.5%',rpe_offset:1},
+  w4:{bs:'80%',dl1:'70%',dl2:'82.5%',fs:'65%',bp:'85%',cgb:'77.5%',mil:'82.5%',rpe_offset:1},
+  w5:{bs:'72.5%',dl1:'65%',dl2:'72.5%',fs:'67.5%',bp:'85%',cgb:'70%',mil:'80%',rpe_offset:2, bs_reps:'6', dl1_sets:'3',dl1_reps:'10'},
+  w6:{bs:'72.5%',dl1:'65%',dl2:'72.5%',fs:'67.5%',bp:'85%',cgb:'70%',mil:'80%',rpe_offset:2},
+  w7:{bs:'77.5%',dl1:'70%',dl2:'80%',fs:'65%',bp:'82.5%',cgb:'75%',mil:'82.5%',rpe_offset:2},
+  w8:{bs:'82.5%',dl1:'70%',dl2:'82.5%',fs:'65%',bp:'85%',cgb:'80%',mil:'82.5%',rpe_offset:2},
+};
+
+// Build week data from week 1 template with overrides
+function buildB1Week(wnum) {
+  const tpl = JSON.parse(JSON.stringify(B1.w1));
+  const cfg = B1_INTENSITY['w'+wnum];
+  if (!cfg) return tpl;
+  // Apply intensity changes
+  tpl.d1.ex[0][3] = cfg.bs; if(cfg.bs_reps) tpl.d1.ex[0][2]=cfg.bs_reps;
+  tpl.d1.ex[1][3] = cfg.dl1; if(cfg.dl1_sets){tpl.d1.ex[1][0]='deadlift';tpl.d1.ex[1][1]=cfg.dl1_sets;tpl.d1.ex[1][2]=cfg.dl1_reps||'8';}
+  tpl.d4.ex[0][3] = cfg.dl2;
+  tpl.d4.ex[1][3] = cfg.fs;
+  tpl.d2.ex[0][3] = cfg.bp;
+  tpl.d5.ex[0][3] = cfg.cgb;
+  tpl.d5.ex[1][3] = cfg.mil;
+  // Volume adjustments for weeks 5+
+  if(wnum>=5){
+    tpl.d1.vol=21; tpl.d2.vol=23; tpl.d5.vol=23; tpl.d6.vol=25;
+    // Add extra set to some exercises
+    tpl.d2.ex[3][1]='4'; // Lo-Hi Cable Fly
+    tpl.d5.ex[3][1]='4'; // Pec Deck
+    tpl.d5.ex[4][1]='4'; // Cable Lat
+    tpl.d6.ex[0][1]='4'; // Neutral Pulldown
+  }
+  if(wnum>=7){
+    tpl.d2.ex[4][1]='4'; // Skull crusher
+    tpl.d2.vol=23;
+  }
+  return tpl;
+}
+
+// BLOCK 2 DATA
+const B2_W1 = {
+  d1:{name:'LEGS #1',zh:'腿部訓練（減量）',type:'L',vol:14,deload:true,ex:[
+    ['deadlift','4','3','75%','3-4min'],
+    ['tempo_squat','2','6','60%','3-4min'],
+    ['rdback_ext','2','20','RPE 7','1-2min'],
+    ['sm_rev_lunge','2','15','RPE 7','1-2min'],
+    ['ee_leg_ext','2','12','RPE 6','1-2min'],
+    ['ee_leg_curl','2','12','RPE 6','1-2min'],
+    ['lateral_band','2','15','RPE 8','1-2min'],
+    ['tempo_calf','2','8','RPE 6','1-2min'],
+  ]},
+  d2:{name:'PUSH #1',zh:'推系訓練（減量）',type:'P',vol:15,deload:true,ex:[
+    ['bench','2','8','75%','2-3min'],
+    ['arnold_press','2','12','RPE 7','1-2min'],
+    ['cg_smith','2','15','RPE 7','1-2min'],
+    ['lo_hi_cable_fly','2','15-20','RPE 8','1-2min'],
+    ['floor_skull','2','8-10','RPE 7','1-2min'],
+    ['egypt_lat','2','12-15','RPE 8','1-2min'],
+    ['rope_tri_ext','2','12-15','RPE 7','1-2min'],
+    ['hang_leg','3','6','RPE 6','1-2min'],
+  ]},
+  d3:{name:'PULL #1',zh:'拉系訓練（減量）',type:'U',vol:16,deload:true,ex:[
+    ['arm_lat_pull','2','15-20','RPE 5','1-2min'],
+    ['pullup','3','12','RPE 7','2-3min'],
+    ['db_1arm_row','2','6-8','RPE 7','1-2min'],
+    ['chest_tbar','2','10-12','RPE 7','1-2min'],
+    ['lo_hi_rev_fly','2','12-15','RPE 8','1-2min'],
+    ['rope_upright','2','20','RPE 8','1-2min'],
+    ['db_sup_curl','2','12-15','RPE 8','1-2min'],
+    ['spider_curl','3','15-20','RPE 8','1-2min'],
+  ]},
+  d4:{name:'LEGS #2',zh:'腿部訓練 第二日（減量）',type:'L',vol:16,deload:true,ex:[
+    ['back_squat','3','4','75%','3-4min'],
+    ['rdl','3','8','RPE 7','2-3min'],
+    ['pause_thrust','2','10','RPE 7','2-3min'],
+    ['goblet_squat','2','12 steps','RPE 6','1-2min'],
+    ['seated_curl','2','15','RPE 8','1-2min'],
+    ['cable_calf','2','20','RPE 8','1-2min'],
+    ['calf_raise_s','3','12','RPE 7','1-2min'],
+  ]},
+  d5:{name:'PUSH #2',zh:'推系訓練 第二日（減量）',type:'P',vol:17,deload:true,ex:[
+    ['bench','3','4','75%','2-3min'],
+    ['mil_push_combo','3','4,4','72.5%','2-3min'],
+    ['slow_dip','2','8-10','RPE 6','1-2min'],
+    ['triceps_vbar','3','12-15','RPE 7','1-2min'],
+    ['machine_lat','3','15-20','RPE 8','1-2min'],
+    ['plank','3','30sec','RPE 7','1-2min'],
+  ]},
+  d6:{name:'PULL #2',zh:'拉系訓練 第二日（減量）',type:'U',vol:21,deload:true,ex:[
+    ['sa_pulldown','3','12','RPE 7','2-3min'],
+    ['seal_row','3','8-10','RPE 7','2-3min'],
+    ['kn_pullover2','3','15-20','RPE 8','1-2min'],
+    ['rev_pec_deck','3','15/15','RPE 7','1-2min'],
+    ['a1_db_pron','3','8','RPE 9','0min'],
+    ['a2_db_hammer','3','8','RPE 9','0min'],
+    ['a3_db_sup','3','8','RPE 9','1-2min'],
+  ]},
+};
+
+// B2 weeks 2-8 intensity progression
+const B2_INTENSITY = {
+  w2:{bs:'75%',dl:'80%',bp1:'75%',bp2:'75%',mil:'72.5%',rpe_offset:1},
+  w3:{bs:'77.5%',dl:'80%',bp1:'77.5%',bp2:'77.5%',mil:'77.5%',rpe_offset:1},
+  w4:{bs:'77.5%',dl:'82.5%',bp1:'77.5%',bp2:'77.5%',mil:'77.5%',rpe_offset:1},
+  w5:{bs:'80%',dl:'82.5%',bp1:'80%',bp2:'80%',mil:'80%',rpe_offset:1},
+  w6:{bs:'80%',dl:'85%',bp1:'80%',bp2:'80%',mil:'80%',rpe_offset:1},
+  w7:{bs:'82.5%',dl:'85%',bp1:'82.5%',bp2:'82.5%',mil:'82.5%',rpe_offset:1},
+  w8:{bs:'82.5%',dl:'90% (RPE 9 Test)',bp1:'85% AMRAP',bp2:'82.5%',mil:'82.5%',rpe_offset:1},
+};
+
+function buildB2Week(wnum) {
+  const tpl = JSON.parse(JSON.stringify(B2_W1));
+  const cfg = B2_INTENSITY['w'+wnum];
+  if (!cfg) return tpl;
+  tpl.d1.deload=false; tpl.d2.deload=false; tpl.d3.deload=false;
+  tpl.d4.deload=false; tpl.d5.deload=false; tpl.d6.deload=false;
+  tpl.d1.zh='腿部訓練 第一日'; tpl.d2.zh='推系訓練 第一日'; tpl.d3.zh='拉系訓練 第一日';
+  tpl.d4.zh='腿部訓練 第二日'; tpl.d5.zh='推系訓練 第二日'; tpl.d6.zh='拉系訓練 第二日';
+  // Volume updates
+  tpl.d1.vol=15+Math.min(wnum-1,3); tpl.d2.vol=15; tpl.d3.vol=21;
+  tpl.d4.vol=16+Math.min(wnum-1,2); tpl.d5.vol=17+(wnum>=3?2:0); tpl.d6.vol=21+(wnum>=2?3:0);
+  // Intensity
+  tpl.d4.ex[0][3]=cfg.bs;
+  tpl.d1.ex[0][3]=cfg.dl; tpl.d1.ex[0][2]=(wnum==8)?'RPE 9 測試':'3';
+  tpl.d2.ex[0][3]=cfg.bp1; tpl.d2.ex[0][2]=(wnum==8)?'AMRAP':'8';
+  tpl.d5.ex[0][3]=cfg.bp2;
+  tpl.d5.ex[1][3]=cfg.mil;
+  // Update sets for later weeks
+  if(wnum>=3){ tpl.d1.ex[1][1]='2'; } // extra sets on rdback
+  if(wnum>=4){ tpl.d4.ex[0][1]='4'; }
+  if(wnum>=5){ tpl.d5.ex[0][1]='4'; tpl.d6.ex[0][1]='4'; }
+  return tpl;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function muscleTags(keys, cls) {
+  return keys.map(k => MG[k] ? `<span class="${cls}">${MG[k].p}</span>` : '').join('');
+}
+
+function renderRow(r) {
+  const ex = EX[r[0]];
+  if (!ex) return `<tr><td colspan="8" style="color:#555;font-family:monospace;font-size:10px;">${r[0]}</td></tr>`;
+  return `<tr>
+    <td><span class="en">${ex.en}</span><span class="zh">${ex.zh}</span></td>
+    <td class="sc">${r[1]}</td>
+    <td class="sc">${r[2]}</td>
+    <td class="sc rpe">${r[3]}</td>
+    <td class="sc rest">${r[4]}</td>
+    <td class="mc">
+      <span class="ml">主要</span>${muscleTags(ex.pri,'pm')}
+      <span class="ml" style="margin-top:3px">次要</span>${ex.sec.length?muscleTags(ex.sec,'sm'):'<span class="sm">—</span>'}
+    </td>
+    <td class="nc">${ex.note}</td>
+  </tr>`;
+}
+
+function renderSession(d, weekLabel) {
+  const deloadBadge = d.deload ? '<span class="deload-tag">DELOAD</span>' : '';
+  return `
+  <div class="session">
+    <div class="sess-hd">
+      <span class="day-lbl">${weekLabel} / DAY ${d.dayNum}</span>
+      <span class="sess-name ${d.type}">${d.name}</span>
+      <span class="sess-zh">${d.zh}</span>
+      ${deloadBadge}
+      <span class="svol">SETS: ${d.vol}</span>
+    </div>
+    <div class="tw">
+    <table>
+      <thead><tr>
+        <th style="min-width:180px">訓練動作</th>
+        <th>組數</th><th>次數</th><th>強度</th><th>休息</th>
+        <th style="min-width:160px">肌群</th>
+        <th style="min-width:140px">備註</th>
+      </tr></thead>
+      <tbody>${d.ex.map(r=>renderRow(r)).join('')}</tbody>
+    </table>
+    </div>
+    <div class="trow">
+      <span>總組數 TOTAL SET VOLUME: <span class="tvol">${d.vol}</span></span>
+      <span>訓練時間 ___________</span>
+    </div>
+  </div>`;
+}
+
+function renderWeekPane(weekData, id, weekLabel) {
+  const days = ['d1','d2','d3','d4','d5','d6'];
+  const dayNums = [1,2,3,4,5,6];
+  let html = `<div class="week-pane" id="${id}">`;
+  days.forEach((dk,i)=>{
+    const d = weekData[dk];
+    if(!d) return;
+    d.dayNum = dayNums[i];
+    html += renderSession(d, weekLabel);
+  });
+  html += '</div>';
+  return html;
+}
+
+// ── Build nav buttons ──
+function makeNav(blockId, count, labels) {
+  return labels.map((lbl,i)=>{
+    const wi = 'w'+(i+1);
+    const on = i===0?' on':'';
+    return `<button class="wbtn${on}" onclick="switchWeek('${blockId}','${wi}',this)">${lbl}</button>`;
+  }).join('');
+}
+
+const b1Labels = ['W1','W2','W3','W4','W5','W6','W7','W8'];
+const b2Labels = ['W1 (減量)','W2','W3','W4','W5','W6','W7','W8 (巔峰)'];
+
+// ── Build block HTML strings ──
+function buildBlockHTML(blockId, titleEN, titleZH, subText, weeks, labels) {
+  let html = `
+  <div class="block-hd">
+    <span class="blk-tag">${blockId.toUpperCase()}</span>
+    <span class="blk-title">${titleEN}</span>
+    <span class="blk-sub">${subText}</span>
+  </div>
+  <div class="week-nav" id="${blockId}nav">${makeNav(blockId,8,labels)}</div>
+  <div id="${blockId}panes">`;
+  for(let w=1;w<=8;w++){
+    const id = `${blockId}-w${w}`;
+    const disp = w===1?'block':'none';
+    const weekLabel = 'W'+w;
+    html += renderWeekPane(weeks['w'+w], id, weekLabel)
+      .replace('<div class="week-pane"', `<div class="week-pane" id="${id}" style="display:${disp}"`);
+  }
+  html += '</div>';
+  return html;
+}
+
+// ── Block 1 ──
+const b1Weeks = {};
+b1Weeks.w1 = B1.w1;
+for(let w=2;w<=8;w++) b1Weeks['w'+w]=buildB1Week(w);
+
+// ── Block 2 ──
+const b2Weeks = {};
+b2Weeks.w1 = B2_W1;
+for(let w=2;w<=8;w++) b2Weeks['w'+w]=buildB2Week(w);
+
+// ── Inject into DOM after page loads ──
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('b1body').innerHTML = buildBlockHTML(
+    'b1','技術階段 — 8 WEEK TECHNIQUE PHASE','','漸進超負荷 · 週1–8', b1Weeks, b1Labels);
+  document.getElementById('b2body').innerHTML = buildBlockHTML(
+    'b2','巔峰階段 — 8 WEEK PEAKING PHASE','','強度巔峰 · 週1減量', b2Weeks, b2Labels);
+});
+
+// ── Switchers ──
+function switchBlock(block) {
+  ['b1','b2'].forEach(b => {
+    document.getElementById(b+'body').classList.toggle('on', b===block);
+    document.getElementById('bs'+(b==='b1'?1:2)).classList.toggle('on', b===block);
+  });
+  window.scrollTo({top:0});
+}
+
+function switchWeek(block, week, btn) {
+  document.querySelectorAll(`#${block}panes .week-pane`).forEach(p => p.style.display='none');
+  document.getElementById(`${block}-${week}`).style.display='block';
+  document.querySelectorAll(`#${block}nav .wbtn`).forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+</script>
+
+<div class="legend">
+  <div class="li"><div class="ld" style="background:var(--legs)"></div>腿日 LEGS</div>
+  <div class="li"><div class="ld" style="background:var(--push)"></div>推日 PUSH</div>
+  <div class="li"><div class="ld" style="background:var(--pull)"></div>拉日 PULL</div>
+  <div class="li"><div class="ld" style="background:#FF8090"></div>主要肌群</div>
+  <div class="li"><div class="ld" style="background:#3A3A3A"></div>次要肌群</div>
+  <div class="li"><div class="ld" style="background:var(--rpe)"></div>RPE / %1RM</div>
+  <div class="li"><div class="ld" style="background:rgba(255,165,0,.6)"></div>減量週</div>
+  <div class="cr">Jeff Nippard's Legs/Push/Pull Hypertrophy Program</div>
+</div>
+
+</body>
+</html>
