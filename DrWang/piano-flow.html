@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>學習音樂・學習鋼琴・談心流</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1208;
+      --paper: #f5f0e8;
+      --gold: #b8942a;
+      --warm: #d4956a;
+      --muted: #8a7a6a;
+      --accent: #3d5a47;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 300;
+      line-height: 1.9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Subtle paper texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(184,148,42,0.04) 28px, rgba(184,148,42,0.04) 29px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '♩';
+      position: absolute;
+      font-size: 40vw;
+      color: rgba(184,148,42,0.06);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.8s forwards;
+    }
+
+    .hero-line {
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      margin: 2rem auto;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      opacity: 0;
+      animation: fadeUp 1s 1.3s forwards, bob 2s 2.3s ease-in-out infinite;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      padding: 5rem 0;
+      border-bottom: 1px solid rgba(184,148,42,0.15);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    /* ── Section labels ── */
+    .section-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(184,148,42,0.3);
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-bottom: 1.4rem;
+      font-size: 1.05rem;
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 3px solid var(--gold);
+      padding: 1.2rem 1.8rem;
+      margin: 2.5rem 0;
+      background: rgba(184,148,42,0.06);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .pull-quote p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    /* ── Flow card ── */
+    .flow-card {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3rem 2.5rem;
+      margin: 3rem 0;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flow-card::before {
+      content: 'Flow';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.04);
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .flow-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .flow-card p {
+      color: rgba(245,240,232,0.85);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .flow-card p:last-child { margin-bottom: 0; }
+
+    /* ── Brain infographic reference ── */
+    .brain-note {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      background: rgba(61,90,71,0.08);
+      border: 1px solid rgba(61,90,71,0.2);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 2.5rem 0;
+    }
+
+    .brain-icon {
+      font-size: 2.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .brain-note p { margin: 0; font-size: 0.95rem; color: var(--accent); }
+    .brain-note strong { display: block; font-weight: 600; margin-bottom: 0.3rem; font-size: 1rem; }
+
+    /* ── Resources ── */
+    .resource-group { margin-bottom: 2.5rem; }
+
+    .resource-group h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(184,148,42,0.2);
+    }
+
+    .resource-list { list-style: none; }
+
+    .resource-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .resource-list li::before {
+      content: '♪';
+      color: var(--gold);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .resource-list a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(184,148,42,0.4);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .resource-list a:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .resource-list .desc {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── Testimonials ── */
+    .testimonials {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .testimonial {
+      background: white;
+      border: 1px solid rgba(184,148,42,0.15);
+      padding: 1.5rem;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .testimonial::before {
+      content: '"';
+      position: absolute;
+      top: -0.5rem;
+      left: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .testimonial p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+      padding-top: 0.5rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+    }
+
+    footer .note-symbol {
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      section { padding: 3.5rem 0; }
+      .flow-card { padding: 2rem 1.5rem; }
+      .brain-note { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">王準明 · 2025</div>
+  <h1>學習音樂<br>學習鋼琴<br><em>談心流</em></h1>
+  <div class="hero-line"></div>
+  <p class="hero-sub">自學古典音樂，找到屬於自己的心流時刻</p>
+  <div class="scroll-hint">↓ 向下閱讀</div>
+</div>
+
+<!-- 主動的快樂 -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">第一章</div>
+    <h2 class="reveal">主動的快樂</h2>
+    <p class="reveal">自己彈鋼琴的快樂，是一種「主動的快樂」，要學會彈一首曲子，不只要動腦還要動手，是一件勞心又勞力的活動。</p>
+    <p class="reveal">這種快樂，乍聽之下既辛苦又難以實現。怎麼樣都比不過買一台高級音響或一台高級自動演奏三角鋼琴，躺在沙發上，按一下播放鍵，來得有效率。</p>
+
+    <div class="pull-quote reveal">
+      <p>這種「主動的快樂」，是一種巨大而持久的快樂，這種快樂不是在「練好之後」發生，而是發生在專注投入練習的每分每秒。</p>
+    </div>
+
+    <p class="reveal">「每天進步一點點，發現新大陸，又多認識一點，體驗多一點」的感覺，會讓你渾身熱血沸騰，充滿鬥志，有時徹夜欲克服它不可。</p>
+    <p class="reveal">從學鋼琴或其他樂器的過程中，體會到一種你從未想像過的快樂，一種巨大而持久的快樂，一種永遠在進步的快樂。</p>
+  </div>
+</section>
+
+<!-- 心流 -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">第二章</div>
+    <h2 class="reveal">心流：最高品質的幸福體驗</h2>
+
+    <p class="reveal">學樂器是最好的大腦訓練工具。當我們拉琴彈琴玩琴的時候，全腦神經突觸連結（synaptic connections），訊號就像過年 101 大樓放煙火一樣，燦爛奪目。</p>
+
+    <div class="flow-card reveal">
+      <h3>什麼是心流？</h3>
+      <p>Flow 是心理學家 Mihaly Csikszentmihalyi 提出的，他長期研究「什麼是快樂？」，認為 Flow 就是最快樂的狀態。</p>
+      <p>下圍棋、下象棋、玩電腦遊戲及看小說等活動都很容易進入心流狀態。但很少有一樣活動像彈奏樂器，是腦部及四肢肌肉全面性的活動。</p>
+      <p>玩樂器可能是最好的防腦退化工具之一；大提琴家 Rostropovich 快 80 歲時還可以開演奏會，雙手速度、靈巧度不輸年輕人。</p>
+    </div>
+
+    <p class="reveal">自己彈鋼琴的時候，會進入了一種手腦合一的「心流體驗」，在那當下會感受到一種渾然忘我，廢寢忘食的感覺。心流，是心理學家公認「最高品質的幸福體驗」，在心流體驗的狀態下，會經歷「愉悅」和「平靜」綜合起來的快樂。</p>
+
+    <p class="reveal">這種快樂的感受，會維持很長一段時間，當在鋼琴前面，不知不覺中過了兩小時、三個小時，結束之後，會感受到一種「充實感」和「自我肯定」。因為你會感受到這些美好都是「自己的」，是別人搶不走的，會讚嘆自己，今天過了充實的一天。</p>
+
+    <div class="brain-note reveal">
+      <div class="brain-icon">🧠</div>
+      <p>
+        <strong>彈琴啟動的全腦活動</strong>
+        彈鋼琴同時啟動視覺皮層（讀譜）、聽覺皮層（監聽音色）、前額葉皮層（協調雙手、節拍感）、頂葉（空間感知琴鍵位置）、小腦（精細動作控制），是幾乎所有已知樂器中最能全面激活大腦的活動。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 自學資源 -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">第三章</div>
+    <h2 class="reveal">自學資源推薦</h2>
+    <p class="reveal">學樂器是心流之寶，快樂之源，好處多多，一舉數得。以下介紹一些自學鋼琴的優質資源：</p>
+
+    <div class="resource-group reveal">
+      <h3>中文教學——鋼琴入門</h3>
+      <ul class="resource-list">
+        <li>
+          <div>
+            <a href="https://youtube.com/@nicechordwiwi" target="_blank">好和弦 NiceChord（官大為）</a>
+            <span class="desc">中文界最棒的樂理及鋼琴教學，近 480 部影片，涵蓋所有基礎</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtu.be/esljyLyIj7Q" target="_blank">學鋼琴完全指南</a>
+            <span class="desc">官大為出品，強烈推薦從此開始</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://nicechord.com/post/sight-reading-guide/" target="_blank">鋼琴視譜完全指南</a>
+            <span class="desc">好和弦官網文章</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtube.com/@lemonjanet" target="_blank">檸檬卷教鋼琴</a>
+            <span class="desc">親切活潑的中文教學頻道</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtube.com/@dancepiano" target="_blank">林有龍 流行音樂鍵盤教學</a>
+            <span class="desc">流行曲風入門</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="resource-group reveal">
+      <h3>英文教學——成人初學</h3>
+      <ul class="resource-list">
+        <li>
+          <div>
+            <a href="https://youtu.be/zOI0tW3wZYI" target="_blank">JazerLee Piano Teaching</a>
+            <span class="desc">專為成人初學者設計，實用課程豐富</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtube.com/@creativepianoacademy" target="_blank">Creative Piano Academy</a>
+            <span class="desc">初學者友善，適合零基礎成人</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtube.com/@pianocareer" target="_blank">PianoCareer</a>
+            <span class="desc">進階技巧與音樂性培養</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtu.be/Ud9CpGOG1GE" target="_blank">Complete Piano Theory</a>
+            <span class="desc">完整鋼琴基礎理論課程</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="resource-group reveal">
+      <h3>欣賞古典音樂（中文）</h3>
+      <ul class="resource-list">
+        <li>
+          <div>
+            <a href="https://youtube.com/@musicianseacow" target="_blank">音樂家的無聊人生</a>
+            <span class="desc">深入淺出介紹古典音樂</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a href="https://youtube.com/@teacherandy" target="_blank">安迪老師</a>
+            <span class="desc">德國漢堡大學音樂老師，台灣女婿，師大中文系畢業</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="resource-group reveal">
+      <h3>欣賞古典音樂（英文）</h3>
+      <ul class="resource-list">
+        <li>
+          <div>
+            <a href="https://youtube.com/@sonatasecrets" target="_blank">Sonata Secrets</a>
+            <span class="desc">深度解析古典奏鳴曲的精彩頻道</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="resource-group reveal">
+      <h3>推薦鋼琴演奏家</h3>
+      <ul class="resource-list">
+        <li><div>王羽佳（Yuja Wang）</div></li>
+        <li><div>Khatia Buniatishvili</div></li>
+        <li><div>Paul Barton</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 結語 -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">後記</div>
+    <h2 class="reveal">永遠享受其中</h2>
+
+    <div class="testimonials">
+      <div class="testimonial reveal">
+        <p>I'm 72 and been playing every day since I started piano at age 65. The only rule that I believe must be obeyed above all others: You must always enjoy it!</p>
+      </div>
+      <div class="testimonial reveal">
+        <p>I'm 82 and took up music again 10 years ago. I've been doing what he recommends and it works!</p>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top: 2.5rem;">還有沒有別的什麼事，也許是寫作、編程、做飯、園藝，或者就是工作裡那些有挑戰的任務——有沒有可能通過類似的主動投入、刻意練習，你也能找到屬於你自己的心流時刻，找到那種持久的成長快樂，和內心的充實感？</p>
+
+    <div class="pull-quote reveal" style="margin-top: 2rem;">
+      <p>這個問題，值得每一個人都想一想。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="note-symbol">♩</span>
+  王準明 &nbsp;·&nbsp; 2025 &nbsp;·&nbsp; 學習音樂・學習鋼琴・談心流
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
