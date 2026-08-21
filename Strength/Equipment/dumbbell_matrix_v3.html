@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>啞鈴訓練姿勢矩陣 — 全肌群</title>
+<style>
+:root {
+  --bg:#f9f8f5; --bg2:#ffffff; --bg3:#f1efe8;
+  --text:#1a1a18; --text2:#5f5e5a; --text3:#9a9890;
+  --border:#e2e0d8; --border2:#cccac0;
+  --shadow:0 1px 3px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;font-size:13px;line-height:1.5}
+.page{max-width:1120px;margin:0 auto;padding:28px 20px 60px}
+.page-title{font-size:20px;font-weight:600;letter-spacing:-.3px}
+.page-sub{font-size:12px;color:var(--text2);margin-top:4px;margin-bottom:20px}
+
+/* Filter bar */
+.filter-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.filter-bar span{font-size:11px;color:var(--text3);align-self:center;margin-right:4px}
+.fbtn{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--text2);cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+.fbtn:hover{border-color:#888}
+.fbtn.on{font-weight:600;color:#fff;border-color:transparent}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px;font-size:12px;color:var(--text2)}
+.dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;display:inline-block}
+.legend-item{display:flex;align-items:center;gap:5px}
+
+/* Section */
+.section{margin-bottom:32px}
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sec-badge{font-size:13px;font-weight:600;padding:5px 14px;border-radius:20px;display:inline-block}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;min-width:720px}
+thead th{background:var(--bg3);color:var(--text2);font-weight:500;font-size:11px;padding:8px 8px;border-bottom:1px solid var(--border2);text-align:center;white-space:nowrap}
+thead th.lft{text-align:left}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#faf9f6}
+tbody td{padding:7px 8px;vertical-align:middle;text-align:center}
+tbody td.lft{text-align:left}
+.mzh{font-weight:500;font-size:12px;color:var(--text)}
+.men{font-size:10px;color:var(--text3);margin-top:1px}
+.subrow td{background:#f5f3ee;font-size:10px;color:var(--text3);padding:3px 10px;letter-spacing:.04em;font-weight:500;text-align:left}
+
+/* Cells */
+.ok  {display:inline-block;background:#E1F5EE;color:#085041;font-weight:500;font-size:11px;border-radius:4px;padding:2px 6px}
+.ok2 {display:inline-block;background:#EEEDFE;color:#3C3489;font-weight:500;font-size:11px;border-radius:4px;padding:2px 6px}
+.rare{display:inline-block;background:#F1EFE8;color:#5F5E5A;font-size:11px;border-radius:4px;padding:2px 6px}
+.no  {color:#cccac0;font-size:15px;line-height:1}
+.cn  {display:block;font-size:10px;color:var(--text3);margin-top:2px;line-height:1.3}
+.angle{display:block;font-size:10px;color:#854F0B;font-weight:500;margin-top:2px}
+
+.footnote{margin-top:8px;font-size:10px;color:var(--text3);line-height:1.7;padding:0 2px}
+
+/* hidden */
+.section.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="page-title">啞鈴訓練姿勢矩陣 — 全肌群</div>
+<div class="page-sub">Dumbbell Training Position Matrix　器材：啞鈴 Dumbbell</div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <span>顯示肌群：</span>
+  <button class="fbtn on" data-g="all" style="background:#5f5e5a;border-color:#5f5e5a">全部</button>
+  <button class="fbtn" data-g="chest"  >胸部 Chest</button>
+  <button class="fbtn" data-g="back"   >背部 Back</button>
+  <button class="fbtn" data-g="shoulder">肩膀 Shoulder</button>
+  <button class="fbtn" data-g="tri"    >三頭 Triceps</button>
+  <button class="fbtn" data-g="bi"     >二頭 Biceps</button>
+  <button class="fbtn" data-g="fore"   >前手臂 Forearm</button>
+  <button class="fbtn" data-g="quads"  >前大腿 Quads</button>
+  <button class="fbtn" data-g="ham"    >後腿臀 Ham/Glutes</button>
+  <button class="fbtn" data-g="calves" >小腿 Calves</button>
+  <button class="fbtn" data-g="core"   >核心腹部 Core</button>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><span class="dot" style="background:#1D9E75"></span>常用（標準變式）</div>
+  <div class="legend-item"><span class="dot" style="background:#7F77DD"></span>可行（效果佳但較少見）</div>
+  <div class="legend-item"><span class="dot" style="background:#888780"></span>少見（特殊變式）</div>
+  <div class="legend-item"><span class="dot" style="background:#e2e0d8"></span>— 不適用</div>
+  <div style="margin-left:auto;font-size:10px;color:var(--text3)">斜板欄橘色小字 = 建議角度</div>
+</div>
+
+<!-- ===== 胸部 ===== -->
+<div class="section" data-g="chest">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#E6F1FB;color:#185FA5;border:1px solid #85B7EB">胸部 Chest</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr class="subrow"><td colspan="9">▸ 推舉 Press</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">平板啞鈴臥推</div><div class="men">Flat DB Bench Press</div></td>
+  <td class="lft"><div class="mzh">胸大肌中束</div><div class="men">Pec Major (Middle)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">標準動作</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">上斜啞鈴臥推</div><div class="men">Incline DB Bench Press</div></td>
+  <td class="lft"><div class="mzh">胸大肌上束</div><div class="men">Pec Major (Upper)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">30–45°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">下斜啞鈴臥推</div><div class="men">Decline DB Bench Press</div></td>
+  <td class="lft"><div class="mzh">胸大肌下束</div><div class="men">Pec Major (Lower)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="cn">頭低腳高</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 飛鳥 Fly</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">平板啞鈴飛鳥</div><div class="men">Flat DB Fly</div></td>
+  <td class="lft"><div class="mzh">胸大肌中束</div><div class="men">Pec Major (Middle)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">拉伸最大</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">上斜啞鈴飛鳥</div><div class="men">Incline DB Fly</div></td>
+  <td class="lft"><div class="mzh">胸大肌上束</div><div class="men">Pec Major (Upper)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">30–45°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 其他</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴仰臥過頭拉</div><div class="men">DB Pullover</div></td>
+  <td class="lft"><div class="mzh">胸小肌／前鋸肌</div><div class="men">Pec Minor / Serratus</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">橫跨椅亦可</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊胸部動作幾乎全在仰臥完成；上斜臥推／飛鳥超過 45° 會將刺激轉移至前三角，效果下降。</div>
+</div>
+
+<!-- ===== 背部 ===== -->
+<div class="section" data-g="back">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#EAF3DE;color:#3B6D11;border:1px solid #97C459">背部 Back</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr class="subrow"><td colspan="9">▸ 划船 Row</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">單臂啞鈴划船</div><div class="men">Single-arm DB Row</div></td>
+  <td class="lft"><div class="mzh">背闊肌／大圓肌</div><div class="men">Lat / Teres Major</div></td>
+  <td><span class="ok">常用</span><span class="cn">膝撐椅</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="cn">胸靠大腿</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">俯身啞鈴划船</div><div class="men">Bent-over DB Row</div></td>
+  <td class="lft"><div class="mzh">斜方肌中下段</div><div class="men">Mid/Lower Trap</div></td>
+  <td><span class="ok">常用</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="angle">45°</span><span class="cn">胸貼斜板</span></td>
+  <td><span class="ok">常用</span><span class="cn">消除借力</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴俯臥划船</div><div class="men">Prone DB Row</div></td>
+  <td class="lft"><div class="mzh">菱形肌／中斜方</div><div class="men">Rhomboids / Mid Trap</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">孤立佳</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 硬舉 Deadlift</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴羅馬尼亞硬舉</div><div class="men">DB Romanian Deadlift</div></td>
+  <td class="lft"><div class="mzh">豎脊肌</div><div class="men">Erector Spinae</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴早安式</div><div class="men">DB Good Morning</div></td>
+  <td class="lft"><div class="mzh">豎脊肌／多裂肌</div><div class="men">Erector / Multifidus</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 斜方 / 肩胛</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴聳肩</div><div class="men">DB Shrug</div></td>
+  <td class="lft"><div class="mzh">斜方肌上段</div><div class="men">Upper Trapezius</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">俯臥 Y/T/W 舉</div><div class="men">Prone DB Y/T/W Raise</div></td>
+  <td class="lft"><div class="mzh">菱形肌／下斜方</div><div class="men">Rhomboids / Low Trap</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">45°</span><span class="cn">胸貼斜板</span></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">孤立最佳</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊背部多數動作需上身前傾讓重力方向對上背肌；斜板版（45°）胸貼椅背可完全消除腰部代償。</div>
+</div>
+
+<!-- ===== 肩膀 ===== -->
+<div class="section" data-g="shoulder">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#FAEEDA;color:#854F0B;border:1px solid #EF9F27">肩膀 Shoulder</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr class="subrow"><td colspan="9">▸ 複合推舉 Press</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">肩推</div><div class="men">Shoulder Press</div></td>
+  <td class="lft"><div class="mzh">全三角肌</div><div class="men">All Deltoid Heads</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span><span class="angle">75–85°</span><span class="cn">近直立</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">阿諾肩推</div><div class="men">Arnold Press</div></td>
+  <td class="lft"><div class="mzh">全三角肌（旋轉行程）</div><div class="men">All Deltoid (Rotation)</div></td>
+  <td><span class="ok2">可行</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok2">可行</span><span class="angle">75–85°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 前平舉 Front Raise（前三角）</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">前平舉</div><div class="men">Front Raise</div></td>
+  <td class="lft"><div class="mzh">三角肌前束</div><div class="men">Anterior Deltoid</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span><span class="angle">75°</span><span class="cn">消除借力</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">拉伸最大</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 側平舉 Lateral Raise（中三角）</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">側平舉</div><div class="men">Lateral Raise</div></td>
+  <td class="lft"><div class="mzh">三角肌側束</div><div class="men">Lateral Deltoid</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok2">可行</span><span class="angle">75°</span><span class="cn">側身靠椅單手</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">拉伸最大</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 後三角飛鳥 Rear Delt Fly（後三角）</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">後三角飛鳥</div><div class="men">Rear Delt Fly</div></td>
+  <td class="lft"><div class="mzh">三角肌後束</div><div class="men">Posterior Deltoid</div></td>
+  <td><span class="ok">常用</span><span class="cn">Bent-Over 站姿</span></td>
+  <td><span class="ok2">可行</span><span class="cn">需主動前傾</span></td>
+  <td><span class="ok">常用</span><span class="angle">45°</span><span class="cn">胸貼斜板</span></td>
+  <td><span class="ok">常用</span><span class="cn">大腿支撐</span></td>
+  <td><span class="ok">常用</span><span class="cn">孤立最佳</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 旋轉肌群 Rotator Cuff</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">側臥外旋</div><div class="men">DB External Rotation (Side-lying)</div></td>
+  <td class="lft"><div class="mzh">棘下肌／小圓肌</div><div class="men">Infraspinatus / Teres Minor</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">手肘靠腰</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">空罐式舉</div><div class="men">DB Empty Can Raise</div></td>
+  <td class="lft"><div class="mzh">棘上肌</div><div class="men">Supraspinatus</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊肩推斜板需近直立（75–85°）；後三角飛鳥斜板為 45° 胸貼椅背，與前平舉斜板（75°）角度完全不同。側平舉斜板需側身靠椅單手做，與其他動作的斜板用法不同。</div>
+</div>
+
+<!-- ===== 三頭 ===== -->
+<div class="section" data-g="tri">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#FBEAF0;color:#993556;border:1px solid #ED93B1">三頭肌 Triceps</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">過頭啞鈴三頭伸展</div><div class="men">Overhead DB Triceps Ext.</div></td>
+  <td class="lft"><div class="mzh">三頭長頭</div><div class="men">Long Head</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span><span class="cn">穩定佳</span></td>
+  <td><span class="ok2">可行</span><span class="angle">75–85°</span><span class="cn">近直立</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">仰臥三頭屈伸<br>（Skull Crusher）</div><div class="men">DB Skull Crusher</div></td>
+  <td class="lft"><div class="mzh">三頭外側頭</div><div class="men">Lateral Head</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="angle">30°</span><span class="cn">角度略不同</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">標準動作</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴踢腿伸展</div><div class="men">DB Kickback</div></td>
+  <td class="lft"><div class="mzh">三頭內側頭 / 肘肌</div><div class="men">Medial Head / Anconeus</div></td>
+  <td><span class="ok">常用</span><span class="cn">俯身站姿</span></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">30–45°</span><span class="cn">胸貼斜板</span></td>
+  <td><span class="ok">常用</span><span class="cn">大腿撐上身</span></td>
+  <td><span class="ok2">可行</span><span class="cn">俯臥雙臂後伸</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴窄握臥推</div><div class="men">Close-grip DB Press</div></td>
+  <td class="lft"><div class="mzh">三頭外側頭</div><div class="men">Lateral Head</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="angle">30°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊長頭需手臂過頭才能充分伸展；踢腿式可在多種俯身姿勢執行，斜板版（30–45°）穩定度最佳。</div>
+</div>
+
+<!-- ===== 二頭 ===== -->
+<div class="section" data-g="bi">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#E1F5EE;color:#0F6E56;border:1px solid #5DCAA5">二頭肌 Biceps</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">站姿啞鈴彎舉</div><div class="men">DB Curl (Standing)</div></td>
+  <td class="lft"><div class="mzh">二頭長頭</div><div class="men">Biceps Long Head</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">上斜啞鈴彎舉</div><div class="men">Incline DB Curl</div></td>
+  <td class="lft"><div class="mzh">二頭長頭</div><div class="men">Biceps Long Head</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">45–60°</span><span class="cn">手臂後移拉伸最大</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">集中彎舉</div><div class="men">DB Concentration Curl</div></td>
+  <td class="lft"><div class="mzh">二頭短頭</div><div class="men">Biceps Short Head</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">肘靠大腿內側</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">錘式彎舉</div><div class="men">DB Hammer Curl</div></td>
+  <td class="lft"><div class="mzh">肱肌／肱橈肌</div><div class="men">Brachialis / Brachioradialis</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok2">可行</span><span class="angle">45–60°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">俯臥啞鈴彎舉</div><div class="men">Prone DB Curl</div></td>
+  <td class="lft"><div class="mzh">喙肱肌／二頭</div><div class="men">Coracobrachialis / Biceps</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok2">可行</span><span class="cn">趴椅手臂下垂</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">反握彎舉</div><div class="men">DB Reverse Curl</div></td>
+  <td class="lft"><div class="mzh">肱橈肌／肱肌</div><div class="men">Brachioradialis / Brachialis</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊上斜彎舉椅背後傾（45–60°）讓手臂自然向後，長頭起始拉伸最大，效果優於直立版；角度越小（越平躺）拉伸越大，但控制難度增加。</div>
+</div>
+
+<!-- ===== 前手臂 ===== -->
+<div class="section" data-g="fore">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#FAECE7;color:#993C1D;border:1px solid #F0997B">前手臂 Forearm</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">腕部正握彎舉</div><div class="men">Wrist Curl (Palms Up)</div></td>
+  <td class="lft"><div class="mzh">橈側腕屈肌</div><div class="men">Flexor Carpi Radialis</div></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">前臂放大腿上</span></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">前臂撐膝</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">腕部反握伸展</div><div class="men">Wrist Extension (Reverse)</div></td>
+  <td class="lft"><div class="mzh">橈側腕伸肌</div><div class="men">Extensor Carpi Radialis</div></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">前臂放大腿上</span></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴農夫走路</div><div class="men">DB Farmer's Walk</div></td>
+  <td class="lft"><div class="mzh">指屈肌群</div><div class="men">Finger Flexors</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴捏握訓練</div><div class="men">DB Pinch Hold</div></td>
+  <td class="lft"><div class="mzh">拇指屈肌</div><div class="men">Flexor Pollicis</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊前手臂腕部訓練需前臂固定，坐姿（放大腿或撐膝）最實用；站姿僅限農夫走路等動態抓握。</div>
+</div>
+
+<!-- ===== 前大腿 ===== -->
+<div class="section" data-g="quads">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#EEEDFE;color:#534AB7;border:1px solid #AFA9EC">前大腿 Quads</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴深蹲（Goblet）</div><div class="men">DB Goblet Squat</div></td>
+  <td class="lft"><div class="mzh">股中間肌／股直肌</div><div class="men">Vastus Int. / Rectus Fem.</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴保加利亞蹲</div><div class="men">DB Bulgarian Split Squat</div></td>
+  <td class="lft"><div class="mzh">股直肌／髂腰肌</div><div class="men">Rectus Femoris / Iliopsoas</div></td>
+  <td><span class="ok">常用</span><span class="cn">後腳抬高</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴弓步蹲</div><div class="men">DB Lunge (Forward / Lateral)</div></td>
+  <td class="lft"><div class="mzh">股直肌／縫匠肌</div><div class="men">Rectus Femoris / Sartorius</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴登階</div><div class="men">DB Step-up</div></td>
+  <td class="lft"><div class="mzh">髂腰肌／股直肌</div><div class="men">Iliopsoas / Rectus Femoris</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">坐姿啞鈴抬腿</div><div class="men">DB Seated Leg Extension</div></td>
+  <td class="lft"><div class="mzh">股直肌（伸膝）</div><div class="men">Rectus Femoris (Knee Ext.)</div></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">啞鈴夾腳背</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊股四頭肌功能是支撐體重與伸膝，幾乎所有有效動作都是站姿負重；斜板對前大腿無特殊意義。</div>
+</div>
+
+<!-- ===== 後大腿臀 ===== -->
+<div class="section" data-g="ham">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#F1EFE8;color:#5F5E5A;border:1px solid #B4B2A9">後大腿 / 臀 Hamstrings / Glutes</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr class="subrow"><td colspan="9">▸ 硬舉 / 髖鉸鏈</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴羅馬尼亞硬舉</div><div class="men">DB Romanian Deadlift</div></td>
+  <td class="lft"><div class="mzh">股二頭肌長頭</div><div class="men">Biceps Femoris (Long)</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴單腳 RDL</div><div class="men">DB Single-leg RDL</div></td>
+  <td class="lft"><div class="mzh">半腱肌 / 半膜肌</div><div class="men">Semitendinosus / Semimemb.</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 腿彎舉</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">俯臥啞鈴腿彎舉</div><div class="men">Prone DB Leg Curl</div></td>
+  <td class="lft"><div class="mzh">股二頭肌短頭</div><div class="men">Biceps Femoris (Short)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">啞鈴夾腳踝</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr class="subrow"><td colspan="9">▸ 臀推 / 外展</td></tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴臀推</div><div class="men">DB Hip Thrust</div></td>
+  <td class="lft"><div class="mzh">臀大肌</div><div class="men">Gluteus Maximus</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">上背靠椅緣</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">側臥髖外展</div><div class="men">DB Side-lying Hip Abduction</div></td>
+  <td class="lft"><div class="mzh">臀中肌 / 臀小肌</div><div class="men">Gluteus Med. / Min.</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">孤立效果佳</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴側弓步蹲</div><div class="men">DB Lateral Lunge</div></td>
+  <td class="lft"><div class="mzh">臀中肌 / 股內側肌</div><div class="men">Glut. Med. / VMO</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊後腿以站姿 RDL 和俯臥腿彎舉為主；臀大肌強調仰臥臀推；臀中肌最有效為側躺外展。斜板對後腿無特殊優勢。</div>
+</div>
+
+<!-- ===== 小腿 ===== -->
+<div class="section" data-g="calves">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#FCEBEB;color:#A32D2D;border:1px solid #F09595">小腿 Calves</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">站姿啞鈴提踵</div><div class="men">DB Standing Calf Raise</div></td>
+  <td class="lft"><div class="mzh">腓腸肌</div><div class="men">Gastrocnemius</div></td>
+  <td><span class="ok">常用</span><span class="cn">膝伸直</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">坐姿啞鈴提踵</div><div class="men">DB Seated Calf Raise</div></td>
+  <td class="lft"><div class="mzh">比目魚肌</div><div class="men">Soleus</div></td>
+  <td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">膝彎曲 90°</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">單腳啞鈴提踵</div><div class="men">DB Single-leg Calf Raise</div></td>
+  <td class="lft"><div class="mzh">腓腸肌（單側）</div><div class="men">Gastrocnemius (Unilateral)</div></td>
+  <td><span class="ok">常用</span><span class="cn">踏板加深度</span></td>
+  <td><span class="ok2">可行</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴負重踮腳勾腳</div><div class="men">DB-weighted Tibialis Raise</div></td>
+  <td class="lft"><div class="mzh">脛骨前肌</div><div class="men">Tibialis Anterior</div></td>
+  <td><span class="ok">常用</span><span class="cn">靠牆腳跟抬趾</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">單腳外翻提踵</div><div class="men">DB Single-leg Eversion Raise</div></td>
+  <td class="lft"><div class="mzh">腓骨肌群</div><div class="men">Fibularis Group</div></td>
+  <td><span class="ok2">可行</span><span class="cn">足外翻</span></td>
+  <td><span class="rare">少見</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊關鍵差異：腓腸肌跨越膝關節 → 膝伸直（站姿）才能充分拉伸；比目魚肌不跨膝 → 膝彎曲坐姿孤立最有效。</div>
+</div>
+
+<!-- ===== 核心腹部 ===== -->
+<div class="section" data-g="core">
+<div class="sec-hd">
+  <span class="sec-badge" style="background:#FAEEDA;color:#854F0B;border:1px solid #EF9F27">核心腹部 Core</span>
+</div>
+<div class="tbl-wrap"><table>
+<thead><tr>
+  <th class="lft" style="min-width:138px">動作</th>
+  <th class="lft" style="min-width:108px">主攻肌群</th>
+  <th>站姿</th><th>坐姿直立<br>~90°</th><th>斜板</th><th>坐俯身</th><th>俯臥</th><th>仰臥</th><th>側躺</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴負重捲腹</div><div class="men">DB Weighted Crunch</div></td>
+  <td class="lft"><div class="mzh">腹直肌</div><div class="men">Rectus Abdominis</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">啞鈴放胸前</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴下斜捲腹</div><div class="men">DB Decline Crunch</div></td>
+  <td class="lft"><div class="mzh">腹直肌（上段強調）</div><div class="men">Rectus Abdominis (Upper)</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="angle">頭低腳高 20–30°</span><span class="cn">反斜板</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴側彎</div><div class="men">DB Side Bend</div></td>
+  <td class="lft"><div class="mzh">腹外斜肌</div><div class="men">External Oblique</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴俄式扭轉</div><div class="men">DB Russian Twist</div></td>
+  <td class="lft"><div class="mzh">腹內 / 外斜肌</div><div class="men">Internal / External Oblique</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">上身抬離地</span></td>
+  <td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴農夫走路</div><div class="men">DB Farmer's Walk</div></td>
+  <td class="lft"><div class="mzh">腹橫肌（抗側彎）</div><div class="men">Transversus Abdominis</div></td>
+  <td><span class="ok">常用</span></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+</tr>
+<tr>
+  <td class="lft"><div class="mzh">啞鈴側棒式划船</div><div class="men">DB Side Plank Row</div></td>
+  <td class="lft"><div class="mzh">腹內斜肌</div><div class="men">Internal Oblique</div></td>
+  <td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="no">—</span></td>
+  <td><span class="ok">常用</span><span class="cn">側臥撐地划船</span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="footnote">＊下斜捲腹為頭低腳高的「反斜板」，角度約 20–30°；斜角越大腹直肌負荷越重。腹橫肌以抗旋轉靜態核心控制為主。</div>
+</div>
+
+<!-- Footer -->
+<div style="margin-top:32px;padding-top:14px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.9">
+  <strong>姿勢定義：</strong>
+  站姿 = 站立直立　／　坐姿直立 ~90° = 不調整椅背，直接坐椅面　／　斜板 = 椅背後傾（角度依動作而異，見橘色標示）　／
+  坐俯身 = 坐椅緣上身大幅前傾貼大腿　／　俯臥 = 面朝下趴於椅面　／　仰臥 = 面朝上躺於椅面　／　側躺 = 側身躺於椅緣<br>
+  <strong>肩膀訓練矩陣（肩推、前平舉、側平舉、後三角飛鳥 × 7 種姿勢）請參見對話中的獨立表格。</strong>
+</div>
+
+</div>
+
+<script>
+const btns = document.querySelectorAll('.fbtn');
+const sections = document.querySelectorAll('.section[data-g]');
+
+// Set button active colors from CSS var
+btns.forEach(btn => {
+  const g = btn.dataset.g;
+  const colorMap = {
+    chest:'#185FA5', back:'#3B6D11', shoulder:'#854F0B', tri:'#993556', bi:'#0F6E56',
+    fore:'#993C1D', quads:'#534AB7', ham:'#5F5E5A', calves:'#A32D2D', core:'#633806'
+  };
+  btn.addEventListener('click', () => {
+    btns.forEach(b => {
+      b.classList.remove('on');
+      b.style.background = '';
+      b.style.color = '';
+      b.style.borderColor = '';
+    });
+    btn.classList.add('on');
+    if (g === 'all') {
+      btn.style.background = '#5f5e5a';
+      btn.style.color = '#fff';
+      btn.style.borderColor = '#5f5e5a';
+      sections.forEach(s => s.classList.remove('hidden'));
+    } else {
+      const c = colorMap[g] || '#333';
+      btn.style.background = c;
+      btn.style.color = '#fff';
+      btn.style.borderColor = c;
+      sections.forEach(s => {
+        s.classList.toggle('hidden', s.dataset.g !== g);
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>

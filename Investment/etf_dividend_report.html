@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高股息 ETF 股利分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent-0056: #e8b86d;
+    --accent-00878: #6db8e8;
+    --accent-00919: #a06de8;
+    --text: #e8e4d9;
+    --muted: #6b7280;
+    --gold: #e8b86d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif TC', serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; height: 400px;
+    background: radial-gradient(ellipse at 20% 0%, rgba(232,184,109,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 0%, rgba(109,184,232,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e8d5a8 0%, #e8b86d 40%, #c89040 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  .header-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 20px auto 0;
+  }
+
+  /* ETF Legend Pills */
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .legend-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .legend-pill:hover { border-color: var(--gold); transform: translateY(-1px); }
+  .legend-pill.active-0056 { border-color: var(--accent-0056); }
+  .legend-pill.active-00878 { border-color: var(--accent-00878); }
+  .legend-pill.active-00919 { border-color: var(--accent-00919); }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  /* Summary Cards */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } }
+
+  .etf-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .etf-card:hover { transform: translateY(-2px); }
+  .etf-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+  }
+  .etf-card.c0056::before { background: var(--accent-0056); }
+  .etf-card.c00878::before { background: var(--accent-00878); }
+  .etf-card.c00919::before { background: var(--accent-00919); }
+
+  .card-ticker {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .c0056 .card-ticker { color: var(--accent-0056); }
+  .c00878 .card-ticker { color: var(--accent-00878); }
+  .c00919 .card-ticker { color: var(--accent-00919); }
+
+  .card-name {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-item { }
+  .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .stat-value { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+  .stat-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* Section Title */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+  .tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .tab-btn {
+    padding: 14px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active-0056 { color: var(--accent-0056); border-bottom-color: var(--accent-0056); }
+  .tab-btn.active-00878 { color: var(--accent-00878); border-bottom-color: var(--accent-00878); }
+  .tab-btn.active-00919 { color: var(--accent-00919); border-bottom-color: var(--accent-00919); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 14px 16px;
+    text-align: right;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { text-align: left; }
+  tbody tr {
+    border-bottom: 1px solid rgba(37,42,56,0.6);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody tr.year-row {
+    background: rgba(255,255,255,0.02);
+    font-weight: 600;
+  }
+  td {
+    padding: 11px 16px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+  td:first-child {
+    text-align: left;
+    font-weight: 600;
+  }
+  td.yield-high { color: #5bbf7a; }
+  td.yield-mid { color: var(--gold); }
+  td.yield-low { color: var(--muted); }
+
+  /* Bar chart */
+  .chart-section {
+    margin-bottom: 48px;
+  }
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    overflow-x: auto;
+  }
+  .bar-chart {
+    min-width: 600px;
+  }
+  .bar-group {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .bar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    width: 48px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 8px;
+    padding-bottom: 4px;
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    flex: 1;
+  }
+  .bar {
+    flex: 1;
+    min-width: 8px;
+    border-radius: 3px 3px 0 0;
+    transition: opacity 0.2s;
+    position: relative;
+    cursor: pointer;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-0056 { background: var(--accent-0056); }
+  .bar-00878 { background: var(--accent-00878); }
+  .bar-00919 { background: var(--accent-00919); }
+  .bar-axis {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0 4px 56px;
+  }
+  .bar-xlabels {
+    display: flex;
+    margin-left: 56px;
+    gap: 3px;
+  }
+  .bar-xlabel {
+    flex: 1;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    text-align: center;
+    transform: rotate(-45deg);
+    transform-origin: top center;
+    white-space: nowrap;
+    padding-top: 4px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+  .cl-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .cl-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* Notes */
+  .notes {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">台灣高股息 ETF 比較分析</div>
+    <h1>股利歷年報告</h1>
+    <div class="header-sub">0056 · 00878 · 00919 ｜ 資料來源：GoodInfo</div>
+    <div class="header-line"></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-pill active-0056">
+      <span class="legend-dot" style="background:var(--accent-0056)"></span>
+      0056 元大高股息
+    </div>
+    <div class="legend-pill active-00878">
+      <span class="legend-dot" style="background:var(--accent-00878)"></span>
+      00878 國泰永續高股息
+    </div>
+    <div class="legend-pill active-00919">
+      <span class="legend-dot" style="background:var(--accent-00919)"></span>
+      00919 群益台灣精選高息
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="etf-card c0056">
+      <div class="card-ticker">0056</div>
+      <div class="card-name">元大高股息 ｜ 成立 2007</div>
+      <div class="card-stats">
+        <div class="stat-item">
+          <div class="stat-label">累積股利</div>
+          <div class="stat-value" style="color:var(--accent-0056)">30.92</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">近年殖利率</div>
+          <div class="stat-value" style="color:var(--accent-0056)">~10%</div>
+          <div class="stat-sub">2024 年均價</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">2024 股利</div>
+          <div class="stat-value">3.63</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">配息頻率</div>
+          <div class="stat-value">季配</div>
+          <div class="stat-sub">2023 起</div>
+        </div>
+      </div>
+    </div>
+    <div class="etf-card c00878">
+      <div class="card-ticker">00878</div>
+      <div class="card-name">國泰永續高股息 ｜ 成立 2020</div>
+      <div class="card-stats">
+        <div class="stat-item">
+          <div class="stat-label">累積股利</div>
+          <div class="stat-value" style="color:var(--accent-00878)">7.65</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">近年殖利率</div>
+          <div class="stat-value" style="color:var(--accent-00878)">~8.9%</div>
+          <div class="stat-sub">2024 年均價</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">2024 股利</div>
+          <div class="stat-value">2.01</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">配息頻率</div>
+          <div class="stat-value">季配</div>
+          <div class="stat-sub">每季配息</div>
+        </div>
+      </div>
+    </div>
+    <div class="etf-card c00919">
+      <div class="card-ticker">00919</div>
+      <div class="card-name">群益台灣精選高息 ｜ 成立 2022</div>
+      <div class="card-stats">
+        <div class="stat-item">
+          <div class="stat-label">累積股利</div>
+          <div class="stat-value" style="color:var(--accent-00919)">7.73</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">近年殖利率</div>
+          <div class="stat-value" style="color:var(--accent-00919)">~11.5%</div>
+          <div class="stat-sub">2024 年均價</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">2024 股利</div>
+          <div class="stat-value">2.80</div>
+          <div class="stat-sub">元／股</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">配息頻率</div>
+          <div class="stat-value">季配</div>
+          <div class="stat-sub">每季配息</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bar Chart: Annual Dividend -->
+  <div class="chart-section">
+    <div class="section-title">歷年現金股利比較</div>
+    <div class="chart-wrap">
+      <div class="bar-chart" id="barChart"></div>
+      <div class="chart-legend">
+        <div class="cl-item"><div class="cl-dot" style="background:var(--accent-0056)"></div>0056</div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--accent-00878)"></div>00878</div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--accent-00919)"></div>00919</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Tables -->
+  <div class="section-title">歷年詳細資料</div>
+  <div class="table-wrap">
+    <div class="tab-nav">
+      <button class="tab-btn active-0056" onclick="switchTab('0056')">0056 元大高股息</button>
+      <button class="tab-btn" onclick="switchTab('00878')">00878 國泰永續</button>
+      <button class="tab-btn" onclick="switchTab('00919')">00919 群益精選</button>
+    </div>
+
+    <!-- 0056 -->
+    <div class="tab-content active" id="tab-0056">
+      <table>
+        <thead>
+          <tr>
+            <th>年度</th>
+            <th>現金股利 (元)</th>
+            <th>年均價 (元)</th>
+            <th>年均殖利率</th>
+            <th>年度最高價</th>
+            <th>年度最低價</th>
+            <th>填息天數</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-0056"></tbody>
+      </table>
+    </div>
+
+    <!-- 00878 -->
+    <div class="tab-content" id="tab-00878">
+      <table>
+        <thead>
+          <tr>
+            <th>年度</th>
+            <th>現金股利 (元)</th>
+            <th>年均價 (元)</th>
+            <th>年均殖利率</th>
+            <th>年度最高價</th>
+            <th>年度最低價</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-00878"></tbody>
+      </table>
+    </div>
+
+    <!-- 00919 -->
+    <div class="tab-content" id="tab-00919">
+      <table>
+        <thead>
+          <tr>
+            <th>年度</th>
+            <th>現金股利 (元)</th>
+            <th>年均價 (元)</th>
+            <th>年均殖利率</th>
+            <th>年度最高價</th>
+            <th>年度最低價</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-00919"></tbody>
+      </table>
+    </div>
+
+    <div class="notes">
+      ※ 年均殖利率 = 現金股利 ÷ 年度平均收盤價 × 100%　｜　資料來源：GoodInfo 台灣股市資訊網<br>
+      ※ 2026 年數據為年化計算（部分季度尚未完成）　｜　- 表示資料未揭露
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Data
+const data0056 = [
+  { year: '2026*', div: 1.866, avgPrice: 38.6, yieldRate: 9.67, high: 42.61, low: 36.5, fillDays: '-' },
+  { year: '2025', div: 3.872, avgPrice: 35.4, yieldRate: 10.9, high: 37.8, low: 28.49, fillDays: '-' },
+  { year: '2024', div: 3.63, avgPrice: 38.4, yieldRate: 9.44, high: 42.77, low: 34.45, fillDays: '-' },
+  { year: '2023', div: 2.20, avgPrice: 32.0, yieldRate: 6.87, high: 37.54, low: 25.19, fillDays: '-' },
+  { year: '2022', div: 2.10, avgPrice: 29.3, yieldRate: 7.17, high: 34.35, low: 23.28, fillDays: 32 },
+  { year: '2021', div: 1.80, avgPrice: 33.2, yieldRate: 5.42, high: 36.17, low: 29.80, fillDays: 12 },
+  { year: '2020', div: 1.60, avgPrice: 28.5, yieldRate: 5.61, high: 31.11, low: 21.45, fillDays: 28 },
+  { year: '2019', div: 1.80, avgPrice: 26.9, yieldRate: 6.70, high: 29.06, low: 23.11, fillDays: 49 },
+  { year: '2018', div: 1.45, avgPrice: 25.8, yieldRate: 5.62, high: 27.84, low: 23.24, fillDays: 80 },
+  { year: '2017', div: 0.95, avgPrice: 25.2, yieldRate: 3.78, high: 26.85, low: 23.07, fillDays: 61 },
+  { year: '2016', div: 1.30, avgPrice: 22.9, yieldRate: 5.67, high: 25.35, low: 20.14, fillDays: 159 },
+  { year: '2015', div: 1.00, avgPrice: 23.1, yieldRate: 4.33, high: 25.40, low: 18.76, fillDays: 84 },
+  { year: '2014', div: 1.00, avgPrice: 24.3, yieldRate: 4.12, high: 26.67, low: 22.44, fillDays: 31 },
+  { year: '2013', div: 0.85, avgPrice: 23.5, yieldRate: 3.61, high: 24.79, low: 21.98, fillDays: 116 },
+  { year: '2012', div: 1.30, avgPrice: 23.7, yieldRate: 5.49, high: 25.90, low: 20.76, fillDays: 131 },
+  { year: '2011', div: 2.20, avgPrice: 25.8, yieldRate: 8.54, high: 29.96, low: 20.78, fillDays: 76 },
+  { year: '2010', div: 0, avgPrice: 24.1, yieldRate: 0, high: 28.00, low: 20.91, fillDays: '-' },
+  { year: '2009', div: 2.00, avgPrice: 19.5, yieldRate: 10.3, high: 24.40, low: 13.00, fillDays: 51 },
+  { year: '2008', div: 0, avgPrice: 21.2, yieldRate: 0, high: 27.70, low: 11.73, fillDays: '-' },
+];
+
+const data00878 = [
+  { year: '2026*', div: 0.42, avgPrice: 22.8, yieldRate: 7.37, high: 25.13, low: 21.28, note: '年化' },
+  { year: '2025', div: 1.77, avgPrice: 21.2, yieldRate: 8.35, high: 23.04, low: 17.73, note: '' },
+  { year: '2024', div: 2.01, avgPrice: 22.6, yieldRate: 8.89, high: 24.66, low: 20.75, note: '' },
+  { year: '2023', div: 1.24, avgPrice: 19.2, yieldRate: 6.44, high: 22.89, low: 16.04, note: '' },
+  { year: '2022', div: 1.18, avgPrice: 17.5, yieldRate: 6.75, high: 19.78, low: 15.33, note: '' },
+  { year: '2021', div: 0.98, avgPrice: 18.1, yieldRate: 5.41, high: 19.28, low: 16.02, note: '' },
+  { year: '2020', div: 0.05, avgPrice: 15.1, yieldRate: 0.33, high: 16.20, low: 14.20, note: '首年' },
+];
+
+const data00919 = [
+  { year: '2026*', div: 0.78, avgPrice: 23.3, yieldRate: 13.4, high: 24.68, low: 22.00, note: '年化' },
+  { year: '2025', div: 2.52, avgPrice: 22.0, yieldRate: 11.5, high: 24.24, low: 18.32, note: '' },
+  { year: '2024', div: 2.80, avgPrice: 24.3, yieldRate: 11.5, high: 27.09, low: 21.60, note: '' },
+  { year: '2023', div: 1.63, avgPrice: 19.8, yieldRate: 8.24, high: 23.02, low: 16.31, note: '首年完整' },
+];
+
+function yieldClass(r) {
+  if (r === 0 || r === '-') return '';
+  if (r >= 9) return 'yield-high';
+  if (r >= 6) return 'yield-mid';
+  return 'yield-low';
+}
+
+function renderTable(tbodyId, data, hasFill) {
+  const tbody = document.getElementById(tbodyId);
+  data.forEach(d => {
+    const tr = document.createElement('tr');
+    if (!d.year.includes('Q') && !d.year.includes('∟')) tr.classList.add('year-row');
+    const yc = yieldClass(d.yieldRate);
+    const fillCol = hasFill
+      ? `<td>${d.fillDays}</td>`
+      : `<td style="color:var(--muted);font-size:10px">${d.note || '-'}</td>`;
+    tr.innerHTML = `
+      <td>${d.year}</td>
+      <td>${d.div === 0 ? '<span style="color:var(--muted)">0</span>' : d.div.toFixed(d.div < 1 ? 2 : 2)}</td>
+      <td>${d.avgPrice}</td>
+      <td class="${yc}">${d.yieldRate > 0 ? d.yieldRate + '%' : '<span style="color:var(--muted)">0%</span>'}</td>
+      <td>${d.high}</td>
+      <td>${d.low}</td>
+      ${fillCol}
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+renderTable('tbody-0056', data0056, true);
+renderTable('tbody-00878', data00878, false);
+renderTable('tbody-00919', data00919, false);
+
+// Tab switching
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-0056', 'active-00878', 'active-00919');
+  });
+  document.getElementById('tab-' + id).classList.add('active');
+  const btn = document.querySelector(`.tab-btn[onclick="switchTab('${id}')"]`);
+  btn.classList.add('active-' + id);
+}
+
+// Bar chart
+function buildBarChart() {
+  // Common years for comparison
+  const allYears = ['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+  const d0056Map = {};
+  data0056.forEach(d => { d0056Map[d.year] = d.div; });
+  const d00878Map = {};
+  data00878.forEach(d => { d00878Map[d.year] = d.div; });
+  const d00919Map = {};
+  data00919.forEach(d => { d00919Map[d.year] = d.div; });
+
+  const maxVal = 4.0;
+  const chartH = 140;
+
+  const chart = document.getElementById('barChart');
+  let html = `<div style="display:flex;flex-direction:column;gap:0">`;
+
+  // Y axis labels on left, bars
+  html += `<div style="display:flex;align-items:flex-end;gap:3px">`;
+  html += `<div style="width:48px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between;height:${chartH}px;padding-bottom:4px">`;
+  for (let v = 4; v >= 0; v--) {
+    html += `<div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-align:right">${v}</div>`;
+  }
+  html += `</div>`;
+
+  // Bars
+  html += `<div style="flex:1;display:flex;align-items:flex-end;gap:2px;height:${chartH}px">`;
+  allYears.forEach(y => {
+    const v0056 = d0056Map[y] || 0;
+    const v00878 = d00878Map[y] || 0;
+    const v00919 = d00919Map[y] || 0;
+    const h0056 = Math.round((v0056 / maxVal) * chartH);
+    const h00878 = Math.round((v00878 / maxVal) * chartH);
+    const h00919 = Math.round((v00919 / maxVal) * chartH);
+
+    html += `<div style="flex:1;display:flex;align-items:flex-end;gap:1px">`;
+    html += v0056 > 0 ? `<div class="bar bar-0056" style="height:${h0056}px" title="0056 ${y}: ${v0056}元"></div>` : `<div style="flex:1"></div>`;
+    html += v00878 > 0 ? `<div class="bar bar-00878" style="height:${h00878}px" title="00878 ${y}: ${v00878}元"></div>` : `<div style="flex:1"></div>`;
+    html += v00919 > 0 ? `<div class="bar bar-00919" style="height:${h00919}px" title="00919 ${y}: ${v00919}元"></div>` : `<div style="flex:1"></div>`;
+    html += `</div>`;
+  });
+  html += `</div></div>`;
+
+  // Axis line
+  html += `<div style="height:1px;background:var(--border);margin:0 0 0 51px"></div>`;
+
+  // X labels
+  html += `<div style="display:flex;margin-left:51px;gap:2px;margin-top:8px">`;
+  allYears.forEach(y => {
+    html += `<div style="flex:1;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:30px">${y}</div>`;
+  });
+  html += `</div>`;
+
+  html += `</div>`;
+  chart.innerHTML = html;
+}
+
+buildBarChart();
+</script>
+</body>
+</html>

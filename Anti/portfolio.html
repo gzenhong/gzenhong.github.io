@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="探索我的作品集 — 網頁設計、資料視覺化與行動應用開發成果。" />
+  <title>作品集 | 我的個人網站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #1a2d6e;
+      --blue:       #2563eb;
+      --sky:        #4a90d9;
+      --light-blue: #dbeafe;
+      --pale:       #f0f6ff;
+      --white:      #ffffff;
+      --text-dark:  #0f1a3e;
+      --text-muted: #4b6087;
+      --radius:     12px;
+      --shadow:     0 8px 32px rgba(26,45,110,.12);
+      --transition: 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--text-dark);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Navigation ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(37,99,235,.12);
+      box-shadow: 0 2px 16px rgba(26,45,110,.08);
+    }
+
+    nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo .logo-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      box-shadow: 0 0 8px rgba(37,99,235,.5);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.25); opacity: .7; }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--blue);
+      background: var(--light-blue);
+    }
+
+    .nav-links a.active { font-weight: 700; }
+
+    /* ── Page Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 60%, var(--sky) 100%);
+      padding: 4rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .page-hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 1rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      animation: fadeUp .7s ease both;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,.8);
+      font-size: 1.05rem;
+      animation: fadeUp .7s .15s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Filter Tabs ── */
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 2rem 0 0;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1.3rem;
+      border-radius: 99px;
+      border: 1.5px solid rgba(37,99,235,.2);
+      background: var(--pale);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--light-blue);
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(37,99,235,.35);
+    }
+
+    /* ── Project Grid ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+      padding: 2.5rem 0 4rem;
+    }
+
+    .project-card {
+      background: var(--white);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(26,45,110,.09);
+      border: 1px solid rgba(37,99,235,.08);
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px rgba(26,45,110,.18);
+    }
+
+    .project-thumb {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      background: var(--pale);
+    }
+
+    .project-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+
+    .project-card:hover .project-thumb img {
+      transform: scale(1.07);
+    }
+
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 30%,
+        rgba(26,45,110,.7) 100%
+      );
+      opacity: 0;
+      transition: opacity var(--transition);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+
+    .project-card:hover .project-overlay {
+      opacity: 1;
+    }
+
+    .overlay-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,.95);
+      color: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.45rem 1rem;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: transform var(--transition);
+    }
+
+    .overlay-link:hover { transform: translateX(3px); }
+
+    .project-body {
+      padding: 1.4rem 1.5rem 1.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-cat {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--sky);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .project-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: var(--pale);
+      color: var(--blue);
+      border: 1px solid rgba(37,99,235,.15);
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+    }
+
+    /* ── CTA Banner ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+    }
+
+    .cta-banner h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .cta-banner p {
+      color: rgba(255,255,255,.75);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.75rem 2rem;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .projects-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 540px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .nav-links a { padding: 0.4rem 0.65rem; font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Header / Nav ═══ -->
+  <header>
+    <nav>
+      <a href="index.html" class="logo" id="logo-link">
+        <span class="logo-dot"></span>
+        我的個人網站
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html" id="nav-home">首頁</a></li>
+        <li><a href="about.html" id="nav-about">關於我</a></li>
+        <li><a href="portfolio.html" class="active" id="nav-portfolio">作品集</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ═══ Page Hero ═══ -->
+    <section class="page-hero" aria-label="頁面標題">
+      <span class="page-hero-tag">✦ Portfolio</span>
+      <h1>作品集</h1>
+      <p>探索我的創作成果與設計思維</p>
+    </section>
+
+    <div class="wrapper">
+
+      <!-- ═══ Filter ═══ -->
+      <div class="filter-bar" role="group" aria-label="作品篩選">
+        <button class="filter-btn active" id="filter-all" onclick="filterProjects('all')">全部</button>
+        <button class="filter-btn" id="filter-web" onclick="filterProjects('web')">🌐 網頁設計</button>
+        <button class="filter-btn" id="filter-data" onclick="filterProjects('data')">📊 資料視覺化</button>
+        <button class="filter-btn" id="filter-app" onclick="filterProjects('app')">📱 應用程式</button>
+      </div>
+
+      <!-- ═══ Projects Grid ═══ -->
+      <div class="projects-grid" id="projects-grid" role="list">
+
+        <article class="project-card" data-cat="web" role="listitem">
+          <div class="project-thumb">
+            <img src="proj1.png" alt="品牌官網設計專案縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj1-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">網頁設計</div>
+            <div class="project-title">品牌官網全面改版</div>
+            <div class="project-desc">
+              為客戶品牌進行整體視覺重塑，
+              從資訊架構、視覺設計到前端實作一手包辦，
+              改版後用戶停留時間提升 45%。
+            </div>
+            <div class="project-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Figma</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="data" role="listitem">
+          <div class="project-thumb">
+            <img src="proj2.png" alt="資料視覺化儀表板專案縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj2-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">資料視覺化</div>
+            <div class="project-title">股市分析儀表板</div>
+            <div class="project-desc">
+              整合多支股票的歷史數據，
+              以互動式圖表呈現最大回撤、績效比較等指標，
+              幫助投資者做出更明智的決策。
+            </div>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Streamlit</span>
+              <span class="tag">Plotly</span>
+              <span class="tag">Pandas</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="app" role="listitem">
+          <div class="project-thumb">
+            <img src="proj3.png" alt="健身記錄應用程式縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj3-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">應用程式</div>
+            <div class="project-title">肌力訓練紀錄 App</div>
+            <div class="project-desc">
+              專為健身愛好者設計的訓練紀錄工具，
+              包含動作資料庫、訓練計畫規劃與進度追蹤，
+              採用直觀的卡片式 UI 設計。
+            </div>
+            <div class="project-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">LocalStorage</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="web" role="listitem">
+          <div class="project-thumb">
+            <img src="proj1.png" alt="個人部落格設計縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj4-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">網頁設計</div>
+            <div class="project-title">技術部落格平台設計</div>
+            <div class="project-desc">
+              以簡約現代風格打造的技術寫作平台，
+              強調閱讀體驗與排版細節，
+              支援深色模式與響應式佈局。
+            </div>
+            <div class="project-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS Grid</span>
+              <span class="tag">Dark Mode</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="data" role="listitem">
+          <div class="project-thumb">
+            <img src="proj2.png" alt="投資組合分析工具縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj5-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">資料視覺化</div>
+            <div class="project-title">退休投資組合分析</div>
+            <div class="project-desc">
+              計算並視覺化高股息 ETF 的長期報酬與風險指標，
+              幫助使用者規劃個人退休財務目標。
+            </div>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">yFinance</span>
+              <span class="tag">Matplotlib</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="app" role="listitem">
+          <div class="project-thumb">
+            <img src="proj3.png" alt="個人網站作品集縮圖" width="400" height="225" />
+            <div class="project-overlay">
+              <a href="#" class="overlay-link" id="proj6-link">查看詳情 →</a>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-cat">應用程式</div>
+            <div class="project-title">個人品牌網站系統</div>
+            <div class="project-desc">
+              即您正在瀏覽的網站！
+              採用純 HTML/CSS/JavaScript 打造，
+              無框架依賴，載入速度極快，具備完整 SEO 優化。
+            </div>
+            <div class="project-tags">
+              <span class="tag">HTML5</span>
+              <span class="tag">CSS3</span>
+              <span class="tag">Vanilla JS</span>
+              <span class="tag">SEO</span>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /projects-grid -->
+
+      <!-- ═══ CTA Banner ═══ -->
+      <div class="cta-banner">
+        <h2>有好的專案想一起合作？</h2>
+        <p>我隨時歡迎有趣的挑戰與合作機會，讓我們一起把想法變成現實。</p>
+        <a href="about.html#contact-btn" class="cta-btn" id="portfolio-cta">
+          聯絡我 →
+        </a>
+      </div>
+
+    </div><!-- /wrapper -->
+  </main>
+
+  <!-- ═══ Footer ═══ -->
+  <footer>
+    <p>© 2026 我的個人網站 · 以 ❤️ 用心打造</p>
+  </footer>
+
+  <script>
+    function filterProjects(cat) {
+      // Update button states
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('filter-' + cat).classList.add('active');
+
+      // Show/hide cards
+      document.querySelectorAll('.project-card').forEach(card => {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        if (match) {
+          card.style.opacity = '1';
+          card.style.transform = '';
+          card.style.display = 'flex';
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            if (card.dataset.cat !== cat && cat !== 'all') {
+              card.style.display = 'none';
+            }
+          }, 300);
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

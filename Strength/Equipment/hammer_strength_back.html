@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hammer Strength 背部訓練指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #e8e4dc;
+    --muted: #888;
+    --upper: #c8b8f0;
+    --upper-bg: #2a1f42;
+    --mid: #8bbfe8;
+    --mid-bg: #1a2a3a;
+    --lower: #7dd4b0;
+    --lower-bg: #0f2a20;
+    --lats: #f0c87a;
+    --lats-bg: #2a2010;
+    --accent: #d4a84b;
+    --thick: #8bbfe8;
+    --thick-bg: #1a2a3a;
+    --wide: #f0c87a;
+    --wide-bg: #2a2010;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 40px 24px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .brand-sub {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    line-height: 1;
+    padding-bottom: 4px;
+  }
+
+  .principle {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .principle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+  }
+
+  .principle-arrow {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+  }
+
+  .principle-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .principle-text span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .container { padding: 32px 40px; max-width: 1100px; }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Machine table */
+  .machine-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+  }
+
+  .machine-table thead tr {
+    background: var(--bg3);
+  }
+
+  .machine-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .machine-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .machine-table tr:last-child td { border-bottom: none; }
+
+  .machine-table tr:hover td { background: var(--bg3); }
+
+  .machine-zh { font-weight: 500; font-size: 14px; color: var(--text); }
+  .machine-en { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 2px; }
+
+  .traj-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .traj-arrow { font-size: 14px; color: var(--accent); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-bottom: 3px;
+  }
+  .tag-upper { background: var(--upper-bg); color: var(--upper); }
+  .tag-mid   { background: var(--mid-bg);   color: var(--mid); }
+  .tag-lower { background: var(--lower-bg); color: var(--lower); }
+  .tag-lats  { background: var(--lats-bg);  color: var(--lats); }
+
+  .muscle-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Goal row highlight */
+  .row-pull { border-left: 2px solid var(--lats); }
+  .row-row  { border-left: 2px solid var(--mid); }
+
+  /* Week schedule */
+  .week-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .day-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .day-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-header.thick { background: #1a2433; border-left: 3px solid var(--thick); }
+  .day-header.wide  { background: #2a200e; border-left: 3px solid var(--wide); }
+
+  .day-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .day-title.thick { color: var(--thick); }
+  .day-title.wide  { color: var(--wide); }
+
+  .day-subtitle { font-size: 12px; color: var(--muted); }
+
+  .day-body { padding: 14px 18px; }
+
+  .exercise-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exercise-row:last-child { border-bottom: none; }
+
+  .ex-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--muted);
+    min-width: 20px;
+    line-height: 1.2;
+  }
+
+  .ex-info { flex: 1; }
+  .ex-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .ex-en   { font-size: 11px; color: var(--muted); font-style: italic; }
+
+  .ex-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+
+  .sets-badge {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 7px;
+  }
+
+  /* principle summary */
+  .principle-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+    display: flex;
+    gap: 32px;
+  }
+
+  .p-item { flex: 1; }
+  .p-rule {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .p-rule.pull { color: var(--lats); }
+  .p-rule.row  { color: var(--mid); }
+  .p-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .p-divider { width: 1px; background: var(--border); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brand">Hammer Strength</div>
+    <div class="brand-sub">背部訓練 · Plate Loaded Series</div>
+  </div>
+  <div class="principle">
+    <div class="principle-item">
+      <div class="principle-arrow">PULL</div>
+      <div class="principle-text">
+        <strong>練寬度</strong>
+        <span>垂直下拉 → Lats 展開 → V形輪廓</span>
+      </div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-arrow">ROW</div>
+      <div class="principle-text">
+        <strong>練厚度</strong>
+        <span>水平划船 → 肩胛後縮 → 中背飽滿</span>
+      </div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-arrow">↗↘</div>
+      <div class="principle-text">
+        <strong>軌跡決定肌群</strong>
+        <span>由低往高 → Upper Traps｜由高往低 → Lats 下沿</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#c8b8f0"></div> Upper Traps 上斜方肌</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8bbfe8"></div> Middle Traps 中斜方肌／菱形肌</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7dd4b0"></div> Lower Traps 下斜方肌</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0c87a"></div> Lats 背闊肌</div>
+  </div>
+
+  <!-- Machine Table -->
+  <div class="section-label">機器對照表 · MACHINE REFERENCE（8台）</div>
+  <table class="machine-table">
+    <thead>
+      <tr>
+        <th style="width:34%">機器名稱</th>
+        <th style="width:18%">軌跡方向</th>
+        <th style="width:30%">主要肌群</th>
+        <th>訓練特點</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-row">
+        <td>
+          <div class="machine-zh">ISO-橫向低位划船</div>
+          <div class="machine-en">Iso-Lateral Low Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↗</span> 由低往高</span></td>
+        <td>
+          <span class="tag tag-upper">Upper Traps</span>
+          <span class="tag tag-lats">Lats 中外側</span>
+        </td>
+        <td><div class="muscle-note">頂峰收縮感強、背部立體線條</div></td>
+      </tr>
+      <tr class="row-row">
+        <td>
+          <div class="machine-zh">ISO-橫向划船背肌訓練機</div>
+          <div class="machine-en">Iso-Lateral Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">→</span> 水平</span></td>
+        <td>
+          <span class="tag tag-mid">Middle Traps</span>
+          <span class="tag tag-mid">菱形肌</span>
+        </td>
+        <td><div class="muscle-note">肩胛後收最強，中背厚度核心</div></td>
+      </tr>
+      <tr class="row-row">
+        <td>
+          <div class="machine-zh">ISO-橫向DY划船訓練機</div>
+          <div class="machine-en">Iso-Lateral D.Y. Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">→</span> 水平（強調）</span></td>
+        <td>
+          <span class="tag tag-mid">Middle Traps</span>
+          <span class="tag tag-mid">菱形肌</span>
+        </td>
+        <td><div class="muscle-note">中斜方肌激活更強，Dorian Yates 專為中背厚度設計</div></td>
+      </tr>
+      <tr class="row-row">
+        <td>
+          <div class="machine-zh">T槓划船訓練機</div>
+          <div class="machine-en">T-Bar Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">→</span> 水平</span></td>
+        <td>
+          <span class="tag tag-mid">Middle Traps</span>
+          <span class="tag tag-mid">菱形肌</span>
+        </td>
+        <td><div class="muscle-note">豎脊肌協同、厚度訓練經典動作</div></td>
+      </tr>
+      <tr class="row-row">
+        <td>
+          <div class="machine-zh">ISO-橫向高位划船訓練機</div>
+          <div class="machine-en">Iso-Lateral High Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↘</span> 由高往低</span></td>
+        <td>
+          <span class="tag tag-lats">Lats 下沿</span>
+          <span class="tag tag-lower">Lower Traps</span>
+        </td>
+        <td><div class="muscle-note">大圓肌協同、背部下沿延伸感</div></td>
+      </tr>
+      <tr class="row-pull">
+        <td>
+          <div class="machine-zh">ISO-橫向正面下拉</div>
+          <div class="machine-en">Iso-Lateral Front Lat Pulldown</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↓</span> 垂直下拉</span></td>
+        <td>
+          <span class="tag tag-lats">Lats 全段</span>
+          <span class="tag tag-lower">Lower Traps</span>
+        </td>
+        <td><div class="muscle-note">大圓肌、寬度與V形線條主力</div></td>
+      </tr>
+      <tr class="row-pull">
+        <td>
+          <div class="machine-zh">ISO-橫向寬握下拉</div>
+          <div class="machine-en">Iso-Lateral Wide Pulldown</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↓</span> 垂直（寬握）</span></td>
+        <td>
+          <span class="tag tag-lats">Lats 上段</span>
+          <span class="tag tag-lower">Lower Traps</span>
+        </td>
+        <td><div class="muscle-note">強調背闊肌外側展開、增加寬度</div></td>
+      </tr>
+      <tr class="row-pull">
+        <td>
+          <div class="machine-zh">掛片式下拉（Pullover）</div>
+          <div class="machine-en">Plate Loaded Pullover</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">⤵</span> 弧形下壓</span></td>
+        <td>
+          <span class="tag tag-lats">Lats 全段</span>
+        </td>
+        <td><div class="muscle-note">伸展幅度最大、胸大肌下段協同，收尾動作首選</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Weekly Schedule -->
+  <div class="section-label">每週課表 · WEEKLY SCHEDULE（每週兩次）</div>
+  <div class="week-grid">
+
+    <!-- Day A -->
+    <div class="day-card">
+      <div class="day-header thick">
+        <div>
+          <div class="day-title thick">DAY A　厚度組</div>
+          <div class="day-subtitle">Row 系列 · Middle／Upper／Lower Traps + Lats</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向高位划船</div>
+            <div class="ex-en">Iso-Lateral High Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↘</span> 由高往低</span>
+              <span class="tag tag-lats">Lats 下沿</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">T-Bar Row <span style="color:var(--muted);font-weight:400">／</span> D.Y. Row <span style="color:var(--muted);font-weight:400">／</span> Iso-Lateral Row</div>
+            <div class="ex-en">T-Bar Row / Iso-Lateral D.Y. Row / Iso-Lateral Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">→</span> 水平</span>
+              <span class="tag tag-mid">Middle T</span>
+              <span class="tag tag-mid">菱形肌</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向低位划船</div>
+            <div class="ex-en">Iso-Lateral Low Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↗</span> 由低往高</span>
+              <span class="tag tag-upper">Upper T</span>
+              <span class="tag tag-lats">Lats 中外</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day B -->
+    <div class="day-card">
+      <div class="day-header wide">
+        <div>
+          <div class="day-title wide">DAY B　寬度組</div>
+          <div class="day-subtitle">Pull 系列 · Lats 全段 + Lower Traps</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向寬握下拉</div>
+            <div class="ex-en">Iso-Lateral Wide Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直（寬）</span>
+              <span class="tag tag-lats">Lats 上段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向正面下拉</div>
+            <div class="ex-en">Iso-Lateral Front Lat Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">掛片式下拉（Pullover）</div>
+            <div class="ex-en">Plate Loaded Pullover</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">⤵</span> 弧形</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="sets-badge">3 組 × 10–15</span>
+            </div>
+            <div class="muscle-note" style="margin-top:4px">收尾動作，充分伸展 Lats</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mixed Combos -->
+  <div class="section-label">混合型課表 · MIXED COMBOS（每週一次）</div>
+  <div class="week-grid">
+
+    <!-- Mixed A -->
+    <div class="day-card">
+      <div class="day-header" style="background:#1f1a2e;border-left:3px solid var(--upper);border-bottom:1px solid var(--border);">
+        <div>
+          <div class="day-title" style="color:var(--upper);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;">混合 A　均衡全背組</div>
+          <div class="day-subtitle">2 Row + 2 Pull · 4個動作 · 厚度與寬度均衡覆蓋</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向高位划船</div>
+            <div class="ex-en">Iso-Lateral High Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↘</span> 由高往低</span>
+              <span class="tag tag-lats">Lats 下沿</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">T-Bar Row／D.Y. Row／Iso-Lateral Row</div>
+            <div class="ex-en">T-Bar Row / Iso-Lateral D.Y. Row / Iso-Lateral Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">→</span> 水平</span>
+              <span class="tag tag-mid">Middle T</span>
+              <span class="tag tag-mid">菱形肌</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向寬握下拉</div>
+            <div class="ex-en">Iso-Lateral Wide Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直（寬）</span>
+              <span class="tag tag-lats">Lats 上段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">04</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向正面下拉</div>
+            <div class="ex-en">Iso-Lateral Front Lat Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3 組 × 10–12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mixed B -->
+    <div class="day-card">
+      <div class="day-header" style="background:#1a2820;border-left:3px solid var(--lower);border-bottom:1px solid var(--border);">
+        <div>
+          <div class="day-title" style="color:var(--lower);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;">混合 B　精簡高效組</div>
+          <div class="day-subtitle">1 Row + 1 Pull + 1 Pullover · 3個動作 · 時間有限首選</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向低位划船</div>
+            <div class="ex-en">Iso-Lateral Low Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↗</span> 由低往高</span>
+              <span class="tag tag-upper">Upper T</span>
+              <span class="tag tag-lats">Lats 中外</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+            <div class="muscle-note" style="margin-top:4px">Row 代表：上斜軌跡兼顧 Upper Traps 與 Lats</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向正面下拉</div>
+            <div class="ex-en">Iso-Lateral Front Lat Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 8–12</span>
+            </div>
+            <div class="muscle-note" style="margin-top:4px">Pull 代表：垂直下拉主攻 Lats 寬度</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">掛片式下拉（Pullover）</div>
+            <div class="ex-en">Plate Loaded Pullover</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">⤵</span> 弧形</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="sets-badge">3 組 × 10–15</span>
+            </div>
+            <div class="muscle-note" style="margin-top:4px">收尾：最大伸展弧度，充分拉伸 Lats 全段</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Principle Summary -->
+  <div class="section-label">核心原則 · KEY PRINCIPLES</div>
+  <div class="principle-box">
+    <div class="p-item">
+      <div class="p-rule pull">PULL = 寬度</div>
+      <div class="p-desc">
+        垂直拉的動作（Pulldown / Pullover）<br>
+        肩關節內收，Lats 從外側展開<br>
+        形成 V 形視覺輪廓
+      </div>
+    </div>
+    <div class="p-divider"></div>
+    <div class="p-item">
+      <div class="p-rule row">ROW = 厚度</div>
+      <div class="p-desc">
+        水平拉的動作（Row 系列）<br>
+        肩胛骨後縮，Middle Traps＋菱形肌<br>
+        從側面看背部飽滿立體
+      </div>
+    </div>
+    <div class="p-divider"></div>
+    <div class="p-item">
+      <div class="p-rule" style="color:var(--accent)">軌跡 = 肌群</div>
+      <div class="p-desc">
+        ↗ 由低往高 → Upper Traps<br>
+        → 水平 → Middle Traps／菱形肌<br>
+        ↘ 由高往低 → Lats 下沿／Lower Traps<br>
+        ↓ 垂直下拉 → Lats 全段／Lower Traps
+      </div>
+    </div>
+  </div>
+
+  <!-- Mixed combos -->
+  <div class="section-label">混合型組合 · MIXED COMBO（厚度＋寬度同一天）</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;">
+    適用情境：一週只能練背一次，或作為分離式課表某週的備用方案。Row（厚度）先做，Pull（寬度）後做——先建立肩胛穩定，再做大範圍下拉動作。
+  </div>
+
+  <div class="week-grid">
+
+    <!-- Mix A -->
+    <div class="day-card">
+      <div class="day-header" style="background:#1e1a2a;border-left:3px solid #b09ae0;padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#c8b8f0;">混合 A　均衡全背</div>
+          <div class="day-subtitle">3個動作 · Row 厚度優先</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">T-Bar Row／D.Y. Row／Iso-Lateral Row</div>
+            <div class="ex-en">T-Bar Row / D.Y. Row / Iso-Lateral Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">→</span> 水平</span>
+              <span class="tag tag-mid">Middle T</span>
+              <span class="tag tag-mid">菱形肌</span>
+              <span class="sets-badge">4 組 × 8–10</span>
+            </div>
+            <div class="muscle-note">主力厚度動作，放首位重量最足</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向正面下拉</div>
+            <div class="ex-en">Iso-Lateral Front Lat Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 10–12</span>
+            </div>
+            <div class="muscle-note">接 Row 後做下拉，Lats 已熱身，伸展感更好</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向低位划船</div>
+            <div class="ex-en">Iso-Lateral Low Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↗</span> 由低往高</span>
+              <span class="tag tag-upper">Upper T</span>
+              <span class="tag tag-lats">Lats 中外</span>
+              <span class="sets-badge">3 組 × 12</span>
+            </div>
+            <div class="muscle-note">收尾補 Upper Traps，頂峰收縮感強</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mix B -->
+    <div class="day-card">
+      <div class="day-header" style="background:#1a2a1a;border-left:3px solid #7dd4b0;padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#7dd4b0;">混合 B　寬度優先</div>
+          <div class="day-subtitle">4個動作 · Pull 為主、Row 收尾</div>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="exercise-row">
+          <div class="ex-num">01</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向寬握下拉</div>
+            <div class="ex-en">Iso-Lateral Wide Pulldown</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↓</span> 垂直（寬）</span>
+              <span class="tag tag-lats">Lats 上段</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">4 組 × 8–10</span>
+            </div>
+            <div class="muscle-note">首位做寬握，體力最足時強攻背闊肌外側</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">02</div>
+          <div class="ex-info">
+            <div class="ex-name">ISO-橫向高位划船</div>
+            <div class="ex-en">Iso-Lateral High Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">↘</span> 由高往低</span>
+              <span class="tag tag-lats">Lats 下沿</span>
+              <span class="tag tag-lower">Lower T</span>
+              <span class="sets-badge">3–4 組 × 10–12</span>
+            </div>
+            <div class="muscle-note">補 Lats 下沿厚度，與寬握形成上下對角覆蓋</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">03</div>
+          <div class="ex-info">
+            <div class="ex-name">T-Bar Row／D.Y. Row</div>
+            <div class="ex-en">T-Bar Row / Iso-Lateral D.Y. Row</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">→</span> 水平</span>
+              <span class="tag tag-mid">Middle T</span>
+              <span class="tag tag-mid">菱形肌</span>
+              <span class="sets-badge">3 組 × 10–12</span>
+            </div>
+            <div class="muscle-note">中背厚度補強</div>
+          </div>
+        </div>
+        <div class="exercise-row">
+          <div class="ex-num">04</div>
+          <div class="ex-info">
+            <div class="ex-name">掛片式下拉（Pullover）</div>
+            <div class="ex-en">Plate Loaded Pullover</div>
+            <div class="ex-meta">
+              <span class="traj-badge"><span class="traj-arrow">⤵</span> 弧形</span>
+              <span class="tag tag-lats">Lats 全段</span>
+              <span class="sets-badge">3 組 × 12–15</span>
+            </div>
+            <div class="muscle-note">最後伸展收尾，Lats 充分放鬆拉長</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Spare combo -->
+  <div class="section-label">備用精簡組 · MINIMAL COMBO（機器忙碌時）</div>
+  <table class="machine-table">
+    <thead>
+      <tr>
+        <th>順序</th>
+        <th>機器</th>
+        <th>軌跡</th>
+        <th>主攻肌群</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:18px">01</td>
+        <td>
+          <div class="machine-zh">ISO-橫向低位划船</div>
+          <div class="machine-en">Iso-Lateral Low Row</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↗</span> 由低往高</span></td>
+        <td><span class="tag tag-upper">Upper T</span><span class="tag tag-lats">Lats 中外</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:18px">02</td>
+        <td>
+          <div class="machine-zh">ISO-橫向正面下拉</div>
+          <div class="machine-en">Iso-Lateral Front Lat Pulldown</div>
+        </td>
+        <td><span class="traj-badge"><span class="traj-arrow">↓</span> 垂直</span></td>
+        <td><span class="tag tag-lats">Lats 全段</span><span class="tag tag-lower">Lower T</span></td>
+      </tr>
+      <tr>
+        <td style="color:var(--muted);font-size:12px;padding-top:10px" colspan="4">
+          亦可替換為：<strong style="color:var(--text)">Lat Pulldown（纜繩下拉）＋ Seated Cable Row（坐姿划船）</strong>，效果相近，幾乎每間健身房皆有。
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<footer>
+  <span>Hammer Strength Plate Loaded · 背部訓練指南</span>
+  <span>Pull 練寬 · Row 練厚 · 軌跡決定肌群</span>
+</footer>
+
+</body>
+</html>

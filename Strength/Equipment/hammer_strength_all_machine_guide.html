@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hammer Strength Plate-Loaded 器材肌肉群組指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #e8c84a;
+    --accent2: #c0392b;
+    --text: #f0ede8;
+    --muted: #888;
+    --胸: #c0392b;
+    --背: #2980b9;
+    --肩: #8e44ad;
+    --腿: #27ae60;
+    --手臂: #e67e22;
+    --核心: #e91e8c;
+    --全身: #16a085;
+    --其他: #7f8c8d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 24px 32px;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  header p {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-left: auto;
+    text-transform: uppercase;
+  }
+
+  /* Controls */
+  .controls {
+    background: var(--surface);
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+  }
+  .search-wrap::before {
+    content: "⌕";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 16px;
+    pointer-events: none;
+  }
+  input[type=text] {
+    width: 100%;
+    padding: 8px 12px 8px 32px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .f-btn {
+    padding: 5px 14px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: var(--surface2);
+    color: var(--muted);
+    transition: all 0.15s;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .f-btn:hover { color: var(--text); border-color: var(--border); }
+  .f-btn.active {
+    color: #0e0e0e;
+    border-color: transparent;
+  }
+  .f-btn[data-cat="全部"].active { background: var(--accent); color: #0e0e0e; }
+  .f-btn[data-cat="胸"].active { background: var(--胸); }
+  .f-btn[data-cat="背"].active { background: var(--背); }
+  .f-btn[data-cat="肩"].active { background: var(--肩); }
+  .f-btn[data-cat="腿"].active { background: var(--腿); }
+  .f-btn[data-cat="手臂"].active { background: var(--手臂); }
+  .f-btn[data-cat="核心"].active { background: var(--核心); }
+  .f-btn[data-cat="全身"].active { background: var(--全身); }
+  .f-btn[data-cat="其他"].active { background: var(--其他); }
+
+  /* Counter */
+  .counter {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 8px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .counter span { color: var(--accent); font-weight: 700; }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    padding: 0 32px 40px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    min-width: 700px;
+  }
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+    background: var(--bg);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:hover { background: var(--surface2); }
+  td { padding: 11px 14px; vertical-align: middle; }
+
+  .td-zh { font-weight: 500; color: var(--text); }
+  .td-en { color: var(--muted); font-size: 12px; font-style: italic; }
+  .td-pri { color: var(--text); font-weight: 500; line-height: 1.5; }
+  .td-sec { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .badge-胸 { background: var(--胸); }
+  .badge-背 { background: var(--背); }
+  .badge-肩 { background: var(--肩); }
+  .badge-腿 { background: var(--腿); }
+  .badge-手臂 { background: var(--手臂); }
+  .badge-核心 { background: var(--核心); }
+  .badge-全身 { background: var(--全身); }
+  .badge-其他 { background: var(--其他); }
+
+  .no-result {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* Row number */
+  .td-num { color: var(--muted); font-size: 12px; width: 36px; text-align: right; }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    .controls { padding: 12px 16px; }
+    .table-wrap { padding: 0 16px 32px; }
+    .counter { padding: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>HAMMER STRENGTH</h1>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:var(--muted);margin-top:2px;">PLATE-LOADED · 器材肌肉群組指南</div>
+  </div>
+  <p>Life Fitness / Hammer Strength · 完整產品線</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="搜尋器材名稱或肌肉…">
+  </div>
+  <div class="filters" id="filters"></div>
+</div>
+
+<div class="counter" id="counter"></div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28px">#</th>
+        <th style="width:22%">機器名稱（中）</th>
+        <th style="width:22%">機器名稱（英）</th>
+        <th style="width:80px">部位</th>
+        <th style="width:24%">主要肌肉</th>
+        <th>次要肌肉</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="no-result" id="no-result" style="display:none;">沒有符合的器材</div>
+</div>
+
+<footer>資料來源：lifefitness.com · 肌肉分類依運動解剖學整理</footer>
+
+<script>
+const data = [
+  // 胸
+  {zh:"ISO-橫向臥推訓練機",        en:"Iso-Lateral Bench Press",              cat:"胸", pri:"胸大肌（中段）",            sec:"三角肌前束、肱三頭肌"},
+  {zh:"ISO-橫向平臥推胸訓練機",    en:"Iso-Lateral Horizontal Bench Press",   cat:"胸", pri:"胸大肌（中段）",            sec:"三角肌前束、肱三頭肌"},
+  {zh:"ISO-橫向下斜推胸訓練機",    en:"Iso-Lateral Decline Chest Press",      cat:"胸", pri:"胸大肌（下段）",            sec:"三角肌前束、肱三頭肌"},
+  {zh:"ISO-橫向上斜推胸訓練機",    en:"Iso-Lateral Incline Press",            cat:"胸", pri:"胸大肌（上段）",            sec:"三角肌前束、肱三頭肌"},
+  {zh:"ISO-橫向超斜推胸訓練機",    en:"Iso-Lateral Super Incline Press",      cat:"胸", pri:"胸大肌（上段）、三角肌前束",sec:"肱三頭肌"},
+  {zh:"ISO-橫向闊角度推胸訓練機",  en:"Iso-Lateral Wide Chest",               cat:"胸", pri:"胸大肌（外側）",            sec:"三角肌前束、肱三頭肌"},
+  {zh:"ISO-橫向胸背訓練機",        en:"Iso-Lateral Chest / Back",             cat:"胸", pri:"胸大肌（推）、背闊肌（拉）", sec:"三角肌、肱三頭肌、肱二頭肌"},
+  {zh:"掛片式超級飛鳥訓練機",      en:"Plate Loaded Super Fly",               cat:"胸", pri:"胸大肌",                   sec:"三角肌前束、喙肱肌"},
+  // 背（依軌跡方向分類：ROW 練厚度、PULL 練寬度）
+  // ROW 系列（水平／斜向划船→厚度）
+  {zh:"ISO-橫向划船背肌訓練機",    en:"Iso-Lateral Row",                      cat:"背", pri:"中斜方肌、菱形肌",                  sec:"後三角肌、肱二頭肌｜水平→肩胛後收最強"},
+  {zh:"ISO-橫向DY划船訓練機",      en:"Iso-Lateral D.Y. Row",                 cat:"背", pri:"中斜方肌（強化）、菱形肌",          sec:"後三角肌、肱二頭肌｜Dorian Yates 中背厚度設計"},
+  {zh:"ISO-橫向高位划船訓練機",    en:"Iso-Lateral High Row",                 cat:"背", pri:"背闊肌下沿、下斜方肌",              sec:"大圓肌、後三角肌、肱二頭肌｜軌跡↘由高往低"},
+  {zh:"ISO-橫向低位划船訓練機",    en:"Iso-Lateral Low Row",                  cat:"背", pri:"上斜方肌、背闊肌中外側",            sec:"後三角肌、肱二頭肌｜軌跡↗由低往高、頂峰收縮感強"},
+  {zh:"T槓划船訓練機",             en:"T-Bar Row",                            cat:"背", pri:"中斜方肌、菱形肌、背闊肌",          sec:"豎脊肌（協同）、後三角肌、肱二頭肌｜厚度經典"},
+  // PULL 系列（垂直下拉／弧形→寬度）
+  {zh:"ISO-橫向正面下拉訓練機",    en:"Iso-Lateral Front Lat Pulldown",       cat:"背", pri:"背闊肌全段、大圓肌",               sec:"下斜方肌、肱二頭肌｜寬度與V形線條主力"},
+  {zh:"ISO-橫向寬握下拉訓練機",    en:"Iso-Lateral Wide Pulldown",            cat:"背", pri:"背闊肌上段（外側展開）",            sec:"下斜方肌、後三角肌、肱二頭肌｜強調背部寬度"},
+  {zh:"掛片式下拉訓練機",          en:"Plate Loaded Pullover",                cat:"背", pri:"背闊肌全段",                        sec:"胸大肌下段、肱三頭肌長頭｜伸展幅度最大、收尾首選"},
+  // 肩
+  {zh:"ISO-橫向肩推訓練機",        en:"Iso-Lateral Shoulder Press",           cat:"肩", pri:"三角肌前束、三角肌中束",    sec:"上斜方肌、肱三頭肌"},
+  {zh:"掛片式側平舉訓練機",        en:"Plate Loaded Lateral Raise",           cat:"肩", pri:"三角肌中束",               sec:"上斜方肌、前鋸肌"},
+  {zh:"坐姿/站姿聳肩訓練機",       en:"Seated / Standing Shrug",              cat:"肩", pri:"上斜方肌、提肩胛肌",        sec:"菱形肌"},
+  // 腿
+  {zh:"ISO-橫向腿彎舉訓練機",      en:"Iso-Lateral Leg Curl",                 cat:"腿", pri:"股二頭肌、半腱肌、半膜肌",  sec:"腓腸肌"},
+  {zh:"ISO-橫向跪姿腿彎舉訓練機",  en:"Iso-Lateral Kneeling Leg Curl",        cat:"腿", pri:"股二頭肌、半腱肌、半膜肌",  sec:"臀大肌（協同）"},
+  {zh:"ISO-橫向腿伸展訓練機",      en:"Iso-Lateral Leg Extension",            cat:"腿", pri:"股四頭肌（四個頭）",        sec:"—"},
+  {zh:"掛片式倒蹬訓練機",          en:"Plate Loaded Linear Leg Press",        cat:"腿", pri:"股四頭肌、臀大肌",          sec:"股二頭肌、比目魚肌"},
+  {zh:"掛片式深蹲訓練機（Hack）",  en:"Plate Loaded Hack Squat",              cat:"腿", pri:"股四頭肌（股直肌、外側肌）", sec:"臀大肌、股二頭肌"},
+  {zh:"掛片式V型深蹲訓練機",       en:"Plate Loaded V-Squat",                 cat:"腿", pri:"股四頭肌、臀大肌",          sec:"股二頭肌、豎脊肌"},
+  {zh:"掛片式腰帶深蹲訓練機",      en:"Plate Loaded Belt Squat",              cat:"腿", pri:"股四頭肌、臀大肌",          sec:"股二頭肌、小腿（穩定）"},
+  {zh:"掛片式超級深蹲推舉機",      en:"Plate Loaded Super Squat Press",       cat:"腿", pri:"股四頭肌、臀大肌、三角肌",  sec:"肱三頭肌、核心"},
+  {zh:"掛片式鐘擺深蹲訓練機",      en:"Plate Loaded Pendulum-X Squat",        cat:"腿", pri:"股四頭肌（特別是股直肌）",  sec:"臀大肌、股二頭肌"},
+  {zh:"站地式多功能深蹲訓練機",    en:"Ground Base® Multi-Squat",             cat:"腿", pri:"股四頭肌、臀大肌",          sec:"核心、股二頭肌"},
+  {zh:"掛片式輔助北歐腿彎舉機",    en:"Plate Loaded Assisted Nordic Ham",     cat:"腿", pri:"股二頭肌（離心）、半腱肌",  sec:"臀大肌、腓腸肌"},
+  {zh:"臀腿推舉/反向伸展訓練機",   en:"Glute Ham / Reverse Hyper",            cat:"腿", pri:"臀大肌、股二頭肌",          sec:"豎脊肌、半腱肌"},
+  {zh:"掛片式臀推訓練機",          en:"Plate Loaded Glute Drive",             cat:"腿", pri:"臀大肌",                   sec:"股二頭肌、核心"},
+  {zh:"掛片式坐姿小腿舉訓練機",    en:"Plate Loaded Seated Calf Raise",       cat:"腿", pri:"比目魚肌",                 sec:"腓腸肌"},
+  {zh:"掛片式小腿舉訓練機",        en:"Plate Loaded Calf Raise",              cat:"腿", pri:"腓腸肌",                   sec:"比目魚肌"},
+  {zh:"掛片式脛骨背屈訓練機",      en:"Plate Loaded Tibia Dorsi-Flexion",     cat:"腿", pri:"脛骨前肌",                 sec:"伸趾長肌、伸拇長肌"},
+  // 手臂
+  {zh:"掛片式坐姿彎舉訓練機",      en:"Plate Loaded Seated Biceps",           cat:"手臂",pri:"肱二頭肌",               sec:"肱肌、肱橈肌"},
+  {zh:"掛片式坐姿三頭推訓練機",    en:"Plate Loaded Seated Dip",              cat:"手臂",pri:"肱三頭肌",               sec:"胸大肌（下段）、三角肌前束"},
+  {zh:"掛片式握力訓練機",          en:"Plate Loaded Gripper",                 cat:"手臂",pri:"前臂屈肌群",             sec:"肱肌、肱橈肌"},
+  // 核心
+  {zh:"掛片式腹部/斜腹捲腹機",     en:"Abdominal / Oblique Crunch",           cat:"核心",pri:"腹直肌",               sec:"腹斜肌（斜向動作時）"},
+  {zh:"站地式旋轉訓練機",          en:"Ground Base® Combo Twist",             cat:"核心",pri:"腹內外斜肌",            sec:"腹直肌、核心穩定肌群"},
+  // 全身
+  {zh:"站地式推舉訓練機",          en:"Ground Base® Jammer",                  cat:"全身",pri:"胸大肌、三角肌前束、肱三頭肌",sec:"核心、腿部（站姿發力）"},
+  {zh:"站地式深蹲高拉訓練機",      en:"Ground Base® Squat / High Pull",       cat:"全身",pri:"股四頭肌、臀大肌、上斜方肌",  sec:"三角肌、豎脊肌、核心"},
+  {zh:"垂直史密斯訓練機",          en:"Plate-Loaded Vertical Smith Machine",  cat:"全身",pri:"依動作而定（深蹲/臥推/肩推）",sec:"依動作而定"},
+  // 其他
+  {zh:"掛片式四向頸部訓練機",      en:"Plate Loaded 4-Way Neck",              cat:"其他",pri:"胸鎖乳突肌、頸部深層肌",   sec:"斜方肌上段"},
+];
+
+const cats = ["全部","胸","背","肩","腿","手臂","核心","全身","其他"];
+let current = "全部";
+
+const filters = document.getElementById("filters");
+const tbody   = document.getElementById("tbody");
+const counter = document.getElementById("counter");
+const noRes   = document.getElementById("no-result");
+const search  = document.getElementById("search");
+
+cats.forEach(c => {
+  const btn = document.createElement("button");
+  btn.className = "f-btn" + (c === "全部" ? " active" : "");
+  btn.dataset.cat = c;
+  btn.textContent = c;
+  btn.onclick = () => {
+    current = c;
+    document.querySelectorAll(".f-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render();
+  };
+  filters.appendChild(btn);
+});
+
+function render() {
+  const q = search.value.toLowerCase().trim();
+  const rows = data.filter(d => {
+    const matchCat = current === "全部" || d.cat === current;
+    const matchQ   = !q || d.zh.includes(q) || d.en.toLowerCase().includes(q)
+                       || d.pri.includes(q) || d.sec.includes(q);
+    return matchCat && matchQ;
+  });
+
+  counter.innerHTML = `顯示 <span>${rows.length}</span> / ${data.length} 台器材`;
+
+  if (rows.length === 0) {
+    tbody.innerHTML = "";
+    noRes.style.display = "block";
+    return;
+  }
+  noRes.style.display = "none";
+  tbody.innerHTML = rows.map((d, i) => `
+    <tr>
+      <td class="td-num">${i + 1}</td>
+      <td class="td-zh">${d.zh}</td>
+      <td class="td-en">${d.en}</td>
+      <td><span class="badge badge-${d.cat}">${d.cat}</span></td>
+      <td class="td-pri">${d.pri}</td>
+      <td class="td-sec">${d.sec}</td>
+    </tr>
+  `).join("");
+}
+
+search.addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
