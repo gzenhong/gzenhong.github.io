@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cable Atlas — 纜繩動作全圖鑑</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0F151B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cable">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F151B;
+  --panel:#161D25;
+  --panel2:#1D2731;
+  --line:#2A3541;
+  --bone:#69747F;
+  --bone-lit:#AEB8C2;
+  --flesh:#D9452B;
+  --live:#4ADE55;
+  --text:#E6EAEE;
+  --dim:#8D97A1;
+  --display:"Barlow Condensed","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ink);color:var(--text);
+  font-family:var(--body);font-size:15px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--line);
+  padding:38px 28px 26px;
+  max-width:1400px;margin:0 auto;
+}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--flesh);margin-bottom:12px;
+}
+h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(38px,7vw,74px);line-height:.92;letter-spacing:-.01em;
+  text-transform:uppercase;margin:0 0 6px;
+}
+h1 .cn{display:block;font-size:.42em;letter-spacing:.14em;color:var(--bone-lit);font-weight:500;margin-top:10px}
+.lede{max-width:60ch;color:var(--dim);font-size:14px;margin:16px 0 0}
+.lede b{color:var(--text);font-weight:500}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:302px 1fr;gap:0}
+.rail{
+  border-right:1px solid var(--line);
+  padding:26px 22px 60px;
+  position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+}
+.main{padding:26px 30px 120px;min-width:0}
+
+/* ---------- body map ---------- */
+.maps{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:20px}
+.mapbox{background:var(--panel);border:1px solid var(--line);padding:8px 4px 4px}
+.mapbox .cap{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim);text-align:center;margin-bottom:2px;
+}
+svg.fig{display:block;width:100%;height:auto}
+.filler{fill:#222C36}
+.region{fill:var(--bone);cursor:pointer;transition:fill .18s ease}
+.region:hover{fill:var(--flesh)}
+.region:focus-visible{outline:2px solid var(--live);outline-offset:2px}
+.region.live{fill:var(--live)}
+.hint{
+  font-family:var(--mono);font-size:10px;color:var(--dim);
+  text-align:center;letter-spacing:.05em;margin:10px 0 20px;
+}
+
+/* ---------- chip nav ---------- */
+.navlist{display:flex;flex-direction:column;gap:1px}
+.chip{
+  display:flex;align-items:baseline;gap:10px;
+  background:var(--panel);border:none;border-left:2px solid transparent;
+  color:var(--dim);text-align:left;width:100%;
+  padding:9px 12px;cursor:pointer;font-family:var(--body);font-size:13px;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.chip .en{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone);transition:color .15s}
+.chip:hover{background:var(--panel2);color:var(--text)}
+.chip.live{border-left-color:var(--live);color:var(--text);background:var(--panel2)}
+.chip.live .en{color:var(--live)}
+.chip:focus-visible{outline:1px solid var(--live);outline-offset:-1px}
+
+/* ---------- sections ---------- */
+section{scroll-margin-top:16px;padding-top:14px;margin-bottom:56px}
+.shead{border-top:2px solid var(--flesh);padding-top:14px;margin-bottom:6px}
+.shead h2{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(30px,4.6vw,48px);line-height:1;margin:0;letter-spacing:.005em;
+}
+.shead .zh{font-family:var(--body);font-size:17px;font-weight:500;color:var(--bone-lit);margin-top:2px}
+.func{
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);
+  letter-spacing:.04em;margin:10px 0 22px;
+}
+.func b{color:var(--flesh);font-weight:500}
+
+h3{
+  font-family:var(--display);font-size:21px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.04em;margin:30px 0 3px;color:var(--text);
+}
+h3 .zh{font-family:var(--body);font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);margin-left:10px}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;border:1px solid var(--line);margin-top:12px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13.5px}
+thead th{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);text-align:left;font-weight:500;
+  padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:11px 12px;border-bottom:1px solid rgba(42,53,65,.55);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--panel2)}
+td.en{font-family:var(--mono);font-size:12px;color:var(--bone-lit);letter-spacing:-.01em}
+td.nm{font-weight:500;white-space:nowrap}
+.key{color:var(--flesh);font-family:var(--mono);font-size:11px;margin-right:5px}
+.pos{color:var(--dim);font-weight:400;font-size:12.5px}
+td.en .pos{color:var(--bone);font-size:11px}
+.pos{font-family:var(--mono);letter-spacing:.06em}
+.pos.gh{visibility:hidden}
+.legend{
+  font-family:var(--mono);font-size:10.5px;color:var(--dim);
+  letter-spacing:.04em;line-height:1.9;margin:8px 0 4px;
+}
+.legend b{color:var(--flesh);font-weight:500}
+td.nm{line-height:1.45}
+.deg{font-family:var(--mono);font-size:12px;color:var(--text);white-space:nowrap}
+.lvl{font-family:var(--mono);font-size:12px;color:var(--flesh);letter-spacing:.12em}
+.lvl i{color:var(--line);font-style:normal}
+.tag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);padding:1px 6px;color:var(--dim);white-space:nowrap;
+}
+.tag.s{border-color:var(--flesh);color:var(--flesh)}
+
+/* ---------- notes ---------- */
+.note{
+  border-left:2px solid var(--flesh);background:var(--panel);
+  padding:12px 16px;margin:16px 0;font-size:13.5px;color:var(--bone-lit);
+}
+.note b{color:var(--text);font-weight:500}
+.note .lab{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--flesh);display:block;margin-bottom:5px;
+}
+.gap{border-left-color:var(--bone)}
+.gap .lab{color:var(--bone)}
+
+/* ---------- closing ---------- */
+.foot{
+  border-top:1px solid var(--line);margin-top:70px;padding-top:20px;
+  font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.05em;
+}
+
+/* ---------- responsive ---------- */
+@media(max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .rail{
+    position:static;max-height:none;border-right:none;
+    border-bottom:1px solid var(--line);padding:20px 20px 22px;
+  }
+  .maps{max-width:340px;margin:0 auto 16px}
+  .navlist{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .chip{width:auto;border-left:none;border-bottom:2px solid transparent;padding:7px 11px}
+  .chip.live{border-left-color:transparent;border-bottom-color:var(--live)}
+  .main{padding:22px 18px 90px}
+  .masthead{padding:28px 18px 20px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
+
+/* ================= TABS & VIEWS ================= */
+.tabs{display:flex;gap:1px;margin-top:24px;border-bottom:1px solid var(--line)}
+.tab{
+  font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;background:none;border:none;color:var(--dim);
+  padding:10px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+}
+.tab span{font-family:var(--body);font-size:11px;letter-spacing:.05em;color:var(--bone);display:block;font-weight:400;text-transform:none;margin-top:-2px}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--text);border-bottom-color:var(--flesh)}
+.tab.on span{color:var(--flesh)}
+.tab:focus-visible{outline:1px solid var(--live);outline-offset:2px}
+.view{display:none}
+.view.on{display:block}
+.pad{max-width:1400px;margin:0 auto;padding:26px 30px 140px}
+@media(max-width:900px){
+  .pad{padding:20px 18px 160px}
+  .tab{padding:9px 12px;font-size:14px}
+}
+
+/* ================= PROGRAM ================= */
+.cycle{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:18px 0 34px}
+.cyc{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+.cyc h4{font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:17px;margin:0 0 2px;font-weight:600}
+.cyc .seq{font-family:var(--mono);font-size:11px;color:var(--bone-lit);line-height:1.9;margin:6px 0 4px}
+.cyc .who{font-size:12px;color:var(--dim)}
+.cyc.pick{border-color:var(--flesh)}
+.cyc.pick h4{color:var(--flesh)}
+
+.dayblock{margin-bottom:34px}
+.dayhead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px}
+.dayhead .dn{font-family:var(--display);font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.dayhead .dz{font-size:13px;color:var(--dim)}
+.dayhead .push{color:var(--flesh)}
+td.idx{font-family:var(--mono);font-size:11px;color:var(--dim);width:34px}
+
+/* ================= TRAIN ================= */
+.warn{border:1px solid var(--flesh);background:rgba(217,69,43,.08);padding:11px 15px;font-size:12.5px;color:var(--bone-lit);margin-bottom:18px}
+.warn b{color:var(--flesh)}
+.picker{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 22px}
+.dbtn{
+  font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);color:var(--dim);
+  padding:9px 15px;cursor:pointer;transition:all .15s;
+}
+.dbtn small{display:block;font-family:var(--body);font-size:10.5px;letter-spacing:0;text-transform:none;color:var(--bone);font-weight:400}
+.dbtn:hover{border-color:var(--bone);color:var(--text)}
+.dbtn.on{border-color:var(--live);color:var(--live);background:var(--panel2)}
+.dbtn.on small{color:var(--bone-lit)}
+
+.sesshead{
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  border-top:2px solid var(--live);background:var(--panel);padding:14px 16px;margin-bottom:16px;
+}
+.sesshead .t{font-family:var(--display);font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.sesshead .meta{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em}
+.sesshead .el{font-family:var(--mono);font-size:20px;color:var(--live);margin-left:auto;letter-spacing:.04em}
+
+.exc{background:var(--panel);border:1px solid var(--line);margin-bottom:10px}
+.exc.done{border-color:rgba(74,222,85,.4)}
+.exch{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.exch .n{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:20px}
+.exch .zh{font-weight:500;font-size:14.5px}
+.exch .en{font-family:var(--mono);font-size:11.5px;color:var(--bone-lit)}
+.exch .tgt{font-family:var(--mono);font-size:11px;color:var(--flesh);margin-left:auto;white-space:nowrap}
+.exnote{font-family:var(--mono);font-size:10.5px;color:var(--dim);padding:6px 14px 0}
+.exlast{font-family:var(--mono);font-size:11px;color:var(--live);padding:4px 14px 0}
+.sets{padding:10px 14px 12px}
+.setrow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.setrow .sn{font-family:var(--mono);font-size:11px;color:var(--dim);width:26px}
+.setrow input{
+  font-family:var(--mono);font-size:14px;background:var(--ink);border:1px solid var(--line);
+  color:var(--text);padding:7px 8px;width:70px;text-align:center;border-radius:0;
+}
+.setrow input:focus{outline:none;border-color:var(--live)}
+.setrow .u{font-family:var(--mono);font-size:10.5px;color:var(--dim);width:26px}
+.setrow.filled input{border-color:rgba(74,222,85,.35)}
+.mini{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid var(--line);color:var(--dim);padding:5px 10px;cursor:pointer;transition:all .15s;
+}
+.mini:hover{border-color:var(--bone);color:var(--text)}
+.mini.go{border-color:var(--live);color:var(--live)}
+.mini.hot{border-color:var(--flesh);color:var(--flesh)}
+.rowbtns{display:flex;gap:6px;margin-top:8px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 10px}
+.big{
+  font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--live);border:1px solid var(--live);color:#0F151B;padding:11px 22px;cursor:pointer;
+}
+.big.ghost{background:none;color:var(--dim);border-color:var(--line)}
+.big.ghost:hover{color:var(--text);border-color:var(--bone)}
+
+/* rest timer */
+.timerbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:var(--panel2);border-top:1px solid var(--line);
+  display:none;align-items:center;gap:10px;padding:10px 16px;flex-wrap:wrap;
+}
+.timerbar.on{display:flex}
+.timerbar .lb{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.timerbar .cd{font-family:var(--mono);font-size:30px;font-weight:600;letter-spacing:.02em;min-width:96px}
+.timerbar .cd.run{color:var(--live)}
+.timerbar .cd.end{color:var(--flesh)}
+.presets{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
+
+/* history */
+.hist{border:1px solid var(--line);background:var(--panel);margin-top:12px}
+.hrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;padding:10px 14px;border-bottom:1px solid rgba(42,53,65,.55);font-size:13px}
+.hrow:last-child{border-bottom:none}
+.hrow .d{font-family:var(--mono);font-size:11.5px;color:var(--bone-lit);min-width:88px}
+.hrow .dn{font-weight:500}
+.hrow .v{font-family:var(--mono);font-size:11px;color:var(--dim);margin-left:auto}
+.empty{padding:16px 14px;font-size:13px;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow">Attachment × Pulley Height Reference</div>
+  <h1>Cable Atlas<span class="cn">纜繩動作全圖鑑</span></h1>
+  <p class="lede">纜繩的變因不是 bench 角度，而是<b>接頭 × 滑輪高度 × 站位</b>。<b>點人體圖上的肌肉，直接跳到對應動作表。</b>紅色標記 <span class="key">◆</span> 為該肌群的核心動作。</p>
+  <nav class="tabs" aria-label="主選單">
+    <button class="tab on" data-view="atlas">Atlas<span>動作圖鑑</span></button>
+    <button class="tab" data-view="program">Program<span>PPL 課表</span></button>
+    <button class="tab" data-view="train">Train<span>訓練紀錄</span></button>
+  </nav>
+</header>
+
+<div class="view on" id="v-atlas">
+<div class="wrap">
+
+<!-- ============ RAIL ============ -->
+<aside class="rail">
+  <div class="maps">
+    <div class="mapbox">
+      <div class="cap">Anterior</div>
+      <svg class="fig" viewBox="0 0 130 285" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="正面人體肌肉導航圖">
+        <ellipse class="filler" cx="65" cy="24" rx="13" ry="15"/>
+        <rect class="filler" x="59" y="36" width="12" height="12"/>
+        <path class="filler" d="M44,52 L86,52 L90,112 L82,162 L48,162 L40,112 Z"/>
+        <path class="filler" d="M46,48 L65,42 L84,48 L84,56 L46,56 Z"/>
+        <rect class="filler" x="57" y="90" width="16" height="46" rx="4"/>
+        <path class="filler" d="M48,160 L82,160 L85,180 L45,180 Z"/>
+        <!-- chest -->
+        <g class="region" data-target="chest" tabindex="0" role="link" aria-label="胸部">
+          <path d="M48,60 C57,55 62,57 63,61 L63,86 C54,89 47,81 46,73 Z"/>
+          <path d="M82,60 C73,55 68,57 67,61 L67,86 C76,89 83,81 84,73 Z"/>
+        </g>
+        <!-- delts -->
+        <g class="region" data-target="shoulder" tabindex="0" role="link" aria-label="肩部">
+          <ellipse cx="38" cy="63" rx="11" ry="13.5"/>
+          <ellipse cx="92" cy="63" rx="11" ry="13.5"/>
+        </g>
+        <!-- biceps -->
+        <g class="region" data-target="arm" tabindex="0" role="link" aria-label="手臂">
+          <ellipse cx="33" cy="92" rx="8" ry="16"/>
+          <ellipse cx="97" cy="92" rx="8" ry="16"/>
+          <ellipse cx="29" cy="124" rx="7" ry="17"/>
+          <ellipse cx="101" cy="124" rx="7" ry="17"/>
+        </g>
+        <!-- quads -->
+        <g class="region" data-target="quad" tabindex="0" role="link" aria-label="股四頭肌">
+          <path d="M50,178 C44,198 46,222 52,238 L64,238 C64,212 64,192 62,178 Z"/>
+          <path d="M80,178 C86,198 84,222 78,238 L66,238 C66,212 66,192 68,178 Z"/>
+        </g>
+        <ellipse class="filler" cx="57" cy="258" rx="7" ry="17"/>
+        <ellipse class="filler" cx="73" cy="258" rx="7" ry="17"/>
+      </svg>
+    </div>
+
+    <div class="mapbox">
+      <div class="cap">Posterior</div>
+      <svg class="fig" viewBox="0 0 130 285" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="背面人體肌肉導航圖">
+        <ellipse class="filler" cx="65" cy="24" rx="13" ry="15"/>
+        <rect class="filler" x="59" y="36" width="12" height="12"/>
+        <path class="filler" d="M44,52 L86,52 L90,112 L82,162 L48,162 L40,112 Z"/>
+        <!-- back: traps + lats -->
+        <g class="region" data-target="back" tabindex="0" role="link" aria-label="背部">
+          <path d="M46,46 L65,41 L84,46 L77,74 L65,82 L53,74 Z"/>
+          <path d="M46,68 L57,78 L62,102 L60,128 L48,116 L42,90 Z"/>
+          <path d="M84,68 L73,78 L68,102 L70,128 L82,116 L88,90 Z"/>
+        </g>
+        <!-- rear delts -->
+        <g class="region" data-target="shoulder" tabindex="0" role="link" aria-label="後三角肌">
+          <ellipse cx="38" cy="63" rx="11" ry="13.5"/>
+          <ellipse cx="92" cy="63" rx="11" ry="13.5"/>
+        </g>
+        <!-- triceps -->
+        <g class="region" data-target="arm" tabindex="0" role="link" aria-label="三頭肌">
+          <ellipse cx="33" cy="92" rx="8" ry="16"/>
+          <ellipse cx="97" cy="92" rx="8" ry="16"/>
+          <ellipse cx="29" cy="124" rx="7" ry="17"/>
+          <ellipse cx="101" cy="124" rx="7" ry="17"/>
+        </g>
+        <path class="filler" d="M48,158 L82,158 L86,176 L44,176 Z"/>
+        <!-- glutes -->
+        <g class="region" data-target="glute" tabindex="0" role="link" aria-label="臀部">
+          <path d="M64,166 C64,162 48,162 46,174 C44,188 52,194 60,190 C64,188 64,180 64,166 Z"/>
+          <path d="M66,166 C66,162 82,162 84,174 C86,188 78,194 70,190 C66,188 66,180 66,166 Z"/>
+        </g>
+        <!-- hamstrings -->
+        <g class="region" data-target="hamstring" tabindex="0" role="link" aria-label="腿後肌群">
+          <path d="M49,192 C45,210 47,226 52,240 L63,240 C63,216 62,202 60,192 Z"/>
+          <path d="M81,192 C85,210 83,226 78,240 L67,240 C67,216 68,202 70,192 Z"/>
+        </g>
+        <!-- calves -->
+        <g class="region" data-target="calf" tabindex="0" role="link" aria-label="小腿">
+          <ellipse cx="57" cy="259" rx="8" ry="17"/>
+          <ellipse cx="73" cy="259" rx="8" ry="17"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="hint">↑ 點肌肉即跳轉 · 綠色為目前位置</div>
+
+  <nav class="navlist" aria-label="肌群導航">
+    <button class="chip" data-target="attach"><span class="en">Attachments</span>接頭</button>
+    <button class="chip" data-target="height"><span class="en">Line of Pull</span>阻力線</button>
+    <button class="chip" data-target="shoulder"><span class="en">Shoulder</span>肩部</button>
+    <button class="chip" data-target="chest"><span class="en">Chest</span>胸部</button>
+    <button class="chip" data-target="back"><span class="en">Back</span>背部</button>
+    <button class="chip" data-target="arm"><span class="en">Arm</span>手臂</button>
+    <button class="chip" data-target="quad"><span class="en">Quads</span>股四頭肌</button>
+    <button class="chip" data-target="hamstring"><span class="en">Hams</span>腿後肌群</button>
+    <button class="chip" data-target="glute"><span class="en">Glutes</span>臀部</button>
+    <button class="chip" data-target="calf"><span class="en">Calves</span>小腿</button>
+    <button class="chip" data-target="core"><span class="en">Core</span>核心</button>
+    <button class="chip" data-target="plan"><span class="en">Essentials</span>精簡清單</button>
+    <button class="chip" data-target="vars"><span class="en">Variables</span>訓練變因</button>
+  </nav>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+<!-- ===== ATTACHMENTS ===== -->
+<section id="attach">
+  <div class="shead"><h2>Attachments</h2><div class="zh">接頭 — Cable 的第一變因</div></div>
+  <p class="func">啞鈴的變因是 <b>bench 角度</b>，Cable 的變因是<b>接頭 × 滑輪高度</b>。同一台機器換個接頭，練的部位就完全不同——這是 Cable 最容易被浪費的地方。</p>
+
+  <h3>Handles<span class="zh">握把類</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>接頭</th><th>English</th><th>解決什麼問題</th><th>典型動作</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>單手 D 型握把</td><td class="en">Single D-Handle<br><span class="pos">Stirrup Handle</span></td><td>最泛用。單邊、任意高度、前臂可自由旋轉，行程最大</td><td class="en">Lateral Raise / Row / Fly / Curl</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>繩索</td><td class="en">Rope<br><span class="pos">Triceps Rope</span></td><td>終點可外分、前臂能旋轉 → 收縮端更完整，關節壓力低</td><td class="en">Pressdown / Face Pull / Pull-Through</td></tr>
+      <tr><td class="nm">長繩</td><td class="en">Long Rope</td><td>比一般繩長 30–50 cm，讓過頭與後拉動作行程夠</td><td class="en">Overhead Extension / Face Pull</td></tr>
+      <tr><td class="nm">三角把</td><td class="en">V-Handle<br><span class="pos">Close-Grip Triangle</span></td><td>中立握、窄距，肘自然貼身 → 背闊肌</td><td class="en">Seated Row / Close-Grip Pulldown</td></tr>
+      <tr><td class="nm">直槓</td><td class="en">Straight Bar</td><td>固定旋前或旋後，雙手同步，最能上重量</td><td class="en">Pressdown / Curl / Upright Row</td></tr>
+      <tr><td class="nm">曲槓</td><td class="en">EZ / Angled Bar</td><td>同直槓但手腕半旋前，腕與肘壓力大幅降低</td><td class="en">Curl / Pressdown</td></tr>
+      <tr><td class="nm">寬握下拉槓</td><td class="en">Lat Pulldown Bar</td><td>寬握、旋前，肘外開 → 上背與背闊上部</td><td class="en">Wide-Grip Pulldown</td></tr>
+      <tr><td class="nm">多角度握把</td><td class="en">MAG Grip<br><span class="pos">Multi-Grip Handle</span></td><td>握距與角度固定成最舒適位，減少前臂代償</td><td class="en">Pulldown / Row</td></tr>
+      <tr><td class="nm">雙 D 繩</td><td class="en">Dual D-Handle Rope</td><td>繩的自由度 + 握把的抓握感</td><td class="en">Row / Face Pull</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Straps &amp; Belts<span class="zh">綁帶類 — 把阻力接到遠端肢段</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>接頭</th><th>English</th><th>解決什麼問題</th><th>典型動作</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>踝帶</td><td class="en">Ankle Strap<br><span class="pos">Ankle Cuff</span></td><td>把阻力綁在腳踝 → 髖與膝的<b>單關節孤立</b>成為可能，這是自由重量做不到的</td><td class="en">Kickback / Abduction / Leg Curl</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>免握力腕帶</td><td class="en">Wrist Strap<br><span class="pos">Grip-less Handle</span></td><td><b>移除握力瓶頸</b>。背肌力竭前手先鬆掉的問題直接消失</td><td class="en">Row / Pulldown / Pullover</td></tr>
+      <tr><td class="nm">腰帶</td><td class="en">Belt<br><span class="pos">Belt Squat Belt</span></td><td>負荷掛在髖部，脊椎零壓縮 → 下肢唯一能上大重量的 cable 方案</td><td class="en">Belt Squat / Hip Thrust</td></tr>
+      <tr><td class="nm">頸帶</td><td class="en">Head Harness</td><td>頸部訓練，格鬥項目專用</td><td class="en">Neck Flexion / Extension</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Two Underrated Ones</span><b>踝帶</b>與<b>免握力腕帶</b>是多數人沒買、但效益最大的兩個。踝帶讓臀中肌、臀大肌、腿後可以被單獨轟炸；腕帶則解決了「背還沒累手就先開了」這個所有拉類動作的共通瓶頸。兩個加起來不到一千塊。</div>
+</section>
+
+<!-- ===== PULLEY HEIGHT ===== -->
+<section id="height">
+  <div class="shead"><h2>Line of Pull</h2><div class="zh">阻力線 — Cable 相對自由重量的根本優勢</div></div>
+  <p class="func">啞鈴的阻力<b>永遠垂直向下</b>，所以只能靠改變身體角度去對準它。Cable 的阻力方向由<b>滑輪位置決定</b>，可以來自任何角度——這代表<b>張力最大處可以放在行程的任何一點</b>，包括啞鈴完全給不了張力的位置。</p>
+
+  <h3>Pulley Height<span class="zh">滑輪高度 — 四個檔位</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>高度</th><th>English</th><th>阻力方向</th><th>典型動作</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">最低（地面）</td><td class="en">Low Pulley</td><td>斜向下後方</td><td class="en">Curl / Front Raise / Low-to-High Fly / RDL / Pull-Through / Upright Row</td></tr>
+      <tr><td class="nm">中（肩胸高）</td><td class="en">Mid Pulley</td><td>水平</td><td class="en">Chest Press / Row / Mid Fly / Face Pull / Woodchop</td></tr>
+      <tr><td class="nm">高（頭頂上）</td><td class="en">High Pulley</td><td>斜向上前方</td><td class="en">Pulldown / Pressdown / High-to-Low Fly / Bayesian Curl / Pullover</td></tr>
+      <tr><td class="nm">背對高滑輪</td><td class="en">High, Facing Away</td><td>從身後往前上</td><td class="en">Overhead Triceps Extension / Bayesian Curl</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Cable vs Dumbbell<span class="zh">兩者真正的差別</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Dumbbell</th><th>Cable</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">阻力方向</td><td>永遠垂直向下</td><td class="nm">任意角度</td></tr>
+      <tr><td class="nm">阻力曲線</td><td>底部常無張力，頂部最重</td><td class="nm">全程恆定 constant tension</td></tr>
+      <tr><td class="nm">張力最大處</td><td>由重力決定，不可調</td><td class="nm">可放在行程任一點</td></tr>
+      <tr><td class="nm">穩定肌需求</td><td class="nm">高（要控制晃動）</td><td>低（軌道固定）</td></tr>
+      <tr><td class="nm">重量微調</td><td>2–2.5 kg 一階</td><td class="nm">常見 2.5 kg，多數機台可微調</td></tr>
+      <tr><td class="nm">下肢上限</td><td>受握力限制</td><td>需 belt squat 才能突破</td></tr>
+      <tr><td class="nm">單關節孤立</td><td>受限</td><td class="nm">配踝帶可高度孤立</td></tr>
+      <tr><td class="nm">遞減組操作</td><td>要換啞鈴，慢</td><td class="nm">插銷一拔就換重量</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Best Use</span>Cable 最不可取代的三個場景：<b>① 補上啞鈴的阻力曲線缺口</b>（側平舉底部、二頭伸展端、飛鳥收縮端）；<b>② 水平面與斜向動作</b>（Woodchop、Pallof Press、髖外展）；<b>③ 快速遞減組</b>——插銷一拔就換重量，做 drop set 幾乎零空檔。</div>
+</section>
+
+<!-- ===== SHOULDER ===== -->
+<section id="shoulder">
+  <div class="shead"><h2>Shoulder</h2><div class="zh">肩部 — Cable 表現最好的部位</div></div>
+  <p class="func">三角肌是 Cable <b>贏過啞鈴最多</b>的地方：側平舉底部、後三角的水平外展、旋轉肌群的恆定張力，啞鈴全部做不好。</p>
+
+  <h3>Lateral Deltoid<span class="zh">中三角 — 肩外展</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>單手側平舉</td><td class="en">Single-Arm Cable Lateral Raise</td><td class="en">D-Handle</td><td class="deg">最低</td><td>纜線從身後繞過，<b>底部就有張力</b>——這正是啞鈴的最大缺口</td></tr>
+      <tr><td class="nm">交叉側平舉</td><td class="en">Cross-Body Cable Lateral Raise</td><td class="en">D-Handle</td><td class="deg">最低</td><td>纜線從對側跨過身前，行程更長</td></tr>
+      <tr><td class="nm">傾身側平舉</td><td class="en">Leaning Cable Lateral Raise</td><td class="en">D-Handle</td><td class="deg">最低</td><td>抓柱側傾，伸展端張力再加大</td></tr>
+      <tr><td class="nm">直立划船</td><td class="en">Cable Upright Row</td><td class="en">Rope / EZ Bar</td><td class="deg">最低</td><td>⚠ 夾擠風險，握寬、肘不過肩</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Posterior Deltoid<span class="zh">後三角 — 肩水平外展</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>臉拉</td><td class="en">Face Pull</td><td class="en">Rope / Long Rope</td><td class="deg">高或中</td><td>後三角 + 外旋 + 中斜方，肩健康的頭號動作</td></tr>
+      <tr><td class="nm">交叉反向飛鳥</td><td class="en">Cable Rear Delt Fly<br><span class="pos">Reverse Cable Crossover</span></td><td class="en">D-Handle ×2</td><td class="deg">高（雙側）</td><td>雙手交叉握對側，全程恆定張力</td></tr>
+      <tr><td class="nm">單手反向飛鳥</td><td class="en">Single-Arm Rear Delt Fly</td><td class="en">D-Handle</td><td class="deg">中</td><td>行程最大，可加終點外旋</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Anterior Deltoid &amp; Cuff<span class="zh">前三角與旋轉肌群</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">前平舉</td><td class="en">Cable Front Raise</td><td class="en">Rope / Straight Bar</td><td class="deg">最低</td><td>優先度低，推類已練夠</td></tr>
+      <tr><td class="nm">肩推</td><td class="en">Cable Overhead Press</td><td class="en">D-Handle ×2</td><td class="deg">最低</td><td>坐在雙塔中間，恆定張力</td></tr>
+      <tr><td class="nm">外旋</td><td class="en">Cable External Rotation</td><td class="en">D-Handle</td><td class="deg">肘高</td><td>棘下肌、小圓肌；重量極輕</td></tr>
+      <tr><td class="nm">內旋</td><td class="en">Cable Internal Rotation</td><td class="en">D-Handle</td><td class="deg">肘高</td><td>肩胛下肌，常被忽略</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===== CHEST ===== -->
+<section id="chest">
+  <div class="shead"><h2>Chest</h2><div class="zh">胸部 — 用角度切上中下</div></div>
+  <p class="func">啞鈴靠 bench 角度切上中下胸，<b>Cable 靠滑輪高度</b>——而且飛鳥在頂點還能繼續內收過中線，把胸肌帶到完全縮短位，這是啞鈴做不到的。</p>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>目標</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>低往高飛鳥</td><td class="en">Low-to-High Cable Fly</td><td class="en">D-Handle ×2</td><td class="deg">最低</td><td>上胸 Clavicular Head</td></tr>
+      <tr><td class="nm">水平飛鳥</td><td class="en">Mid Cable Fly<br><span class="pos">Cable Crossover</span></td><td class="en">D-Handle ×2</td><td class="deg">中（胸高）</td><td>中胸 Sternal Head</td></tr>
+      <tr><td class="nm">高往低飛鳥</td><td class="en">High-to-Low Cable Fly</td><td class="en">D-Handle ×2</td><td class="deg">高</td><td>下胸 Lower Sternal</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>站姿推胸</td><td class="en">Standing Cable Chest Press</td><td class="en">D-Handle ×2</td><td class="deg">中</td><td>全胸 + 核心抗伸展</td></tr>
+      <tr><td class="nm">單手推胸</td><td class="en">Single-Arm Cable Press</td><td class="en">D-Handle</td><td class="deg">中</td><td>可內收過中線，行程最大</td></tr>
+      <tr><td class="nm">上斜推胸</td><td class="en">Incline Cable Press</td><td class="en">D-Handle ×2</td><td class="deg">最低</td><td>bench 置於雙塔間，上胸</td></tr>
+      <tr><td class="nm">曲臂上拉</td><td class="en">Cable Pullover</td><td class="en">Rope / Straight Bar</td><td class="deg">高</td><td>胸肋部伸展端（亦練背闊）</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Adduction Beyond Midline</span>啞鈴飛鳥在雙手接近時<b>力矩趨近於零</b>，等於收縮端沒張力。Cable 不但全程有張力，還能讓手<b>交叉過身體中線</b>——胸大肌的功能就是肩內收，這才是它真正的縮短位。做飛鳥時刻意讓兩手交錯，效果差很多。</div>
+</section>
+
+<!-- ===== BACK ===== -->
+<section id="back">
+  <div class="shead"><h2>Back</h2><div class="zh">背部 — Cable 的主場</div></div>
+  <p class="func">垂直拉是啞鈴唯一補不起來的缺口，而 Cable 用一台機器就解決了。加上<b>免握力腕帶</b>，背肌可以真正練到力竭。</p>
+
+  <h3>Vertical Pull<span class="zh">垂直拉 — 背闊肌寬度</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>肘部</th><th>目標肌</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>寬握下拉</td><td class="en">Wide-Grip Lat Pulldown</td><td class="en">Lat Bar</td><td>外開</td><td class="en">Lats（上部）+ Teres Major</td></tr>
+      <tr><td class="nm">窄握下拉</td><td class="en">Close-Grip Pulldown</td><td class="en">V-Handle</td><td>貼身</td><td class="en">Latissimus Dorsi（下部）</td></tr>
+      <tr><td class="nm">反握下拉</td><td class="en">Underhand Pulldown</td><td class="en">Straight Bar</td><td>貼身</td><td class="en">Lats + Biceps</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>單手跪姿下拉</td><td class="en">Half-Kneeling Single-Arm Pulldown</td><td class="en">D-Handle</td><td>貼身</td><td class="en">Lats（最大行程 + 抗側屈）</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>直臂下拉</td><td class="en">Straight-Arm Pulldown</td><td class="en">Straight Bar / Rope</td><td>打直</td><td class="en">Latissimus（完全排除二頭）</td></tr>
+      <tr><td class="nm">站姿曲臂上拉</td><td class="en">Standing Cable Pullover</td><td class="en">Rope</td><td>微彎固定</td><td class="en">Lats（過頭伸展端）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Horizontal Pull<span class="zh">水平拉 — 背部厚度</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>肘部</th><th>目標肌</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>坐姿窄划船</td><td class="en">Seated Cable Row</td><td class="en">V-Handle</td><td>貼身</td><td class="en">Latissimus Dorsi</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>坐姿寬肘划船</td><td class="en">Wide-Grip Seated Row</td><td class="en">Lat Bar / Rope</td><td>外開 90°</td><td class="en">Rhomboids + Mid Trap</td></tr>
+      <tr><td class="nm">中立握划船</td><td class="en">Neutral-Grip Cable Row</td><td class="en">MAG / Dual D</td><td>45°</td><td class="en">Lower Trapezius</td></tr>
+      <tr><td class="nm">單手划船</td><td class="en">Single-Arm Cable Row</td><td class="en">D-Handle</td><td>貼身</td><td class="en">Lats + 抗旋轉核心</td></tr>
+      <tr><td class="nm">高位划船</td><td class="en">Cable High Row</td><td class="en">Rope / Lat Bar</td><td>外開 45–60°</td><td class="en">Teres Major + Rear Delt</td></tr>
+      <tr><td class="nm">臉拉</td><td class="en">Face Pull</td><td class="en">Rope</td><td>外開高舉</td><td class="en">Mid Trap + Rear Delt</td></tr>
+    </tbody>
+  </table></div>
+  <div class="legend">滑輪高度：垂直拉一律<b>高</b>（或 lat pulldown 專用機）；水平拉一律<b>中／坐姿划船機</b>。肘部角度的邏輯與啞鈴相同：外開打菱形與中斜方、貼身打背闊、打直排除二頭。</div>
+
+  <h3>Traps &amp; Erectors<span class="zh">斜方肌與豎脊肌</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>目標肌</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">聳肩</td><td class="en">Cable Shrug</td><td class="en">Straight Bar / D ×2</td><td class="deg">最低</td><td class="en">Upper Trapezius</td></tr>
+      <tr><td class="nm">俯身聳肩</td><td class="en">Cable Prone Shrug</td><td class="en">Rope</td><td class="deg">中</td><td class="en">Mid + Lower Trapezius</td></tr>
+      <tr><td class="nm">Y 字上舉</td><td class="en">Cable Y-Raise</td><td class="en">Rope / D ×2</td><td class="deg">最低</td><td class="en">Lower Trapezius</td></tr>
+      <tr><td class="nm">早安式</td><td class="en">Cable Good Morning</td><td class="en">Rope</td><td class="deg">最低</td><td class="en">Erector Spinae</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Grip-less Straps</span>划船與下拉的真正瓶頸幾乎都是<b>握力</b>，不是背肌。裝上免握力腕帶後，多數人第一次體驗到「背真的練到力竭」是什麼感覺——而且能多做 3–5 下。這是 CP 值最高的一個配件。</div>
+</section>
+
+<!-- ===== ARM ===== -->
+<section id="arm">
+  <div class="shead"><h2>Arm</h2><div class="zh">手臂 — 伸展端與收縮端都能吃滿</div></div>
+  <p class="func">二頭與三頭的長頭都跨肩關節，需要把手臂移出中立位才練得到伸展端。<b>Cable 能在那個位置維持張力</b>——啞鈴在同樣位置常常已經沒力矩了。</p>
+
+  <h3>Biceps Brachii<span class="zh">肱二頭肌</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>貝氏彎舉</td><td class="en">Bayesian Curl<br><span class="pos">Behind-the-Body Cable Curl</span></td><td class="en">D-Handle</td><td class="deg">高，背對</td><td>手臂後移 + 全程張力＝<b>長頭伸展端最強動作</b></td></tr>
+      <tr><td class="nm">站姿彎舉</td><td class="en">Cable Curl</td><td class="en">EZ / Straight Bar</td><td class="deg">最低</td><td>基礎動作，底部不掉張力</td></tr>
+      <tr><td class="nm">錘式彎舉</td><td class="en">Rope Hammer Curl</td><td class="en">Rope</td><td class="deg">最低</td><td>中立握，肱肌 Brachialis</td></tr>
+      <tr><td class="nm">反手彎舉</td><td class="en">Reverse Cable Curl</td><td class="en">Straight / EZ Bar</td><td class="deg">最低</td><td>旋前握，肱橈肌 Brachioradialis</td></tr>
+      <tr><td class="nm">高位彎舉</td><td class="en">High Cable Curl<br><span class="pos">Double-Biceps Curl</span></td><td class="en">D-Handle ×2</td><td class="deg">高（雙側）</td><td>收縮端峰值最高</td></tr>
+      <tr><td class="nm">斜板彎舉</td><td class="en">Cable Preacher Curl</td><td class="en">EZ Bar</td><td class="deg">最低</td><td>短頭 Short Head，排除擺盪</td></tr>
+      <tr><td class="nm">拖曳彎舉</td><td class="en">Cable Drag Curl</td><td class="en">Straight Bar</td><td class="deg">最低</td><td>肘後拉，長頭偏重</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Bayesian Curl</span>背對高滑輪、手臂垂在身體後方做彎舉。<b>肩伸展 + 肘伸直＝長頭被拉到最長</b>，而 cable 在這個位置仍有完整張力。啞鈴的 incline curl 是同樣概念，但底部力矩會掉；這個不會。近年伸展端訓練的研究支持下，它是二頭最值得優先做的動作。</div>
+
+  <h3>Triceps Brachii<span class="zh">肱三頭肌</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>目標頭</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>過頭臂屈伸</td><td class="en">Overhead Cable Extension</td><td class="en">Rope / Long Rope</td><td class="deg">高，背對</td><td>長頭 Long Head（伸展端）</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>繩索下壓</td><td class="en">Rope Pressdown</td><td class="en">Rope</td><td class="deg">高</td><td>全部（終點外分，外側頭加強）</td></tr>
+      <tr><td class="nm">直槓下壓</td><td class="en">Straight-Bar Pressdown</td><td class="en">Straight / V Bar</td><td class="deg">高</td><td>外側頭 Lateral Head，可上重</td></tr>
+      <tr><td class="nm">反握下壓</td><td class="en">Reverse-Grip Pressdown</td><td class="en">Straight Bar</td><td class="deg">高</td><td>內側頭 Medial Head</td></tr>
+      <tr><td class="nm">跨體臂屈伸</td><td class="en">Cross-Body Cable Extension</td><td class="en">D-Handle</td><td class="deg">高</td><td>長頭，單邊行程最大</td></tr>
+      <tr><td class="nm">後踢</td><td class="en">Cable Kickback</td><td class="en">D-Handle</td><td class="deg">中</td><td>長頭（收縮端），恆定張力</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Forearm<span class="zh">前臂</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>目標</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">腕彎舉</td><td class="en">Cable Wrist Curl</td><td class="en">Straight Bar</td><td class="deg">最低</td><td>屈腕肌群 Wrist Flexors</td></tr>
+      <tr><td class="nm">反向腕彎舉</td><td class="en">Reverse Cable Wrist Curl</td><td class="en">Straight Bar</td><td class="deg">最低</td><td>伸腕肌群 Wrist Extensors</td></tr>
+      <tr><td class="nm">反手彎舉</td><td class="en">Reverse Cable Curl</td><td class="en">EZ Bar</td><td class="deg">最低</td><td>肱橈肌 Brachioradialis</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===== QUAD ===== -->
+<section id="quad">
+  <div class="shead"><h2>Quadriceps</h2><div class="zh">股四頭肌 — Cable 的相對弱項</div></div>
+  <p class="func">股四頭需要大重量，而多數 cable 機的配重塊上限不足。<b>Belt Squat 是唯一能突破的方案</b>——負荷掛在髖部，脊椎零壓縮，配重塊也能疊到夠重。</p>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>腰帶深蹲</td><td class="en">Belt Squat</td><td class="en">Belt</td><td class="deg">最低</td><td>脊椎零壓縮，可上大重量</td></tr>
+      <tr><td class="nm">纜繩深蹲</td><td class="en">Cable Squat<br><span class="pos">Goblet-Style</span></td><td class="en">Rope / V-Handle</td><td class="deg">最低</td><td>阻力向前拉，自然逼出直立軀幹</td></tr>
+      <tr><td class="nm">分腿蹲</td><td class="en">Cable Split Squat</td><td class="en">D-Handle / Belt</td><td class="deg">最低</td><td>單側，繞過配重上限</td></tr>
+      <tr><td class="nm">後跨弓箭步</td><td class="en">Cable Reverse Lunge</td><td class="en">D-Handle ×2</td><td class="deg">最低</td><td>對膝最友善</td></tr>
+      <tr><td class="nm">腿伸展</td><td class="en">Cable Leg Extension</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>坐姿單腿，孤立股四頭</td></tr>
+      <tr><td class="nm">前跨步</td><td class="en">Cable Step-Through</td><td class="en">Belt</td><td class="deg">最低</td><td>結合行走模式</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note gap"><span class="lab">Equipment Gap</span>如果你的健身房沒有 belt squat 或 belt 配件，<b>股四頭建議還是靠槓鈴或啞鈴</b>。Cable 在這個部位做的是補充（單側、孤立、代謝壓力），不是主力。</div>
+</section>
+
+<!-- ===== HAMSTRING ===== -->
+<section id="hamstring">
+  <div class="shead"><h2>Hamstrings</h2><div class="zh">腿後肌群 — 兩個功能都能練</div></div>
+  <p class="func">腿後有<b>髖伸展</b>與<b>膝屈曲</b>兩個功能。Cable 配踝帶剛好能把膝屈曲單獨拉出來練——這是啞鈴使用者最常見的盲區。</p>
+
+  <h3>A — Hip Extension<span class="zh">髖伸展</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>纜繩拉腿</td><td class="en">Cable Pull-Through</td><td class="en">Rope</td><td class="deg">最低</td><td>阻力從兩腿間往後拉 → <b>髖伸展純化</b>，下背零壓力</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>羅馬尼亞硬舉</td><td class="en">Cable Romanian Deadlift</td><td class="en">Straight Bar / Rope</td><td class="deg">最低</td><td>頂端張力不掉，比槓鈴版更持續</td></tr>
+      <tr><td class="nm">單腿羅馬尼亞硬舉</td><td class="en">Single-Leg Cable RDL</td><td class="en">D-Handle</td><td class="deg">最低</td><td>兼練平衡與抗旋轉</td></tr>
+      <tr><td class="nm">早安式</td><td class="en">Cable Good Morning</td><td class="en">Rope</td><td class="deg">最低</td><td>繩繞頸後，軀幹前傾</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>B — Knee Flexion<span class="zh">膝屈曲 — 踝帶專屬</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>站姿腿彎舉</td><td class="en">Standing Cable Leg Curl</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>單腿，股二頭短頭</td></tr>
+      <tr><td class="nm">俯臥腿彎舉</td><td class="en">Prone Cable Leg Curl</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>趴在墊上，行程更受控</td></tr>
+      <tr><td class="nm">坐姿腿彎舉</td><td class="en">Seated Cable Leg Curl</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>髖屈曲位，腿後被拉長，效果更好</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Why Knee Flexion Matters</span>只做 RDL 而不練膝屈曲，<b>股二頭短頭 biceps femoris short head 會發展不全</b>——它不跨髖關節，髖伸展動作完全練不到。踝帶讓這件事在 cable 上變得很容易，是它相對啞鈴的明顯優勢。</div>
+</section>
+
+<!-- ===== GLUTE ===== -->
+<section id="glute">
+  <div class="shead"><h2>Glutes</h2><div class="zh">臀部 — 踝帶讓孤立變簡單</div></div>
+  <p class="func">臀大肌要<b>收縮端 + 伸展端都吃到</b>，臀中肌則需要額狀面的髖外展——後者用啞鈴很難給到有意義的負荷，用 cable 配踝帶則輕而易舉。</p>
+
+  <h3>Gluteus Maximus<span class="zh">臀大肌 — 髖伸展</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>張力位置</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>纜繩拉腿</td><td class="en">Cable Pull-Through</td><td class="en">Rope</td><td class="deg">中段全程</td><td>髖伸展純化，臀最有感的 cable 動作</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>臀後踢</td><td class="en">Cable Glute Kickback</td><td class="en">Ankle Strap</td><td class="deg">收縮端</td><td>單邊孤立，頂點夾緊停 1 秒</td></tr>
+      <tr><td class="nm">臀推</td><td class="en">Cable Hip Thrust</td><td class="en">Belt / Straight Bar</td><td class="deg">收縮端</td><td>阻力水平，與槓鈴版曲線不同</td></tr>
+      <tr><td class="nm">羅馬尼亞硬舉</td><td class="en">Cable RDL</td><td class="en">Straight Bar</td><td class="deg">伸展端</td><td>與 kickback 互補</td></tr>
+      <tr><td class="nm">相撲深蹲</td><td class="en">Cable Sumo Squat</td><td class="en">Rope / V-Handle</td><td class="deg">中段</td><td>寬站距，兼練內收肌</td></tr>
+      <tr><td class="nm">後跨弓箭步</td><td class="en">Cable Reverse Lunge</td><td class="en">D-Handle ×2</td><td class="deg">中段</td><td>比前跨更偏臀</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Gluteus Medius &amp; Minimus<span class="zh">臀中肌／臀小肌 — 髖外展</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>重點</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>站姿髖外展</td><td class="en">Standing Cable Hip Abduction</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>臀中肌最直接的負重動作</td></tr>
+      <tr><td class="nm">髖外旋</td><td class="en">Cable Hip External Rotation</td><td class="en">Ankle Strap</td><td class="deg">最低</td><td>臀小肌與深層外旋肌</td></tr>
+      <tr><td class="nm">帕洛夫推</td><td class="en">Pallof Press</td><td class="en">D-Handle</td><td class="deg">中</td><td>抗旋轉核心，臀中肌等長參與</td></tr>
+      <tr><td class="nm">側向跨步</td><td class="en">Cable Lateral Walk</td><td class="en">Belt / Ankle</td><td class="deg">最低</td><td>額狀面移動</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===== CALF ===== -->
+<section id="calf">
+  <div class="shead"><h2>Calves</h2><div class="zh">小腿 — 膝角度仍是關鍵</div></div>
+  <p class="func">規則跟啞鈴完全一樣：<b>膝打直練腓腸肌，膝彎 90° 練比目魚肌</b>。Cable 的優勢是恆定張力與方便的單腿操作。</p>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>膝角度</th><th>目標肌</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>站姿提踵</td><td class="en">Cable Calf Raise</td><td class="en">Belt / D ×2</td><td class="deg">打直</td><td class="en">Gastrocnemius</td></tr>
+      <tr><td class="nm">單腿提踵</td><td class="en">Single-Leg Cable Calf Raise</td><td class="en">D-Handle</td><td class="deg">打直</td><td class="en">Gastrocnemius</td></tr>
+      <tr><td class="nm">墊高提踵</td><td class="en">Deficit Cable Calf Raise</td><td class="en">Belt</td><td class="deg">打直</td><td class="en">Gastrocnemius（加大行程）</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>坐姿提踵</td><td class="en">Seated Calf Raise</td><td class="en">Belt / 專用機</td><td class="deg">彎曲 90°</td><td class="en">Soleus 比目魚肌</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note gap"><span class="lab">Common Gap</span>比目魚肌<b>比腓腸肌更大、更耐疲勞</b>，需要高次數（15–25）。多數人只做站姿版，小腿永遠差一塊。Cable 做坐姿版比較彆扭，如果健身房有專用機，直接用機器。</div>
+</section>
+
+<!-- ===== CORE (bonus) ===== -->
+<section id="core">
+  <div class="shead"><h2>Core</h2><div class="zh">核心 — Cable 獨有的水平面訓練</div></div>
+  <p class="func">重力只有一個方向，所以<b>自由重量幾乎無法在水平面 transverse plane 給阻力</b>。旋轉與抗旋轉是 cable 完全獨佔的領域。</p>
+  <div class="tw"><table>
+    <thead><tr><th>動作</th><th>English</th><th>接頭</th><th>滑輪</th><th>訓練什麼</th></tr></thead>
+    <tbody>
+      <tr><td class="nm"><span class="key">◆</span>帕洛夫推</td><td class="en">Pallof Press</td><td class="en">D-Handle</td><td class="deg">中</td><td>抗旋轉 Anti-Rotation</td></tr>
+      <tr><td class="nm">高往低劈砍</td><td class="en">Cable Woodchop</td><td class="en">Rope / D-Handle</td><td class="deg">高</td><td>旋轉爆發，腹斜肌 Obliques</td></tr>
+      <tr><td class="nm">低往高上舉</td><td class="en">Cable Lift<br><span class="pos">Reverse Woodchop</span></td><td class="en">Rope</td><td class="deg">最低</td><td>對角線鏈條</td></tr>
+      <tr><td class="nm">跪姿捲腹</td><td class="en">Kneeling Cable Crunch</td><td class="en">Rope</td><td class="deg">高</td><td>腹直肌 Rectus Abdominis（可負重）</td></tr>
+      <tr><td class="nm">側屈</td><td class="en">Cable Side Bend</td><td class="en">D-Handle</td><td class="deg">最低</td><td>腰方肌 Quadratus Lumborum</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===== PLAN ===== -->
+<section id="plan">
+  <div class="shead"><h2>Essentials</h2><div class="zh">精簡版 — 十四個動作涵蓋全身</div></div>
+  <p class="func">如果不想記一百個動作，這份清單覆蓋所有肌群與阻力曲線。<b>加粗的接頭是必備的</b>。</p>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>動作</th><th>English</th><th>接頭</th><th>涵蓋肌群</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">01</td><td class="nm">寬握下拉</td><td class="en">Wide-Grip Lat Pulldown</td><td class="en">Lat Bar</td><td>背闊肌（寬度）</td></tr>
+      <tr><td class="idx">02</td><td class="nm">坐姿窄划船</td><td class="en">Seated Cable Row</td><td class="en">V-Handle</td><td>背闊肌（厚度）</td></tr>
+      <tr><td class="idx">03</td><td class="nm">直臂下拉</td><td class="en">Straight-Arm Pulldown</td><td class="en">Rope</td><td>背闊肌（排除二頭）</td></tr>
+      <tr><td class="idx">04</td><td class="nm">臉拉</td><td class="en">Face Pull</td><td class="en">Rope</td><td>後三角 + 中斜方</td></tr>
+      <tr><td class="idx">05</td><td class="nm">低往高飛鳥</td><td class="en">Low-to-High Cable Fly</td><td class="en">D-Handle ×2</td><td>上胸</td></tr>
+      <tr><td class="idx">06</td><td class="nm">站姿推胸</td><td class="en">Standing Cable Chest Press</td><td class="en">D-Handle ×2</td><td>中胸 + 前三角</td></tr>
+      <tr><td class="idx">07</td><td class="nm">單手側平舉</td><td class="en">Cable Lateral Raise</td><td class="en">D-Handle</td><td>中三角</td></tr>
+      <tr><td class="idx">08</td><td class="nm">貝氏彎舉</td><td class="en">Bayesian Curl</td><td class="en">D-Handle</td><td>二頭（長頭伸展端）</td></tr>
+      <tr><td class="idx">09</td><td class="nm">過頭臂屈伸</td><td class="en">Overhead Cable Extension</td><td class="en">Rope</td><td>三頭（長頭伸展端）</td></tr>
+      <tr><td class="idx">10</td><td class="nm">纜繩拉腿</td><td class="en">Cable Pull-Through</td><td class="en">Rope</td><td>臀大肌 + 腿後</td></tr>
+      <tr><td class="idx">11</td><td class="nm">腰帶深蹲</td><td class="en">Belt Squat</td><td class="en">Belt</td><td>股四頭</td></tr>
+      <tr><td class="idx">12</td><td class="nm">站姿腿彎舉</td><td class="en">Standing Cable Leg Curl</td><td class="en">Ankle Strap</td><td>腿後（膝屈曲）</td></tr>
+      <tr><td class="idx">13</td><td class="nm">站姿髖外展</td><td class="en">Standing Hip Abduction</td><td class="en">Ankle Strap</td><td>臀中肌</td></tr>
+      <tr><td class="idx">14</td><td class="nm">帕洛夫推</td><td class="en">Pallof Press</td><td class="en">D-Handle</td><td>抗旋轉核心</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Minimum Kit</span>做完這 14 個動作，你只需要五種接頭：<b>D-Handle ×2、Rope、V-Handle、Lat Bar、Ankle Strap</b>。再加一條 Belt 就能處理下肢重量。</div>
+</section>
+
+<!-- ===== VARIABLES ===== -->
+<section id="vars">
+  <div class="shead"><h2>Variables</h2><div class="zh">訓練變因 — Cable 的組合邏輯</div></div>
+  <p class="func">接頭 9 × 滑輪高度 4 × 站位 4 × 面向 2 × 對稱性 3 ≈ <b>800 種以上組合</b>，與啞鈴同一個數量級，但覆蓋的角度完全不同。</p>
+  <div class="tw"><table>
+    <thead><tr><th>變因</th><th>English</th><th>選項</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">接頭</td><td class="en">Attachment</td><td class="en">D-handle / rope / long rope / V-handle / straight bar / EZ bar / lat bar / MAG grip / ankle strap / wrist strap / belt</td></tr>
+      <tr><td class="nm">滑輪高度</td><td class="en">Pulley Height</td><td class="en">low / mid / high / overhead</td></tr>
+      <tr><td class="nm">面向</td><td class="en">Orientation</td><td class="en">facing the stack / facing away / side-on / 45° angled</td></tr>
+      <tr><td class="nm">站位距離</td><td class="en">Distance from Stack</td><td class="en">近（伸展端張力大）／遠（收縮端張力大）</td></tr>
+      <tr><td class="nm">身體姿勢</td><td class="en">Body Position</td><td class="en">standing / seated / half-kneeling / tall kneeling / prone / supine / side-lying</td></tr>
+      <tr><td class="nm">負重對稱性</td><td class="en">Loading Symmetry</td><td class="en">bilateral / unilateral / alternating / offset</td></tr>
+      <tr><td class="nm">前臂旋轉</td><td class="en">Forearm Rotation</td><td class="en">pronated / supinated / neutral / rotational</td></tr>
+      <tr><td class="nm">肘部路徑</td><td class="en">Elbow Path</td><td class="en">tucked / flared 45° / flared 90° / locked straight</td></tr>
+      <tr><td class="nm">節奏</td><td class="en">Tempo</td><td class="en">eccentric emphasis / paused / peak contraction hold / isometric</td></tr>
+      <tr><td class="nm">強度技巧</td><td class="en">Intensity Techniques</td><td class="en">drop set（插銷一拔即換）／rest-pause／mechanical drop set／1½ reps</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Distance Matters</span>一個常被忽略的變因是<b>你站得離配重塊多遠</b>。站近＝伸展端張力大、收縮端變輕；站遠＝反過來。同一個側平舉，往後退兩步，感受完全不同——這相當於啞鈴的「換 bench 角度」。</div>
+
+  <h3>Buying Order<span class="zh">接頭購買順位（自組健身房）</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>順位</th><th>接頭</th><th>English</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td class="deg">01</td><td class="nm">單手 D 型握把 ×2</td><td class="en">D-Handles (pair)</td><td>泛用度最高，一對就能做飛鳥與雙側動作</td></tr>
+      <tr><td class="deg">02</td><td class="nm">繩索</td><td class="en">Rope</td><td>三頭、臉拉、拉腿都靠它</td></tr>
+      <tr><td class="deg">03</td><td class="nm">三角把</td><td class="en">V-Handle</td><td>划船與窄握下拉的標配</td></tr>
+      <tr><td class="deg">04</td><td class="nm">踝帶</td><td class="en">Ankle Strap</td><td>解鎖整個下肢孤立訓練</td></tr>
+      <tr><td class="deg">05</td><td class="nm">寬握下拉槓</td><td class="en">Lat Bar</td><td>背闊肌寬度</td></tr>
+      <tr><td class="deg">06</td><td class="nm">免握力腕帶</td><td class="en">Wrist Straps</td><td>移除拉類動作的握力瓶頸</td></tr>
+      <tr><td class="deg">07</td><td class="nm">曲槓</td><td class="en">EZ Bar</td><td>手腕友善的彎舉與下壓</td></tr>
+      <tr><td class="deg">08</td><td class="nm">腰帶</td><td class="en">Belt</td><td>Belt squat，下肢唯一能上重的方案</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="foot">Cable Atlas · 接頭 × 滑輪高度 × 站位 · 恆定張力是它最大的價值</div>
+</section>
+
+</main>
+</div>
+</div>
+
+<!-- ============ PROGRAM VIEW ============ -->
+<div class="view" id="v-program">
+<div class="pad">
+  <div class="shead"><h2>Push / Pull / Legs</h2><div class="zh">Cable PPL 課表 — A/B 雙版本輪替</div></div>
+  <p class="func">器材前提：雙塔功能訓練機（或 cable crossover）+ 下拉／坐姿划船站。每次 <b>50–65 分鐘</b>，所有動作留 <b>1–3 RIR</b>（保留次數），最後一組可到力竭。每個動作都標了<b>接頭與滑輪高度</b>，照著設定即可。</p>
+
+  <h3>Weekly Split<span class="zh">週期安排 — 選一種</span></h3>
+  <div class="cycle">
+    <div class="cyc pick">
+      <h4>8 天版</h4>
+      <div class="seq">Push A → Legs A → Pull A → REST<br>Push B → Legs B → Pull B → REST</div>
+      <div class="who">恢復最充足，每部位 8 天練兩次（推薦）</div>
+    </div>
+    <div class="cyc">
+      <h4>6 天版</h4>
+      <div class="seq">Push A → Pull A → Legs A<br>REST<br>Push B → Pull B → Legs B</div>
+      <div class="who">訓練量最大，恢復要求也最高</div>
+    </div>
+    <div class="cyc">
+      <h4>5 天版</h4>
+      <div class="seq">Push A → Pull A → Legs A<br>REST<br>Push B → Pull B → REST<br>（下週從 Legs B 接續）</div>
+      <div class="who">時間有限，每 8 天一循環</div>
+    </div>
+    <div class="cyc">
+      <h4>3 天版</h4>
+      <div class="seq">Push → Pull → Legs<br>每週各一次<br>A/B 隔週輪替</div>
+      <div class="who">忙碌期的最低維持量</div>
+    </div>
+  </div>
+
+  <div class="note"><span class="lab">Why Push → Legs → Pull</span>8 天版把腿插在推與拉之間：<b>① 握力在 Pull 日是瓶頸</b>，前一天練腿不會佔用它；<b>② Legs 日的 Cable RDL 與 Pull-Through 已大量使用握力與豎脊肌</b>，隔天再拉會疊加疲勞，所以順序不能顛倒成 Pull → Legs。<br><br>如果你有<b>免握力腕帶</b>，這個顧慮會小很多，排列自由度更高。</div>
+
+  <h3>8-Day Calendar<span class="zh">8 天版行事曆對照 — 循環不綁星期</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>Day</th><th>訓練</th><th>重點</th><th>下次同部位</th></tr></thead>
+    <tbody>
+      <tr><td class="deg">01</td><td class="nm">Push A</td><td>胸主導</td><td class="deg">Day 05</td></tr>
+      <tr><td class="deg">02</td><td class="nm">Legs A</td><td>股四頭主導</td><td class="deg">Day 06</td></tr>
+      <tr><td class="deg">03</td><td class="nm">Pull A</td><td>垂直拉主導</td><td class="deg">Day 07</td></tr>
+      <tr><td class="deg">04</td><td class="nm">REST</td><td>全休或輕度活動</td><td class="deg">—</td></tr>
+      <tr><td class="deg">05</td><td class="nm">Push B</td><td>肩主導</td><td class="deg">Day 09（＝下輪 01）</td></tr>
+      <tr><td class="deg">06</td><td class="nm">Legs B</td><td>後鏈主導</td><td class="deg">下輪 02</td></tr>
+      <tr><td class="deg">07</td><td class="nm">Pull B</td><td>水平拉主導</td><td class="deg">下輪 03</td></tr>
+      <tr><td class="deg">08</td><td class="nm">REST</td><td>全休或輕度活動</td><td class="deg">—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Sessions<span class="zh">六天課表內容</span></h3>
+  <div id="progDays"></div>
+
+  <div class="note"><span class="lab">Grip Rotation</span>一個 8 天循環會把<b>三種前臂握法都輪到</b>：<b>Pull A</b> ＝ 貝氏彎舉（旋後 supinated，肱二頭長頭）+ 繩索錘式（中立 neutral，肱肌）；<b>Pull B</b> ＝ 高位彎舉（旋後，收縮端）+ 反手彎舉（旋前 pronated，肱橈肌）。<br><br>反手彎舉放最後、只做 2 組，因為它同時練伸腕肌群，先做會影響前面所有划船與下拉的握力。</div>
+
+  <h3>Progression<span class="zh">進步方式 — 雙重漸進 Double Progression</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>階段</th><th>做法</th><th>範例（3 × 8–12）</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">01 衝次數</td><td>維持重量，每週把次數往上推</td><td class="deg">40 kg × 8 / 8 / 8 → 10 / 9 / 9</td></tr>
+      <tr><td class="nm">02 觸頂</td><td>三組都做到區間上限</td><td class="deg">40 kg × 12 / 12 / 12</td></tr>
+      <tr><td class="nm">03 加重</td><td>下次加一塊配重，次數會掉回下限</td><td class="deg">45 kg × 9 / 8 / 8</td></tr>
+      <tr><td class="nm">04 循環</td><td>回到 01，重複</td><td class="deg">—</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><span class="lab">Deload</span>每 <b>6–8 週</b>安排一週減量：重量減 40%、組數砍半、動作不變。不是休息，是讓結締組織與神經系統追上肌肉。</div>
+  <div class="note gap"><span class="lab">Cable-Specific Tips</span><b>① 配重塊跳階太大時</b>：多數機台一塊 5 kg，跳不上去就改用「站遠一點 + 慢離心」或加做 1½ reps，別硬上。<br><b>② 站位要固定</b>：離配重塊的距離會改變阻力曲線，每次訓練站在同一個位置，紀錄才有意義。<br><b>③ 遞減組是 cable 的主場</b>：插銷一拔就換重量，幾乎零空檔，孤立動作的最後一組很值得這樣做。</div>
+
+  <h3>RIR Scale<span class="zh">保留次數 — 怎麼判斷強度</span></h3>
+  <div class="tw"><table>
+    <thead><tr><th>RIR</th><th>意義</th><th>用在哪</th></tr></thead>
+    <tbody>
+      <tr><td class="deg">3–4</td><td>還能再做 3–4 下</td><td>暖身組、Deload 週</td></tr>
+      <tr><td class="deg">1–2</td><td>還能再做 1–2 下</td><td class="nm">大多數工作組的目標</td></tr>
+      <tr><td class="deg">0</td><td>力竭，再一下就失敗</td><td>孤立動作的最後一組</td></tr>
+    </tbody>
+  </table></div>
+</div>
+</div>
+
+<!-- ============ TRAIN VIEW ============ -->
+<div class="view" id="v-train">
+<div class="pad">
+  <div class="shead"><h2>Train</h2><div class="zh">訓練紀錄 — 選一天開始</div></div>
+  <div id="storeWarn"></div>
+  <p class="func">紀錄存在<b>這台裝置的瀏覽器</b>，不會上傳。每個動作會顯示<b>上次的重量與次數</b>，並標註<b>接頭與滑輪高度</b>，照著設定就好。</p>
+
+  <div class="picker" id="picker"></div>
+  <div id="session"></div>
+
+  <h3 style="margin-top:44px">History<span class="zh">歷史紀錄</span></h3>
+  <div class="hist" id="hist"></div>
+  <div class="actions">
+    <button class="big ghost" id="btnExport">匯出 JSON</button>
+    <button class="big ghost" id="btnWipe">清除全部紀錄</button>
+  </div>
+
+  <div class="foot">紀錄僅存於本機瀏覽器 · 換裝置或清快取會消失 · 建議定期匯出備份</div>
+</div>
+</div>
+
+<!-- rest timer -->
+<div class="timerbar" id="timerbar">
+  <div><div class="lb">Rest</div><div class="cd" id="cd">--:--</div></div>
+  <div class="presets">
+    <button class="mini" data-rest="60">60s</button>
+    <button class="mini" data-rest="90">90s</button>
+    <button class="mini" data-rest="120">2m</button>
+    <button class="mini" data-rest="180">3m</button>
+    <button class="mini hot" id="tStop">停止</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var regions = Array.prototype.slice.call(document.querySelectorAll('.region'));
+  var chips   = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var all     = regions.concat(chips);
+
+  function goTo(id){
+    var el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  all.forEach(function(node){
+    node.addEventListener('click', function(){ goTo(node.dataset.target); });
+    node.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goTo(node.dataset.target); }
+    });
+  });
+
+  function setLive(id){
+    all.forEach(function(node){
+      node.classList.toggle('live', node.dataset.target === id);
+    });
+  }
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+  var visible = {};
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      visible[entry.target.id] = entry.isIntersecting ? entry.intersectionRatio : 0;
+    });
+    var best = null, bestRatio = 0;
+    sections.forEach(function(s){
+      var r = visible[s.id] || 0;
+      if(r > bestRatio){ bestRatio = r; best = s.id; }
+    });
+    if(best) setLive(best);
+  }, { threshold:[0, .15, .35, .6, .9], rootMargin:'-8% 0px -45% 0px' });
+
+  sections.forEach(function(s){ io.observe(s); });
+  setLive('attach');
+})();
+</script>
+
+<script>
+/* ============ PPL PROGRAM DATA ============ */
+var PPL = [
+ {id:'push-a', name:'Push A', zh:'推 · 胸主導', ex:[
+   {zh:'站姿推胸', en:'Standing Cable Chest Press', s:4, r:'8–12', n:'D-Handle ×2｜中滑輪｜前腳站穩，核心抗伸展'},
+   {zh:'低往高飛鳥', en:'Low-to-High Cable Fly', s:3, r:'12–15', n:'D-Handle ×2｜最低｜上胸；頂點雙手交叉過中線'},
+   {zh:'坐姿肩推', en:'Cable Overhead Press', s:3, r:'8–12', n:'D-Handle ×2｜最低｜坐雙塔之間'},
+   {zh:'單手側平舉', en:'Cable Lateral Raise', s:4, r:'12–20', n:'D-Handle｜最低｜纜線從身後繞過，底部就有張力'},
+   {zh:'過頭臂屈伸', en:'Overhead Cable Extension', s:3, r:'10–15', n:'Rope｜高滑輪背對｜三頭長頭伸展端'},
+   {zh:'繩索下壓', en:'Rope Pressdown', s:3, r:'12–15', n:'Rope｜高｜終點雙手外分'}
+ ]},
+ {id:'pull-a', name:'Pull A', zh:'拉 · 垂直拉主導', ex:[
+   {zh:'寬握下拉', en:'Wide-Grip Lat Pulldown', s:4, r:'8–12', n:'Lat Bar｜高｜肘外開，拉到鎖骨'},
+   {zh:'直臂下拉', en:'Straight-Arm Pulldown', s:3, r:'12–15', n:'Rope｜高｜手臂打直，完全排除二頭'},
+   {zh:'坐姿窄划船', en:'Seated Cable Row', s:3, r:'10–12', n:'V-Handle｜坐姿站｜肘貼身，背闊肌'},
+   {zh:'臉拉', en:'Face Pull', s:3, r:'15–20', n:'Rope｜高或中｜終點外旋，肩健康必做'},
+   {zh:'貝氏彎舉', en:'Bayesian Curl', s:3, r:'10–12', n:'D-Handle｜高滑輪背對｜旋後握，長頭伸展端'},
+   {zh:'繩索錘式彎舉', en:'Rope Hammer Curl', s:2, r:'12–15', n:'Rope｜最低｜中立握，肱肌 brachialis'}
+ ]},
+ {id:'legs-a', name:'Legs A', zh:'腿 · 股四頭主導', ex:[
+   {zh:'腰帶深蹲', en:'Belt Squat', s:4, r:'10–15', n:'Belt｜最低｜脊椎零壓縮；無 belt 改 Cable Squat'},
+   {zh:'羅馬尼亞硬舉', en:'Cable Romanian Deadlift', s:3, r:'8–12', n:'Straight Bar｜最低｜膝微彎固定，頂端張力不掉'},
+   {zh:'分腿蹲', en:'Cable Split Squat', s:3, r:'10–12', n:'D-Handle / Belt｜最低｜單側，記單邊'},
+   {zh:'站姿腿彎舉', en:'Standing Cable Leg Curl', s:3, r:'12–15', n:'Ankle Strap｜最低｜膝屈曲功能，別漏'},
+   {zh:'站姿提踵', en:'Cable Calf Raise', s:4, r:'12–15', n:'Belt｜最低｜膝打直，腓腸肌'},
+   {zh:'站姿髖外展', en:'Standing Cable Hip Abduction', s:3, r:'15–20', n:'Ankle Strap｜最低｜臀中肌'}
+ ]},
+ {id:'push-b', name:'Push B', zh:'推 · 肩主導', ex:[
+   {zh:'坐姿肩推', en:'Cable Overhead Press', s:4, r:'6–10', n:'D-Handle ×2｜最低｜今天當主項，可上重'},
+   {zh:'高往低飛鳥', en:'High-to-Low Cable Fly', s:3, r:'10–15', n:'D-Handle ×2｜高｜下胸'},
+   {zh:'單手推胸', en:'Single-Arm Cable Press', s:3, r:'10–12', n:'D-Handle｜中｜可內收過中線，行程最大'},
+   {zh:'交叉側平舉', en:'Cross-Body Cable Lateral Raise', s:4, r:'12–20', n:'D-Handle｜最低｜最後一組拔插銷做 drop set'},
+   {zh:'跨體臂屈伸', en:'Cross-Body Cable Extension', s:3, r:'12–15', n:'D-Handle｜高｜單邊長頭'},
+   {zh:'直槓下壓', en:'Straight-Bar Pressdown', s:2, r:'15', n:'Straight Bar｜高｜三頭外側頭'}
+ ]},
+ {id:'pull-b', name:'Pull B', zh:'拉 · 水平拉主導', ex:[
+   {zh:'坐姿寬肘划船', en:'Wide-Grip Seated Row', s:4, r:'8–12', n:'Lat Bar / Rope｜坐姿站｜肘外開 90°，菱形肌與中斜方'},
+   {zh:'單手划船', en:'Single-Arm Cable Row', s:3, r:'10–12', n:'D-Handle｜中｜半跪姿，兼練抗旋轉'},
+   {zh:'站姿曲臂上拉', en:'Standing Cable Pullover', s:3, r:'12–15', n:'Rope｜高｜補過頭角度的背闊伸展'},
+   {zh:'臉拉', en:'Face Pull', s:3, r:'15–20', n:'Rope｜高或中｜後三角 + 中斜方'},
+   {zh:'聳肩', en:'Cable Shrug', s:3, r:'12–15', n:'Straight Bar｜最低｜直上直下，頂點停 1–2 秒'},
+   {zh:'高位彎舉', en:'High Cable Curl', s:3, r:'10–12', n:'D-Handle ×2｜高雙側｜旋後握，收縮端峰值'},
+   {zh:'反手彎舉', en:'Reverse Cable Curl', s:2, r:'12–15', n:'EZ Bar｜最低｜旋前握，肱橈肌；重量輕 30–40%'}
+ ]},
+ {id:'legs-b', name:'Legs B', zh:'腿 · 後鏈主導', ex:[
+   {zh:'纜繩拉腿', en:'Cable Pull-Through', s:4, r:'12–15', n:'Rope｜最低｜繩從兩腿間穿過，髖伸展純化'},
+   {zh:'臀推', en:'Cable Hip Thrust', s:4, r:'10–15', n:'Belt / Straight Bar｜最低｜收縮端，頂點夾緊'},
+   {zh:'臀後踢', en:'Cable Glute Kickback', s:3, r:'12–15', n:'Ankle Strap｜最低｜單邊孤立，頂點停 1 秒'},
+   {zh:'坐姿腿彎舉', en:'Seated Cable Leg Curl', s:3, r:'10–12', n:'Ankle Strap｜最低｜髖屈曲位，腿後被拉長'},
+   {zh:'單腿提踵', en:'Single-Leg Cable Calf Raise', s:4, r:'12–15', n:'D-Handle｜最低｜膝打直'},
+   {zh:'帕洛夫推', en:'Pallof Press', s:2, r:'30 秒', n:'D-Handle｜中｜抗旋轉核心，每邊'}
+ ]}
+];
+
+/* ============ STORAGE (localStorage + in-memory fallback) ============ */
+var MEM = {};
+var HAS_LS = (function(){ try{ localStorage.setItem('_p','1'); localStorage.removeItem('_p'); return true; }catch(e){ return false; } })();
+var S = {
+  get:function(k){ try{ return HAS_LS ? localStorage.getItem(k) : (MEM[k]||null); }catch(e){ return MEM[k]||null; } },
+  set:function(k,v){ try{ HAS_LS ? localStorage.setItem(k,v) : (MEM[k]=v); }catch(e){ MEM[k]=v; } }
+};
+function loadSessions(){ try{ return JSON.parse(S.get('cba:sessions')||'[]'); }catch(e){ return []; } }
+function saveSessions(a){ S.set('cba:sessions', JSON.stringify(a)); }
+
+if(!HAS_LS){
+  document.getElementById('storeWarn').innerHTML =
+    '<div class="warn"><b>此環境無法寫入瀏覽器儲存空間。</b>紀錄只會保留到重新整理為止。' +
+    '部署到 GitHub Pages 或任何 https 網址後即可永久保存。</div>';
+}
+
+/* ============ TAB SWITCHING ============ */
+var tabs = [].slice.call(document.querySelectorAll('.tab'));
+var timerbar = document.getElementById('timerbar');
+tabs.forEach(function(t){
+  t.addEventListener('click', function(){
+    tabs.forEach(function(x){ x.classList.toggle('on', x===t); });
+    ['atlas','program','train'].forEach(function(v){
+      document.getElementById('v-'+v).classList.toggle('on', v===t.dataset.view);
+    });
+    timerbar.classList.toggle('on', t.dataset.view==='train');
+    window.scrollTo({top:0, behavior:'auto'});
+    S.set('cba:tab', t.dataset.view);
+  });
+});
+
+/* ============ RENDER PROGRAM TABLES ============ */
+(function(){
+  var host = document.getElementById('progDays'), html = '';
+  PPL.forEach(function(d){
+    var isPush = d.id.indexOf('push')===0;
+    html += '<div class="dayblock"><div class="dayhead"><div class="dn'+(isPush?' push':'')+'">'+d.name+'</div>'+
+            '<div class="dz">'+d.zh+'</div></div><div class="tw"><table>'+
+            '<thead><tr><th>#</th><th>動作</th><th>English</th><th>組 × 次</th><th>備註</th></tr></thead><tbody>';
+    d.ex.forEach(function(e,i){
+      html += '<tr><td class="idx">'+String(i+1).padStart(2,'0')+'</td>'+
+              '<td class="nm">'+e.zh+'</td><td class="en">'+e.en+'</td>'+
+              '<td class="deg">'+e.s+' × '+e.r+'</td><td>'+e.n+'</td></tr>';
+    });
+    html += '</tbody></table></div></div>';
+  });
+  host.innerHTML = html;
+})();
+
+/* ============ TRAIN ============ */
+var picker = document.getElementById('picker');
+var sessionHost = document.getElementById('session');
+var current = null, startedAt = null, elTimer = null;
+
+PPL.forEach(function(d){
+  var b = document.createElement('button');
+  b.className = 'dbtn';
+  b.dataset.id = d.id;
+  b.innerHTML = d.name + '<small>' + d.zh + '</small>';
+  b.addEventListener('click', function(){ openDay(d.id); });
+  picker.appendChild(b);
+});
+
+function lastFor(en){
+  var all = loadSessions();
+  for(var i=all.length-1;i>=0;i--){
+    var s = all[i];
+    for(var j=0;j<s.entries.length;j++){
+      var e = s.entries[j];
+      if(e.en===en && e.sets.length) return {date:s.date, sets:e.sets};
+    }
+  }
+  return null;
+}
+
+function openDay(id){
+  var day = PPL.filter(function(d){ return d.id===id; })[0];
+  if(!day) return;
+  current = day;
+  startedAt = Date.now();
+  [].slice.call(picker.children).forEach(function(b){ b.classList.toggle('on', b.dataset.id===id); });
+
+  var html = '<div class="sesshead"><div><div class="t">'+day.name+'</div>'+
+    '<div class="meta">'+today()+' · '+day.zh+'</div></div>'+
+    '<div class="el" id="elapsed">00:00</div></div>';
+
+  day.ex.forEach(function(e,i){
+    var last = lastFor(e.en);
+    html += '<div class="exc" data-ex="'+i+'"><div class="exch">'+
+      '<div class="n">'+String(i+1).padStart(2,'0')+'</div>'+
+      '<div class="zh">'+e.zh+'</div><div class="en">'+e.en+'</div>'+
+      '<div class="tgt">'+e.s+' × '+e.r+'</div></div>'+
+      '<div class="exnote">'+e.n+'</div>';
+    if(last){
+      var txt = last.sets.map(function(s){ return (s.w||'–')+'kg × '+(s.r||'–'); }).join('  ·  ');
+      html += '<div class="exlast">上次 '+last.date+'：'+txt+'</div>';
+    }
+    html += '<div class="sets">';
+    for(var k=0;k<e.s;k++){
+      html += setRow(k+1, last && last.sets[k] ? last.sets[k].w : '');
+    }
+    html += '</div><div class="rowbtns" style="padding:0 14px 12px">'+
+      '<button class="mini" data-add="'+i+'">+ 加一組</button>'+
+      '<button class="mini go" data-rest="90">休息 90s</button></div></div>';
+  });
+
+  html += '<div class="actions">'+
+    '<button class="big" id="btnSave">完成並儲存</button>'+
+    '<button class="big ghost" id="btnCancel">取消</button></div>';
+
+  sessionHost.innerHTML = html;
+  runElapsed();
+  sessionHost.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function setRow(n, prefillW){
+  return '<div class="setrow"><div class="sn">'+n+'</div>'+
+    '<input type="number" step="0.5" inputmode="decimal" placeholder="kg" class="w" value="'+(prefillW||'')+'">'+
+    '<div class="u">kg</div>'+
+    '<input type="number" inputmode="numeric" placeholder="次" class="r">'+
+    '<div class="u">reps</div></div>';
+}
+
+bindSession();
+function bindSession(){
+  sessionHost.addEventListener('input', function(ev){
+    var row = ev.target.closest('.setrow');
+    if(row){
+      var w = row.querySelector('.w').value, r = row.querySelector('.r').value;
+      row.classList.toggle('filled', !!(w && r));
+    }
+  });
+  sessionHost.addEventListener('click', function(ev){
+    var add = ev.target.dataset.add;
+    if(add !== undefined){
+      var card = sessionHost.querySelector('.exc[data-ex="'+add+'"] .sets');
+      card.insertAdjacentHTML('beforeend', setRow(card.children.length+1, ''));
+      return;
+    }
+    if(ev.target.dataset.rest){ startRest(parseInt(ev.target.dataset.rest,10)); return; }
+    if(ev.target.id === 'btnSave'){ saveSession(); return; }
+    if(ev.target.id === 'btnCancel'){ closeSession(); return; }
+  });
+}
+
+function runElapsed(){
+  clearInterval(elTimer);
+  elTimer = setInterval(function(){
+    var el = document.getElementById('elapsed');
+    if(!el){ clearInterval(elTimer); return; }
+    var s = Math.floor((Date.now()-startedAt)/1000);
+    el.textContent = pad(Math.floor(s/60))+':'+pad(s%60);
+  }, 1000);
+}
+
+function saveSession(){
+  if(!current) return;
+  var entries = [];
+  current.ex.forEach(function(e,i){
+    var card = sessionHost.querySelector('.exc[data-ex="'+i+'"]');
+    var sets = [];
+    [].slice.call(card.querySelectorAll('.setrow')).forEach(function(row){
+      var w = row.querySelector('.w').value, r = row.querySelector('.r').value;
+      if(w || r) sets.push({w:w, r:r});
+    });
+    entries.push({zh:e.zh, en:e.en, sets:sets});
+  });
+  var total = entries.reduce(function(a,e){ return a + e.sets.length; }, 0);
+  if(!total){ alert('還沒有填任何一組，先記幾組再存。'); return; }
+
+  var all = loadSessions();
+  all.push({
+    date: today(),
+    dayId: current.id,
+    dayName: current.name,
+    mins: Math.round((Date.now()-startedAt)/60000),
+    entries: entries
+  });
+  saveSessions(all);
+  renderHistory();
+  closeSession();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function closeSession(){
+  clearInterval(elTimer);
+  current = null;
+  sessionHost.innerHTML = '';
+  [].slice.call(picker.children).forEach(function(b){ b.classList.remove('on'); });
+}
+
+/* ============ HISTORY ============ */
+function renderHistory(){
+  var host = document.getElementById('hist');
+  var all = loadSessions().slice().reverse();
+  if(!all.length){ host.innerHTML = '<div class="empty">還沒有紀錄。上面選一天，開始第一次訓練。</div>'; return; }
+  host.innerHTML = all.map(function(s){
+    var vol = s.entries.reduce(function(a,e){
+      return a + e.sets.reduce(function(b,x){ return b + (parseFloat(x.w)||0)*(parseInt(x.r,10)||0); }, 0);
+    }, 0);
+    var sets = s.entries.reduce(function(a,e){ return a + e.sets.length; }, 0);
+    return '<div class="hrow"><div class="d">'+s.date+'</div><div class="dn">'+s.dayName+'</div>'+
+      '<div class="v">'+sets+' 組 · '+Math.round(vol).toLocaleString()+' kg 總量 · '+s.mins+' 分</div></div>';
+  }).join('');
+}
+renderHistory();
+
+document.getElementById('btnExport').addEventListener('click', function(){
+  var data = JSON.stringify({exported: new Date().toISOString(), sessions: loadSessions()}, null, 2);
+  var url = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+  var a = document.createElement('a');
+  a.href = url; a.download = 'cable-log-'+today()+'.json';
+  a.click(); URL.revokeObjectURL(url);
+});
+
+document.getElementById('btnWipe').addEventListener('click', function(){
+  if(confirm('確定清除全部訓練紀錄？此動作無法復原，建議先匯出備份。')){
+    saveSessions([]); renderHistory();
+  }
+});
+
+/* ============ REST TIMER ============ */
+var cd = document.getElementById('cd'), restT = null, restLeft = 0;
+function startRest(sec){
+  clearInterval(restT);
+  restLeft = sec;
+  cd.className = 'cd run';
+  paint();
+  restT = setInterval(function(){
+    restLeft--;
+    paint();
+    if(restLeft <= 0){ clearInterval(restT); cd.className = 'cd end'; beep(); }
+  }, 1000);
+}
+function paint(){ cd.textContent = pad(Math.floor(restLeft/60))+':'+pad(restLeft%60); }
+[].slice.call(document.querySelectorAll('.timerbar [data-rest]')).forEach(function(b){
+  b.addEventListener('click', function(){ startRest(parseInt(b.dataset.rest,10)); });
+});
+document.getElementById('tStop').addEventListener('click', function(){
+  clearInterval(restT); cd.className = 'cd'; cd.textContent = '--:--';
+});
+function beep(){
+  try{
+    var C = window.AudioContext || window.webkitAudioContext;
+    var ctx = new C();
+    [0, .28, .56].forEach(function(t){
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.value = 880; o.type = 'sine';
+      g.gain.setValueAtTime(.0001, ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.3, ctx.currentTime+t+.02);
+      g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+t+.2);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+.22);
+    });
+    if(navigator.vibrate) navigator.vibrate([180,90,180]);
+  }catch(e){}
+}
+
+/* ============ UTIL ============ */
+function pad(n){ return (n<10?'0':'')+n; }
+function today(){
+  var d = new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+
+/* ============ RESTORE LAST TAB ============ */
+(function(){
+  var v = S.get('cba:tab');
+  if(v && v!=='atlas'){
+    var t = document.querySelector('.tab[data-view="'+v+'"]');
+    if(t) t.click();
+  }
+})();
+
+/* ============ SERVICE WORKER ============ */
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
