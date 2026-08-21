@@ -1,6 +1,6 @@
 /* Dumbbell Atlas — offline cache
    改動檔案後請把 CACHE 版本號 +1，使用者下次開啟就會自動更新。 */
-var CACHE = 'dumbbell-atlas-v1';
+var CACHE = 'dumbbell-atlas-v2';
 var ASSETS = [
   './',
   './index.html',
