@@ -134,6 +134,16 @@ tbody tr:hover{background:var(--panel2)}
 td.en{font-family:var(--mono);font-size:12px;color:var(--bone-lit);letter-spacing:-.01em}
 td.nm{font-weight:500;white-space:nowrap}
 .key{color:var(--flesh);font-family:var(--mono);font-size:11px;margin-right:5px}
+.pos{color:var(--dim);font-weight:400;font-size:12.5px}
+td.en .pos{color:var(--bone);font-size:11px}
+.pos{font-family:var(--mono);letter-spacing:.06em}
+.pos.gh{visibility:hidden}
+.legend{
+  font-family:var(--mono);font-size:10.5px;color:var(--dim);
+  letter-spacing:.04em;line-height:1.9;margin:8px 0 4px;
+}
+.legend b{color:var(--flesh);font-weight:500}
+td.nm{line-height:1.45}
 .deg{font-family:var(--mono);font-size:12px;color:var(--text);white-space:nowrap}
 .lvl{font-family:var(--mono);font-size:12px;color:var(--flesh);letter-spacing:.12em}
 .lvl i{color:var(--line);font-style:normal}
@@ -499,19 +509,32 @@ td.idx{font-family:var(--mono);font-size:11px;color:var(--dim);width:34px}
   <div class="shead"><h2>Back</h2><div class="zh">背部 — 划船角度決定一切</div></div>
   <p class="func">同一張 incline bench，<b>肘部從外開到貼身、再到打直</b>，刺激就往背部更深、更下方移動一塊。</p>
 
-  <h3>Horizontal Pull<span class="zh">水平拉</span></h3>
+  <h3>Horizontal Pull<span class="zh">水平拉 — 三種姿勢 × 五種肘部路徑</span></h3>
   <div class="tw"><table>
-    <thead><tr><th>動作</th><th>English</th><th>肘部</th><th>Bench</th><th>目標肌</th></tr></thead>
+    <thead><tr><th>動作</th><th>English</th><th>肘部</th><th>Bench (CS)</th><th>目標肌</th></tr></thead>
     <tbody>
-      <tr><td class="nm"><span class="key">◆</span>單手划船</td><td class="en">Single-Arm Dumbbell Row</td><td>貼身</td><td class="deg">撐 bench</td><td class="en">Latissimus Dorsi</td></tr>
-      <tr><td class="nm">胸支撐划船</td><td class="en">Chest-Supported Row</td><td>貼身</td><td class="deg">30–45°</td><td class="en">Latissimus Dorsi</td></tr>
-      <tr><td class="nm">中立握划船</td><td class="en">Neutral-Grip Row</td><td>45°</td><td class="deg">30–45°</td><td class="en">Lower Trapezius</td></tr>
-      <tr><td class="nm"><span class="key">◆</span>寬肘划船</td><td class="en">Wide / Flared-Elbow Row</td><td>外開 90°</td><td class="deg">30–45°</td><td class="en">Rhomboids + Mid Trap</td></tr>
-      <tr><td class="nm">高肘划船</td><td class="en">High Row</td><td>外開 45–60°</td><td class="deg">45°</td><td class="en">Teres Major</td></tr>
-      <tr><td class="nm">直臂後拉</td><td class="en">Straight-Arm Pullback</td><td>打直</td><td class="deg">45°</td><td class="en">Latissimus（排除二頭）</td></tr>
-      <tr><td class="nm">俯身划船</td><td class="en">Bent-Over Row</td><td>貼身</td><td class="deg">站姿俯身</td><td class="en">Lats + Erector Spinae</td></tr>
+      <tr><td class="nm"><span class="key">◆</span><span class="pos">CS / BO / SA</span><br>寬肘划船</td><td class="en"><span class="pos gh" aria-hidden="true">CS / BO / SA</span><br>Wide / Flared-Elbow Row</td><td>外開 90°</td><td class="deg">30–45°</td><td class="en">Rhomboids + Mid Trap</td></tr>
+      <tr><td class="nm"><span class="pos">CS / BO / SA</span><br>中立握划船</td><td class="en"><span class="pos gh" aria-hidden="true">CS / BO / SA</span><br>Neutral-Grip Row</td><td>45°</td><td class="deg">30–45°</td><td class="en">Lower Trapezius</td></tr>
+      <tr><td class="nm"><span class="pos">CS / BO / SA</span><br>高肘划船</td><td class="en"><span class="pos gh" aria-hidden="true">CS / BO / SA</span><br>High Row</td><td>外開 45–60°</td><td class="deg">45°</td><td class="en">Teres Major</td></tr>
+      <tr><td class="nm"><span class="key">◆</span><span class="pos">CS / BO / SA</span><br>貼身划船</td><td class="en"><span class="pos gh" aria-hidden="true">CS / BO / SA</span><br>Tucked-Elbow Row</td><td>貼身</td><td class="deg">30–45°</td><td class="en">Latissimus Dorsi</td></tr>
+      <tr><td class="nm"><span class="pos">CS / SA</span><br>直臂後拉</td><td class="en"><span class="pos gh" aria-hidden="true">CS / BO / SA</span><br>Straight-Arm Pullback</td><td>打直</td><td class="deg">45°</td><td class="en">Latissimus（排除二頭）</td></tr>
     </tbody>
   </table></div>
+  <div class="legend"><b>CS</b> Chest-Supported 胸支撐 &nbsp;·&nbsp; <b>BO</b> Bent-Over 俯身站姿 &nbsp;·&nbsp; <b>SA</b> Single-Arm Supported 單手撐 bench &nbsp;·&nbsp; Bench 角度欄僅適用於 CS</div>
+
+  <div class="note"><span class="lab">Position × Elbow Path</span><b>決定練哪塊肌肉的是肘部路徑，跟胸有沒有靠著椅子無關。</b>上表五種路徑，三種姿勢基本上都做得出來（直臂後拉在站姿下張力較差，故略過 BO）。姿勢改變的不是目標肌，而是<b>代價與上限</b>：</div>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>CS 胸支撐</th><th>BO 俯身站姿</th><th>SA 單手撐</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">軀幹穩定</td><td>椅背代勞</td><td>豎脊肌等長收縮</td><td>單手撐 bench</td></tr>
+      <tr><td class="nm">下背負擔</td><td class="deg">幾乎零</td><td class="deg">高，常先於背闊肌力竭</td><td class="deg">中等</td></tr>
+      <tr><td class="nm">作弊空間</td><td>幾乎不可能</td><td>易靠髖伸展甩起</td><td>中等</td></tr>
+      <tr><td class="nm">重量上限</td><td>較低</td><td class="nm">最高</td><td>中等</td></tr>
+      <tr><td class="nm">活動範圍</td><td>受椅背限制</td><td>大</td><td class="nm">最大（可加旋轉）</td></tr>
+      <tr><td class="nm">額外效益</td><td>無</td><td>豎脊肌 + 髖鉸鏈</td><td>抗旋轉核心</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note gap"><span class="lab">How To Choose</span><b>選 CS</b>：要精準打小肌群（菱形肌、下斜方、大圓肌）／同期已做 RDL 或硬舉／下背有舊傷／高次數力竭組。<br><b>選 BO</b>：這是當天主項要上重量／想順便練軀幹穩定／沒有 bench。<br><b>選 SA</b>：想要最大行程與伸展／左右不平衡需要單邊補強。<br><br>CS 的價值不是「練到不一樣的肌肉」，而是<b>移除了限制因子</b>——當下背與核心不再是瓶頸，你才能真的把背肌練到力竭，而不是「腰撐不住所以停了」。</div>
 
   <h3>Vertical Pull<span class="zh">垂直拉 — 啞鈴的弱項</span></h3>
   <div class="tw"><table>
@@ -549,12 +572,14 @@ td.idx{font-family:var(--mono);font-size:11px;color:var(--dim);width:34px}
       <tr><td class="nm">二頭彎舉</td><td class="en">Dumbbell Curl</td><td class="en">Supinated</td><td class="deg">站 / 坐</td><td>基礎動作</td></tr>
       <tr><td class="nm">集中彎舉</td><td class="en">Concentration Curl</td><td class="en">Supinated</td><td class="deg">坐姿 seated</td><td>收縮端峰值最高</td></tr>
       <tr><td class="nm">錘式彎舉</td><td class="en">Hammer Curl</td><td class="en">Neutral</td><td class="deg">站 / 坐</td><td>肱肌 Brachialis + 肱橈肌</td></tr>
+      <tr><td class="nm"><span class="key">◆</span>反手彎舉</td><td class="en">Reverse Curl</td><td class="en">Pronated</td><td class="deg">站 / 斜板</td><td>肱橈肌 Brachioradialis + 伸腕肌群</td></tr>
       <tr><td class="nm">斜板彎舉</td><td class="en">Preacher Curl</td><td class="en">Supinated</td><td class="deg">靠 bench 背面</td><td>短頭 short head，排除擺盪</td></tr>
       <tr><td class="nm">佐特曼彎舉</td><td class="en">Zottman Curl</td><td class="en">Rotational</td><td class="deg">站姿</td><td>上旋後、下旋前，兼練前臂</td></tr>
       <tr><td class="nm">拖曳彎舉</td><td class="en">Drag Curl</td><td class="en">Supinated</td><td class="deg">站姿</td><td>肘後拉，長頭偏重</td></tr>
     </tbody>
   </table></div>
   <div class="note"><span class="lab">Long vs Short Head</span>手臂<b>後移</b>（incline curl）→ 長頭拉長；手臂<b>前移</b>（preacher curl）→ 短頭偏重。兩者都做才完整。</div>
+  <div class="note"><span class="lab">Grip Determines Target</span>前臂旋轉狀態才是分水嶺：<b>旋後 supinated → 肱二頭肌</b>、<b>中立 neutral → 肱肌 brachialis</b>、<b>旋前 pronated → 肱橈肌 brachioradialis</b>。<br><br>因為肱二頭肌本身就是旋後肌，在旋前狀態下等於被反向擰住、機械效率大降，負擔才轉移到肱橈肌與伸腕肌群。<b>Reverse Curl 是唯一能主攻肱橈肌的角度</b>，而肱橈肌是前臂上緣那條隆起，對手臂視覺粗度貢獻不小。重量要比一般彎舉輕 30–40%。</div>
 
   <h3>Triceps Brachii<span class="zh">肱三頭肌 — 長頭佔體積 60%</span></h3>
   <div class="tw"><table>
@@ -575,6 +600,7 @@ td.idx{font-family:var(--mono);font-size:11px;color:var(--dim);width:34px}
     <tbody>
       <tr><td class="nm">腕彎舉</td><td class="en">Wrist Curl</td><td>屈腕肌群 Wrist Flexors</td></tr>
       <tr><td class="nm">反向腕彎舉</td><td class="en">Reverse Wrist Curl</td><td>伸腕肌群 Wrist Extensors</td></tr>
+      <tr><td class="nm">反手彎舉</td><td class="en">Reverse Curl</td><td>肱橈肌 Brachioradialis</td></tr>
       <tr><td class="nm">農夫走路</td><td class="en">Farmer's Walk</td><td>握力 Grip Strength</td></tr>
       <tr><td class="nm">底朝上握持</td><td class="en">Bottoms-Up Hold</td><td>握力 + 肩穩定</td></tr>
     </tbody>
@@ -807,6 +833,8 @@ td.idx{font-family:var(--mono);font-size:11px;color:var(--dim);width:34px}
   <h3>Sessions<span class="zh">六天課表內容</span></h3>
   <div id="progDays"></div>
 
+  <div class="note"><span class="lab">Grip Rotation</span>一個 8 天循環會把<b>三種前臂握法都輪到</b>：<b>Pull A</b> ＝ 上斜彎舉（旋後 supinated，肱二頭）+ 錘式彎舉（中立 neutral，肱肌）；<b>Pull B</b> ＝ 集中彎舉（旋後）+ 反手彎舉（旋前 pronated，肱橈肌）。<br><br>反手彎舉放最後、只做 2 組，因為它同時練伸腕肌群，先做會影響前面所有划船的握力。</div>
+
   <h3>Progression<span class="zh">進步方式 — 雙重漸進 Double Progression</span></h3>
   <div class="tw"><table>
     <thead><tr><th>階段</th><th>做法</th><th>範例（3 × 8–12）</th></tr></thead>
@@ -925,8 +953,8 @@ var PPL = [
    {zh:'胸支撐寬肘划船', en:'Chest-Supported Wide Row', s:3, r:'10–15', n:'Bench 30–45°，肘外開 90°'},
    {zh:'單手划船', en:'Single-Arm DB Row', s:3, r:'10–12', n:'肘貼身，記錄單邊重量'},
    {zh:'俯臥反向飛鳥', en:'Prone Rear Delt Fly', s:3, r:'15–20', n:'Bench 15–30°，重量要輕'},
-   {zh:'上斜彎舉', en:'Incline DB Curl', s:3, r:'8–12', n:'仰躺 45–60°，長頭完全拉長'},
-   {zh:'錘式彎舉', en:'Hammer Curl', s:2, r:'10–15', n:'中立握，練肱肌'}
+   {zh:'上斜彎舉', en:'Incline DB Curl', s:3, r:'8–12', n:'旋後握，仰躺 45–60°，長頭完全拉長'},
+   {zh:'錘式彎舉', en:'Hammer Curl', s:2, r:'10–15', n:'中立握，練肱肌 brachialis'}
  ]},
  {id:'legs-a', name:'Legs A', zh:'腿 · 股四頭主導', ex:[
    {zh:'保加利亞分腿蹲', en:'Bulgarian Split Squat', s:4, r:'8–12', n:'軀幹直立版，次數記單邊'},
@@ -950,7 +978,8 @@ var PPL = [
    {zh:'曲臂上拉', en:'Dumbbell Pullover', s:3, r:'10–15', n:'補過頭角度的背闊伸展'},
    {zh:'俯臥 Y 字上舉', en:'Prone Y-Raise', s:3, r:'15–20', n:'Bench 45–60°，極輕重量'},
    {zh:'聳肩', en:'Dumbbell Shrug', s:3, r:'10–15', n:'直上直下，頂點停 1–2 秒'},
-   {zh:'集中彎舉', en:'Concentration Curl', s:3, r:'10–12', n:'收縮端峰值'}
+   {zh:'集中彎舉', en:'Concentration Curl', s:3, r:'10–12', n:'旋後握，收縮端峰值'},
+   {zh:'反手彎舉', en:'Reverse Curl', s:2, r:'12–15', n:'旋前握，肱橈肌；重量比一般彎舉輕 30–40%'}
  ]},
  {id:'legs-b', name:'Legs B', zh:'腿 · 後鏈主導', ex:[
    {zh:'單腿羅馬尼亞硬舉', en:'Single-Leg RDL', s:4, r:'8–12', n:'繞過握力瓶頸，記單邊'},
